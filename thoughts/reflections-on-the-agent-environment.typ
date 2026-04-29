@@ -14,5 +14,5 @@
   #elem("p")[Introducing #link("https://x.com/advaitpaliwal/status/2036123714157420959", [Agent Computer]) - a hosting platform that lets you spin up sandboxes in under a second, keep them around as long as you need, and let agents accumulate context and capabilities over time. Built on #link("https://github.com/rivet-dev/sandbox-agent", [Rivet's]) Sandbox Agent and Firecracker microVMs.]
   #elem("p")[a parallel shift in my workflow has been moving away from running things locally. #link("https://github.com/harivansh-afk/nix", [Nix]) let me define my entire environment declaratively which was pretty cool. This paired with Agent Computer, i can drop my entire dev setup - tools, skills, secrets - into a remote VM with one click.]
   #elem("p")[the direction feels clear: portable environments that follow you across machines, entirely in the cloud, nothing running locally.]
-  #elem("p")[as i spend less time in my text editor, this feels like the obvious next step. excited to keep building here.]
+  #elem("p")[as i spend less time in my text editor, this feels like the obvious next step.
 ]
