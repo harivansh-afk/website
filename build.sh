@@ -8,10 +8,18 @@ else
 fi
 
 rm -rf dist
-mkdir -p dist/fonts
+mkdir -p dist
 
 # shellcheck disable=SC2086
-$typst_cmd compile --features html --format html index.typ dist/index.html
+$typst_cmd compile --root . --features html --format html index.typ dist/index.html
+
+for source in thoughts/*.typ; do
+  [ -e "$source" ] || continue
+  slug=$(basename "$source" .typ)
+  mkdir -p "dist/thoughts/$slug"
+  # shellcheck disable=SC2086
+  $typst_cmd compile --root . --features html --format html "$source" "dist/thoughts/$slug/index.html"
+done
 
 cp style.css dist/style.css
-cp static/fonts/BerkeleyMono-Regular.otf dist/fonts/BerkeleyMono-Regular.otf
+cp -R static/. dist/

@@ -1,78 +1,45 @@
 @font-face {
   font-family: "Berkeley Mono";
   src: url("./fonts/BerkeleyMono-Regular.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
   font-display: swap;
 }
 
 :root {
-  --background: #0d0d0b;
-  --foreground: #f3f3ee;
+  --bg: #0d0d0b;
+  --fg: #f3f3ee;
   --muted: hsl(45 5% 65%);
-  --selection: rgba(255, 255, 255, 0.12);
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    --background: #fdfdfc;
-    --foreground: #1a1a1a;
+    --bg: #fdfdfc;
+    --fg: #1a1a1a;
     --muted: #6b6b66;
-    --selection: rgba(0, 0, 0, 0.15);
     color-scheme: light;
   }
 }
 
-html {
-  background: var(--background);
-}
-
 body {
   margin: 0;
-  min-height: 100svh;
-  background: var(--background);
+  zoom: 1.2;
+  background: var(--bg);
   color: var(--muted);
-  font-family: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
-    Consolas, monospace;
-  line-height: 1.65;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-*::selection {
-  background: var(--selection);
+  font-family: "Berkeley Mono", ui-monospace, monospace;
+  line-height: 1.6;
 }
 
 main {
-  width: min(100% - 48px, 42rem);
+  max-width: 42rem;
   margin-inline: auto;
-  padding-block: clamp(3rem, 8vw, 5rem);
+  padding: clamp(3rem, 8vw, 5rem) 24px;
 }
 
-h1,
-h2 {
-  color: var(--foreground);
-  font-weight: 400;
-  line-height: 1.25;
-}
-
-p,
-li {
-  max-width: 68ch;
-}
-
-a {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
-}
-
-a:hover,
-a:focus-visible {
-  color: var(--foreground);
-}
+h1, h2 { color: var(--fg); font-weight: 400 }
+figure { margin-inline: 0 }
+img { max-width: 100% }
+code { color: var(--fg) }
+a { color: inherit }
+.back-link { text-decoration: none }
+.meta { text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg) }
+a:hover { color: var(--fg) }

@@ -1,19 +1,9 @@
-#let elem = html.elem
-#let meta(attrs) = elem("meta", attrs: attrs)
+#import "_layout.typ": elem, meta, link, item
 
-#let link(url, body) = elem(
-  "a",
-  attrs: (href: url, target: "_blank", rel: "noopener noreferrer"),
-  body,
-)
-
-#let thought(slug, title) = elem("a", attrs: (href: "/thoughts/" + slug + "/"), title)
-#let item(body) = elem("li", body)
-#let section(title, body) = [
-  #elem("section")[
-    #elem("h2", title)
-    #body
-  ]
+#let thought-link(slug, title) = elem("a", attrs: (href: "/thoughts/" + slug + "/"), title)
+#let section(title, body) = elem("section")[
+  #elem("h2", title)
+  #body
 ]
 
 #elem("html", attrs: (lang: "en"))[
@@ -55,12 +45,12 @@
 
       #section([thoughts])[
         #elem("ul")[
-          #item([April 2026, #thought("throw-out-your-macbook", [throw out your macbook])])
-          #item([March 2026, #thought("reflections-on-the-agent-environment", [reflections on the agent environment])])
-          #item([February 2026, #thought("isolated-long-running-agents-with-kubernetes", [the agent environment])])
-          #item([January 2026, #thought("the-asymmetry-of-verification", [the asymmetry of verification])])
-          #item([December 2025, #thought("the-growth-team-is-dead", [the growth team])])
-          #item([May 2025, #thought("my-core-principles", [core principles])])
+          #item([April 2026, #thought-link("throw-out-your-macbook", [throw out your macbook])])
+          #item([March 2026, #thought-link("reflections-on-the-agent-environment", [reflections on the agent environment])])
+          #item([February 2026, #thought-link("isolated-long-running-agents-with-kubernetes", [the agent environment])])
+          #item([January 2026, #thought-link("the-asymmetry-of-verification", [the asymmetry of verification])])
+          #item([December 2025, #thought-link("the-growth-team-is-dead", [the growth team])])
+          #item([May 2025, #thought-link("my-core-principles", [core principles])])
         ]
       ]
 
