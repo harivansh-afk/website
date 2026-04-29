@@ -12,6 +12,8 @@ mkdir -p dist
 
 # shellcheck disable=SC2086
 $typst_cmd compile --root . --features html --format html index.typ dist/index.html
+# shellcheck disable=SC2086
+$typst_cmd compile --root . --features html --format html 404.typ dist/404.html
 
 for source in thoughts/*.typ; do
   [ -e "$source" ] || continue

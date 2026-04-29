@@ -39,6 +39,18 @@ main.thought {
   max-width: 60rem;
 }
 
+main.not-found {
+  display: flex;
+  flex-direction: column;
+}
+
+.not-found-content {
+  min-height: min(56vh, 24rem);
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
 h1, h2 { color: var(--fg); font-weight: 400 }
 figure { margin-inline: 0 }
 img { max-width: 100% }
