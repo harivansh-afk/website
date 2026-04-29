@@ -13,6 +13,7 @@
     #meta((name: "description", content: "Full stack engineer building compute infrastructure for AI agents."))
     #elem("title")[Hari]
     #elem("link", attrs: (rel: "stylesheet", href: "./style.css"))
+    #elem("link", attrs: (rel: "icon", href: "/icon.svg", type: "image/svg+xml"))
   ]
 
   #elem("body")[

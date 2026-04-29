@@ -35,6 +35,10 @@ main {
   padding: clamp(3rem, 8vw, 5rem) 24px;
 }
 
+main.thought {
+  max-width: 60rem;
+}
+
 h1, h2 { color: var(--fg); font-weight: 400 }
 figure { margin-inline: 0 }
 img { max-width: 100% }

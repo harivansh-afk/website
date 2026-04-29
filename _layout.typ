@@ -22,9 +22,10 @@
       #meta((name: "description", content: description))
       #elem("title")[#title]
       #elem("link", attrs: (rel: "stylesheet", href: "../../style.css"))
+      #elem("link", attrs: (rel: "icon", href: "/icon.svg", type: "image/svg+xml"))
     ]
     #elem("body")[
-      #elem("main")[
+      #elem("main", attrs: (class: "thought"))[
         #elem("nav")[
           #elem("a", attrs: (href: "/", class: "back-link"))[..]
         ]
