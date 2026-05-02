@@ -57,10 +57,9 @@
 
       #section([contact])[
         #elem("ul")[
-          #item([#link("https://github.com/harivansh-afk", [github])])
           #item([#link("https://linkedin.com/in/harivansh-rathi", [linkedin])])
           #item([#link("https://x.com/HarivanshRathi", [x.com])])
-          #item([#link("https://git.harivan.sh/harivansh-afk/", [forgejo])])
+          #item([#link("https://github.com/harivansh-afk", [github]), #link("https://git.harivan.sh/harivansh-afk/", [forgejo])])
         ]
       ]
     ]
