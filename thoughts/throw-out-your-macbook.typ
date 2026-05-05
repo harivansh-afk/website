@@ -24,7 +24,7 @@
   #elem("p")[Fork #link("https://github.com/getcompanion-ai/computer-nix", [computer-nix]).]
   #elem("p")[It wires a simple starter home-manager config into #link("https://agentcomputer.ai", [agent computer]).]
   #elem("p")[You can point your claude at #link("https://github.com/getcompanion-ai/computer-nix/blob/main/forking.md", [this]) and just tell it to find all your packages and dotfiles from your mac and put them into a fresh fork.]
-  #elem("p")[Once you have the basics run #code[just go]]
+  #elem("p")[Once you have the basics run `just go`]
   #elem("p")[This boots a new VM, builds the given nix config, pulls secrets from my mac itself as well as my manager, authenticates #link("https://github.com/anthropics/claude-code", [claude]) and #link("https://github.com/openai/codex", [codex]) CLIs on the box, and shows me repos to clone with a simple picker.]
   #elem("p")[\~2 minutes later I'm in a configured shell with a clean zsh prompter, all my aliases configured, my nvim config in place, and all my CLIs authenticated, ready to fire up a new codex in #link("https://github.com/tmux/tmux", [tmux]).]
   #elem("p")[Once you have this setup, how do you use it? Do you workspace or do you one-shot?]
