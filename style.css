@@ -54,7 +54,25 @@ main.not-found {
 h1, h2 { color: var(--fg); font-weight: 400 }
 figure { margin-inline: 0 }
 img { max-width: 100% }
-code { color: var(--fg) }
+code {
+  color: var(--fg);
+}
+p > code {
+  padding: 0.12em 0.35em;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--fg) 10%, transparent);
+}
+pre {
+  overflow-x: auto;
+  margin-block: 1.5rem;
+  padding: 1rem;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--fg) 7%, transparent);
+}
+pre code {
+  padding: 0;
+  background: transparent;
+}
 a { color: inherit }
 .back-link { text-decoration: none }
 .meta { text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg) }
