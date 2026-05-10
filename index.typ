@@ -20,7 +20,7 @@
     #elem("main")[
       #elem("h1")[Harivansh Rathi]
 
-      #elem("p")[Ive been breaking things since i was 5. The first thing i dismantled was my sisters piano when i was 6. When i was 8 my mom bought me a #link("https://www.worldcubeassociation.org/persons/2015RATH01", [rubicks cube]) to stop me from taking apart more of her stuff.]
+      #elem("p")[Ive been breaking things since i was 5. The first thing i dismantled was my sisters piano when i was 6. When i was 8 my mom bought me a #link("https://www.worldcubeassociation.org/persons/2015RATH01", [rubik's cube]) to stop me from taking apart more of her stuff.]
 
       #elem("p")[I joined a #link("https://www.facebook.com/roboclubonline/posts/roboclub-team-supercalifragilisticexpialidocious-at-the-first-lego-league-nation/1565656036804624/", [robotics club]) when i was 8 and went on to rep india at the world championship in australia in 2019.]
 
