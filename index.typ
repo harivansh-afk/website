@@ -24,10 +24,11 @@
 
       #elem("p")[I joined a #link("https://www.facebook.com/roboclubonline/posts/roboclub-team-supercalifragilisticexpialidocious-at-the-first-lego-league-nation/1565656036804624/", [robotics club]) when i was 8 and went on to rep india at the world championship in australia in 2019.]
 
-      #elem("p")[I'm now a 3rd year at #link("https://www.virginia.edu/", [The University Of Virginia]) studying computer science. I enjoy hacking on startups and im currently building infrastructure for ai agents #link("https://agentcomputer.ai", [\@agentcomputer.ai])]
+      #elem("p")[I'm now a 3rd year at #link("https://www.virginia.edu/", [UVA]) studying CS. I enjoy hacking on startups and im currently building cloud infra #link("https://ix.dev", [\@indexable])]
 
       #section([experiences])[
         #elem("ul")[
+          #item([SWE, #link("https://github.com/indexable-inc/", [indexable])])
           #item([software engineer, #link("https://www.linkedin.com/company/phia-co/", [phia])])
           #item([co-founder, #link("https://www.linkedin.com/company/atlasagentspage/", [atlas agents])])
           #item([web developer, #link("https://unikove.com/", [unikove])])
