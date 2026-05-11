@@ -17,7 +17,7 @@
   #elem("p")[Pairing this with #link("https://aws.amazon.com/fargate/", [AWS Fargate]) dropped our total cost to ~\$3 per user per month.]
   #elem("p")[Each sandbox is an isolated Kubernetes pod with its own network policy, resource limits, and EFS-backed workspace. A warm pool keeps ~10 pods pre-provisioned so new users spin up in under 5 seconds. #link("https://karpenter.sh", [Karpenter]) handles node-level scaling underneath.]
   #elem("p")[The agent doesn't know or care about any of this. It just sees a filesystem, a network connection, its running processes, and the user's message input.]
-  #elem("p")[I built #link("https://github.com/harivansh-afk/agentikube", [agentikube]) to abstract this for others - a Helm chart where you write a simple config and run a couple commands to get everything online. CPU, storage, sandbox settings, all in one place.]
+  #elem("p")[I built #link("https://git.harivan.sh/harivansh-afk/agentikube", [agentikube]) to abstract this for others - a Helm chart where you write a simple config and run a couple commands to get everything online. CPU, storage, sandbox settings, all in one place.]
   #elem("p")[An agent in a throwaway container with no persistent storage is fundamentally limited. It can't accumulate context. It can't install tools and keep them around.]
   #elem("p")[Give it an isolated persistent sandbox and the ceiling goes way up. The agent builds its workspace over time, maintains state across sessions, and operates without stepping on other agents.]
   #elem("p")[The models will keep getting better. The harness will keep evolving. But the environment is what lets agents go from "run a task" to "live in a workspace."]
