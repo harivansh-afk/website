@@ -28,7 +28,7 @@
 
       #section([experiences])[
         #elem("ul")[
-          #item([member of technical staff, #link("https://github.com/indexable-inc/", [indexable])])
+          #item([founding engineer, #link("https://github.com/indexable-inc/", [indexable])])
           #item([software engineer, #link("https://companion.ai", [companion])])
           #item([software engineer, #link("https://www.linkedin.com/company/phia-co/", [phia])])
           #item([co-founder, #link("https://www.linkedin.com/company/atlasagentspage/", [atlas agents])])
