@@ -39,6 +39,7 @@
 
       #section([projects])[
         #elem("ul")[
+          #item([#link("https://git.harivan.sh/harivansh-afk/pierrejo", [pierrejo])])
           #item([#link("https://agentcomputer.ai", [agentcomputer])])
           #item([#link("https://betternas.com", [betterNAS])])
           #item([#link("https://deskctl.dev", [deskctl])])
