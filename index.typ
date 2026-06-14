@@ -12,8 +12,9 @@
     #meta((name: "viewport", content: "width=device-width, initial-scale=1"))
     #meta((name: "description", content: "Compute, AI and Distributed Systems"))
     #elem("title")[Hari]
-    #elem("link", attrs: (rel: "stylesheet", href: "./style.css?v=code-bg-20260505"))
+    #elem("link", attrs: (rel: "stylesheet", href: "./style.css?v=status-20260604-3"))
     #elem("link", attrs: (rel: "icon", href: "/icon.svg", type: "image/svg+xml"))
+    #elem("script", attrs: (src: "/status.js?v=20260604", defer: "defer"))
   ]
 
   #elem("body")[

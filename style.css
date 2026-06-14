@@ -77,3 +77,41 @@ a { color: inherit }
 .back-link { text-decoration: none }
 .meta { text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg) }
 a:hover { color: var(--fg) }
+
+.status-pill {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-decoration: none;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  border: 1px solid color-mix(in srgb, var(--fg) 12%, transparent);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.status-pill:hover {
+  color: var(--fg);
+  border-color: color-mix(in srgb, var(--fg) 25%, transparent);
+}
+.status-dot {
+  flex: none;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.status-pill.ok .status-dot { background: #3ecf6b; box-shadow: 0 0 7px 0 color-mix(in srgb, #3ecf6b 70%, transparent) }
+.status-pill.warn .status-dot { background: #e6b800; box-shadow: 0 0 7px 0 color-mix(in srgb, #e6b800 70%, transparent) }
+.status-pill.down .status-dot { background: #e5484d; box-shadow: 0 0 7px 0 color-mix(in srgb, #e5484d 70%, transparent) }
+.status-pill.maint .status-dot { background: #4c8dff; box-shadow: 0 0 7px 0 color-mix(in srgb, #4c8dff 70%, transparent) }
+.status-pill.unknown .status-dot { background: var(--muted) }
