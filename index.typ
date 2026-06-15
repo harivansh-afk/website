@@ -12,9 +12,8 @@
     #meta((name: "viewport", content: "width=device-width, initial-scale=1"))
     #meta((name: "description", content: "Compute, AI and Distributed Systems"))
     #elem("title")[Hari]
-    #elem("link", attrs: (rel: "stylesheet", href: "./style.css?v=status-20260604-3"))
+    #elem("link", attrs: (rel: "stylesheet", href: "./style.css?v=code-bg-20260505"))
     #elem("link", attrs: (rel: "icon", href: "/icon.svg", type: "image/svg+xml"))
-    #elem("script", attrs: (src: "/status.js?v=20260604", defer: "defer"))
   ]
 
   #elem("body")[
@@ -25,7 +24,7 @@
 
       #elem("p")[I joined a #link("https://www.facebook.com/roboclubonline/posts/roboclub-team-supercalifragilisticexpialidocious-at-the-first-lego-league-nation/1565656036804624/", [robotics club]) when i was 8 and went on to rep india at the world championship in australia in 2019.]
 
-      #elem("p")[I'm now a 3rd year at #link("https://www.virginia.edu/", [UVA]) studying CS. I enjoy hacking on startups and im currently building cloud infra #link("https://ix.dev", [\@indexable])]
+      #elem("p")[I'm now a 3rd year at #link("https://www.virginia.edu/", [UVA]) studying CS. I enjoy hacking on startups and im currently building hypervisors and redefining computers #link("https://ix.dev", [\@indexable])]
 
       #section([experiences])[
         #elem("ul")[
