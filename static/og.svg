@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <style>
+    @font-face {
+      font-family: "Berkeley Mono";
+      src: url("/fonts/BerkeleyMono-Regular.otf") format("opentype");
+    }
+    text { font-family: "Berkeley Mono", ui-monospace, monospace; }
+    .fg { fill: #f3f3ee; }
+    .muted { fill: #a8a49b; }
+  </style>
+
+  <!-- backdrop -->
+  <rect width="1200" height="630" fill="#0d0d0b"/>
+
+  <!-- subtle framed card -->
+  <rect x="24" y="24" width="1152" height="582" rx="16"
+        fill="none" stroke="#f3f3ee" stroke-opacity="0.10"/>
+
+  <!-- logo mark: *h -->
+  <g class="fg" font-size="54" text-anchor="start">
+    <text x="80" y="128">*</text>
+    <text x="116" y="128" transform="translate(116 110) skewX(-12) translate(-116 -110)">h</text>
+  </g>
+
+  <!-- name with terminal cursor -->
+  <text class="fg" x="80" y="350" font-size="78">Harivansh Rathi</text>
+  <rect class="fg" x="712" y="298" width="20" height="60"/>
+
+  <!-- tagline -->
+  <text class="muted" x="80" y="410" font-size="32">Compute, AI and Distributed Systems</text>
+
+  <!-- footer -->
+  <text class="muted" x="80" y="556" font-size="26">harivan.sh</text>
+  <text class="muted" x="1120" y="556" font-size="26" text-anchor="end">@indexable</text>
+</svg>

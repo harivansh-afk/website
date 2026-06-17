@@ -1,4 +1,4 @@
-#import "_layout.typ": elem, meta, link, item
+#import "_layout.typ": elem, meta, link, item, og-tags, site-url
 
 #let thought-link(slug, title) = elem("a", attrs: (href: "/thoughts/" + slug + "/"), title)
 #let section(title, body) = elem("section")[
@@ -12,6 +12,7 @@
     #meta((name: "viewport", content: "width=device-width, initial-scale=1"))
     #meta((name: "description", content: "Compute, AI and Distributed Systems"))
     #elem("title")[Hari]
+    #og-tags(title: "Harivansh Rathi", description: "Compute, AI and Distributed Systems", url: site-url)
     #elem("link", attrs: (rel: "stylesheet", href: "./style.css?v=code-bg-20260505"))
     #elem("link", attrs: (rel: "icon", href: "/icon.svg", type: "image/svg+xml"))
   ]
