@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <style>
+    @font-face {
+      font-family: "Berkeley Mono";
+      src: url("/fonts/BerkeleyMono-Regular.otf") format("opentype");
+    }
+    text { font-family: "Berkeley Mono", ui-monospace, monospace; }
+    .fg { fill: #f3f3ee; }
+    .muted { fill: #a8a49b; }
+  </style>
+
+  <!-- backdrop -->
+  <rect width="1200" height="630" fill="#0d0d0b"/>
+
+  <!-- left half: logo mark -->
+  <g class="fg" font-size="210" text-anchor="middle">
+    <text x="250" y="385">*</text>
+    <text x="390" y="385" transform="translate(390 315) skewX(-12) translate(-390 -315)">h</text>
+  </g>
+
+  <!-- divider -->
+  <line x1="600" y1="150" x2="600" y2="480" stroke="#f3f3ee" stroke-opacity="0.12"/>
+
+  <!-- right half: tagline -->
+  <g class="fg" font-size="58" text-anchor="start">
+    <text x="664" y="290">distributed</text>
+    <text x="664" y="362">systems and</text>
+    <text x="664" y="434">ai computers</text>
+  </g>
+</svg>
