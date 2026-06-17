@@ -26,7 +26,7 @@
   meta((property: "og:image", content: og-image))
   meta((property: "og:image:width", content: "1200"))
   meta((property: "og:image:height", content: "630"))
-  meta((property: "og:image:alt", content: "Harivansh Rathi - distributed computers and ai systems"))
+  meta((property: "og:image:alt", content: "Harivansh Rathi - distributed systems and ai computers"))
   meta((name: "twitter:card", content: "summary_large_image"))
   meta((name: "twitter:title", content: title))
   meta((name: "twitter:description", content: description))

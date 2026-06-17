@@ -24,7 +24,7 @@
   <!-- right half: tagline -->
   <g class="fg" font-size="58" text-anchor="start">
     <text x="664" y="290">distributed</text>
-    <text x="664" y="362">computers and</text>
-    <text x="664" y="434">ai systems</text>
+    <text x="664" y="362">systems and</text>
+    <text x="664" y="434">ai computers</text>
   </g>
 </svg>
