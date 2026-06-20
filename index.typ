@@ -50,6 +50,7 @@
 
       #section([thoughts])[
         #elem("ul")[
+          #item([June 2026, #thought-link("the-self-cleaning-codebase", [the self-cleaning codebase])])
           #item([April 2026, #thought-link("throw-out-your-macbook", [throw out your macbook])])
           #item([March 2026, #thought-link("reflections-on-the-agent-environment", [reflections on the agent environment])])
           #item([February 2026, #thought-link("isolated-long-running-agents-with-kubernetes", [the agent environment])])
