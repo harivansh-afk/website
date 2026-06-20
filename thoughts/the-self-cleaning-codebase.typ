@@ -53,23 +53,34 @@
   #elem("p")[A run looks like this:]
 
   ```text
-  [ cron trigger: GenServer poll, 60s tick ]
-      |
-      v
-  [ ingress: materialize workflow into a run DAG ]
-      |
-      v
-  [ placement: isolated checkout in a microVM,
-               on the host, or a remote worker ]
-      |
-      v
-  [ agent turn: Claude or Codex runs the skill ]
-      |
-      v
-  [ small PR opened under a bot identity ]
-      |
-      v
-  [ verification gate (next section) ]
+  ╭─────────────────────────────────────────────────╮
+  │ cron trigger  ·  GenServer poll, 60s tick       │
+  ╰─────────────────────────────────────────────────╯
+                           │
+                           ▼
+  ╭─────────────────────────────────────────────────╮
+  │ ingress  ·  materialize workflow into a run DAG │
+  ╰─────────────────────────────────────────────────╯
+                           │
+                           ▼
+  ╭─────────────────────────────────────────────────╮
+  │ placement  ·  microVM, host, or remote worker   │
+  ╰─────────────────────────────────────────────────╯
+                           │
+                           ▼
+  ╭─────────────────────────────────────────────────╮
+  │ agent turn  ·  Claude or Codex runs the skill   │
+  ╰─────────────────────────────────────────────────╯
+                           │
+                           ▼
+  ╭─────────────────────────────────────────────────╮
+  │ small PR opened under a bot identity            │
+  ╰─────────────────────────────────────────────────╯
+                           │
+                           ▼
+  ╭─────────────────────────────────────────────────╮
+  │ verification gate (next section)                │
+  ╰─────────────────────────────────────────────────╯
   ```
 
   #elem("p")[Under the hood the cadence is just a small cron parser and a `GenServer` that ticks every 60 seconds, starting one run per workflow whose moment has come (with sane "don't fire ten times because we just redeployed" semantics). Each run gets its own git checkout, runs a headless agent (Claude, e.g. `claude-opus-4-8`, or Codex) under a bot identity, and opens a PR. Where it runs is decided per run: a short-lived microVM, a privilege-dropped unit on the host, or a separate worker box.]
@@ -102,21 +113,29 @@
   #elem("p")[Put the pieces together and it's a cycle, not a pipeline:]
 
   ```text
-  [ legible codebase: docs + opinions ]
-      |
-      v
-  [ detect recurring bad behavior ]
-      |
-      v
-  [ one skill per behavior, run on a cadence ]
-      |
-      v
-  [ structural gate: astlog in CI + pre-commit ]
-      |
-      v
-  [ auto-merge small clean PRs ]
-      |
-      +--> back to "legible codebase" (every lap)
+  ┌───────────────────────────────────────────────┐
+  │ legible codebase  ·  docs + opinions          │ ◀──┐
+  └───────────────────────────────────────────────┘    │
+                          │                            │
+                          ▼                            │
+  ┌───────────────────────────────────────────────┐    │
+  │ detect recurring bad behavior                 │    │
+  └───────────────────────────────────────────────┘    │
+                          │                            │
+                          ▼                            │
+  ┌───────────────────────────────────────────────┐    │
+  │ one skill per behavior, run on a cadence      │    │
+  └───────────────────────────────────────────────┘    │
+                          │                            │
+                          ▼                            │
+  ┌───────────────────────────────────────────────┐    │
+  │ structural gate  ·  astlog in CI + pre-commit │    │
+  └───────────────────────────────────────────────┘    │
+                          │                            │
+                          ▼                            │
+  ┌───────────────────────────────────────────────┐    │
+  │ auto-merge small clean PRs                    │ ───┘
+  └───────────────────────────────────────────────┘
   ```
 
   #elem("p")[Every lap leaves the codebase a little more aligned with how you said it should look, which makes the next lap cheaper. Entropy still pushes the other way, but now something is pushing back on a timer.]
