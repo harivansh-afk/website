@@ -146,42 +146,4 @@
   #elem("p")[So the loop closes.]
   #elem("p")[The agent writes against the opinions, the gate enforces the opinions, and a ten-line cleanup either passes clean or gets bounced with a precise reason.]
   #elem("p")[That's what makes "merge it without me" a sane thing to say out loud.]
-
-  #elem("hr")
-  #elem("h2")[the loop]
-
-  #elem("p")[Put the pieces together and it's a cycle, not a pipeline:]
-
-  ```text
-  ┌───────────────────────────────────────────────┐
-  │ legible codebase  ·  docs + opinions          │ ◀──┐
-  └───────────────────────────────────────────────┘    │
-                          │                            │
-                          ▼                            │
-  ┌───────────────────────────────────────────────┐    │
-  │ detect recurring bad behavior                 │    │
-  └───────────────────────────────────────────────┘    │
-                          │                            │
-                          ▼                            │
-  ┌───────────────────────────────────────────────┐    │
-  │ one skill per behavior, run on a cadence      │    │
-  └───────────────────────────────────────────────┘    │
-                          │                            │
-                          ▼                            │
-  ┌───────────────────────────────────────────────┐    │
-  │ structural gate  ·  astlog in CI + pre-commit │    │
-  └───────────────────────────────────────────────┘    │
-                          │                            │
-                          ▼                            │
-  ┌───────────────────────────────────────────────┐    │
-  │ auto-merge small clean PRs                    │ ───┘
-  └───────────────────────────────────────────────┘
-  ```
-
-  #elem("p")[Every lap leaves the codebase a little more aligned with how you said it should look, which makes the next lap cheaper.]
-  #elem("p")[Entropy still pushes the other way, but now something is pushing back on a timer.]
-  #elem("p")[One honest line so I'm not overselling it: this cleans entropy, not architecture.]
-  #elem("p")[The real design decisions, the ones that need taste and tradeoffs, don't automate away and shouldn't.]
-  #elem("p")[Self-cleaning keeps the small stuff from compounding into big stuff. It doesn't decide what to build.]
-  #elem("p")[That's still your job, and now you've got more time for it.]
 ]

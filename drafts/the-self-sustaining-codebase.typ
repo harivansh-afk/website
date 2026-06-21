@@ -16,35 +16,10 @@
 
   #elem("p")[Here's the part that should click: these are the same basics you'd use to build one of the quote-unquote "loops" everyone won't shut up about.]
   #elem("p")[A loop is just a well-built system optimizing for a stateless function and if you can engineer it well enough these things can fall into place quite deterministically.]
-  #elem("p")[Throw enough determinism at that stateless function and the loop more or less builds itself, and once you have all the foundations down you can do some genuinely crazy shit, like this:]
-
-  ```text
-  ┌──────────────────────────────────────────────────────────┐
-  │ generate ideas  ·  prior art on the web + codebase scan  │
-  └──────────────────────────────────────────────────────────┘
-                                │
-                                ▼
-  ┌──────────────────────────────────────────────────────────┐
-  │ research  ·  deep-search the codebase, scope the work    │
-  └──────────────────────────────────────────────────────────┘
-                                │
-                                ▼
-  ┌──────────────────────────────────────────────────────────┐
-  │ implement  ·  worker on a branch, self-test              │ ◀──┐
-  └──────────────────────────────────────────────────────────┘    │
-                                │                                 │
-                                ▼                                 │
-  ┌──────────────────────────────────────────────────────────┐    │
-  │ review  ·  benchmark, validate, suggest fixes            │ ───┘
-  └──────────────────────────────────────────────────────────┘
-                                │
-                                ▼
-  ┌──────────────────────────────────────────────────────────┐
-  │ open PR  ·  auto-merged into main                        │
-  └──────────────────────────────────────────────────────────┘
-  ```
+  #elem("p")[Throw enough determinism at that stateless function and the loop more or less builds itself, and once you have all the foundations down you can do some genuinely crazy shit.]
 
   #elem("p")[That's the self-cleaning machinery, extrapolated.]
-  #elem("p")[Keep the docs, the opinions, and the gate, then bolt on a couple more deterministic pieces: a testing harness, and prior art - real research through your own codebase and across the web.]
+  #elem("p")[Bolt on a couple more deterministic pieces - a real testing harness like #link("https://antithesis.com")[Antithesis], which leans on deterministic simulation to make every failure reproducible, and prior art: real research through your own codebase and across the web.]
+  #elem("p")[(the name is a wink at #link("https://en.wikipedia.org/wiki/Georg_Wilhelm_Friedrich_Hegel")[Hegel] - thesis, antithesis, synthesis - and determinism is what lets the synthesis actually converge.)]
   #elem("p")[Stack enough of those and you get a system that functions deterministically enough to loop on its own and ship code to prod.]
 ]
