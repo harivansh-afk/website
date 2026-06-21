@@ -7,7 +7,10 @@
 )[
   #elem("p")[Nobody warns you about this when you start abusing coding agents- your codebase rots faster than it ever did.]
   #elem("p")[The agents are fast and the slop is too. The fallback that should have been a typed error, the helper copy-pasted 11 times instead of canonical, the abstraction that technically works but reads like a pile of shit. The usual advice is to review harder and read the code, which is funny, because the entire reason you spent an hour speccing was to not have to read the diff.]
-  #elem("p")[So we hedged our bet. Instead of spending all day reviewing slop and yelling at claude, we let the codebase clean itself] 
+  #elem("p")[And to be clear, none of this is about correctness.]
+  #elem("p")[The code works: it passes the tests, it survives #link("https://antithesis.com")[Antithesis] fault injection, it handles the edge cases.]
+  #elem("p")[It's just ugly, and ugly is its own kind of debt: it compounds, it teaches the next agent the wrong patterns, and no test will ever catch it.]
+  #elem("p")[So we hedged our bet. Instead of spending all day reviewing slop and yelling at claude, we let the codebase clean itself]
   #elem("p")[Bad patterns can be detected and fixed automatically on a cadence if you just pay attention. You could be waking up to a stack of small merged PRs nudgeding the code toward the way its supposed to look.]
 
   #callout(kind: "warning")[
@@ -28,19 +31,22 @@
   #elem("p")[Just enough context for the agent to orient itself and then go do deeper exploration in the actual source. Read the page, know where you are, know what this thing is responsible for, then dive in with ripgrep.]
   #elem("p")[That means the structure is boring on purpose. One doc tree shaped like the package tree. A root `index.md` that is a dispatch table, one directory per package with an `overview.md`, and the bigger packages split into a couple of concern pages or nested with subdirs.]
 
-  ```text
-  docs/
-    index.md                 # one-row-per-package catalog
-    edit-applier/overview.md
-    search-core/
-      overview.md
-      internals.md           # concern page for a big package
-    symphony/
-      overview.md            # architecture + the load-bearing invariants
-      dsl/overview.md
-      engine/overview.md     # engine subdir
-            /contract.md
-  ```
+  #filetree[
+    #ftrow(0, folder, [docs/])
+    #ftrow(1, doc, [index.md], note: [one-row-per-package catalog])
+    #ftrow(1, folder, [edit-applier/])
+    #ftrow(2, doc, [overview.md])
+    #ftrow(1, folder, [search-core/])
+    #ftrow(2, doc, [overview.md])
+    #ftrow(2, doc, [internals.md], note: [concern page for a big package])
+    #ftrow(1, folder, [symphony/])
+    #ftrow(2, doc, [overview.md], note: [architecture + load-bearing invariants])
+    #ftrow(2, folder, [dsl/])
+    #ftrow(3, doc, [overview.md])
+    #ftrow(2, folder, [engine/])
+    #ftrow(3, doc, [overview.md])
+    #ftrow(3, doc, [contract.md])
+  ]
 
   #elem("p")[And the content is deliberately thin: clean, concise docs that explain only the expectation for that piece of code, crate, or package. Nothing more.]
   #elem("p")[No API dumps, no tutorials, no restating what the types already say.]
@@ -76,7 +82,7 @@
   #elem("p")[A run looks like this:]
 
   #elem("figure", attrs: (class: "diagram"))[
-    #elem("img", attrs: (src: "/diagrams/run-pipeline.png", alt: "a run, top to bottom: cron trigger, ingress, placement, agent turn, small PR, then the verification gate"))
+    #elem("img", attrs: (src: "/diagrams/run-pipeline.png", alt: "a run: cron tick, ingress, placement, agent turn, small PR, then the verification gate"))
   ]
 
   #elem("p")[Under the hood the cadence is just a small cron parser and a `GenServer` that ticks every 60 seconds, starting one run per workflow whose moment has come (with sane "don't fire ten times because we just redeployed" semantics).]
@@ -111,12 +117,11 @@
   ```
 
   #elem("p")[The part ast-grep can't do is the value join: capture `s ? k` in one subtree and `s.k` in another, fire only when they're the same attribute, and rewrite `(s ? k) && <uses s.k>` into `s.k or DEFAULT`.]
-  #elem("p")[One rule, two unrelated places in the tree, matched by value.]
   #elem("p")[Two things make this load-bearing.]
   #elem("p")[First, every rule is one opinion with a fix attached: each `lint` line is the canonical statement of a house-style rule and tells you what to do instead.]
   #elem("p")[The ruleset is just the opinions from earlier, made executable (right now: ~94 Nix lints, plus Rust, Cargo, and Elixir).]
   #elem("p")[Second, it runs the same way everywhere: the same `astlog scan` in the pre-commit hook and in CI, suppressions need an inline `astlog-ignore` you can audit later, and every rule ships a good/bad fixture pair so the rules themselves are tested.]
-  #elem("p")[Worth being clear about what astlog is _not_: a bug-finder. Whether the code _works_ is a separate axis, the one tests and #link("https://antithesis.com")[Antithesis] fault injection already cover. astlog only checks that it _looks_ the way we said it should.]
+  #elem("p")[Which is the real point of astlog: it is not a bug-finder. Correctness is a different axis, already covered by tests and Antithesis. astlog only enforces _shape_.]
   #elem("p")[So the loop closes.]
   #elem("p")[The agent writes against the opinions, the gate enforces the opinions, and a ten-line cleanup either passes clean or gets bounced with a precise reason.]
   #elem("p")[That's what makes "merge it without me" a sane thing to say out loud.]

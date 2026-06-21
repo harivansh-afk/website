@@ -2,7 +2,7 @@
   "theme": "base",
   "themeVariables": {
     "fontFamily": "ui-monospace, SFMono-Regular, Menlo, monospace",
-    "fontSize": "15px",
+    "fontSize": "14px",
     "primaryColor": "#17170f",
     "primaryTextColor": "#f3f3ee",
     "primaryBorderColor": "#46443c",
@@ -10,5 +10,5 @@
     "secondaryColor": "#17170f",
     "tertiaryColor": "#17170f"
   },
-  "flowchart": { "curve": "linear", "padding": 14, "nodeSpacing": 40, "rankSpacing": 40 }
+  "flowchart": { "curve": "linear", "padding": 6, "nodeSpacing": 28, "rankSpacing": 26, "wrappingWidth": 320, "htmlLabels": true }
 }
