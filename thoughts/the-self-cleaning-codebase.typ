@@ -20,7 +20,7 @@
   #elem("p")[Everything below is how we built that on using a simple erlang stack and its here for you to use #link("https://github.com/indexable-inc/index/tree/main/packages/agent/symphony")[`symphony`]]
 
   #elem("hr")
-  #elem("h2")[making the codebase legible]
+  #elem("h2")[codebase legibility]
 
   #elem("p")[Before any automation, an agent needs two things: ]
   #elem("p")[a map of the repo, and an opinion about how things are done in each language.]
@@ -56,7 +56,7 @@
   #elem("p")[This is why mirroring the code beats one giant `ARCHITECTURE.md`.]
   #elem("p")[An agent touching one package loads one small page instead of blowing its context window on a monolith, the lookup from open file to relevant doc is mechanical, and the contracts live right next to the code they constrain.]
 
-  #elem("h2")[opinions are the house style]
+  #elem("h2")[forming opinions]
 
   #elem("p")[Here's the failure everyone hits with spec-driven agents.]
   #elem("p")[You write a careful spec, the agent follows it to the letter, the behavior is correct, and then you zoom in on the abstractions and it's spaghetti. Right answers, reached through structures you'd never write.]
@@ -67,7 +67,7 @@
   #elem("p")[The opinions become the thing that keeps output looking like _you_ wrote it, which is exactly what frees you from having to confirm it line by line.]
 
   #elem("hr")
-  #elem("h2")[turn bad behavior into a list, then into skills]
+  #elem("h2")[deterministically bad behavior]
 
   #elem("p")[Once you have opinions, you finally have something to measure against.]
   #elem("p")[Now you can watch what your agents actually do and start writing down the recurring ways they produce slop.]
@@ -92,7 +92,7 @@
   #elem("p")[A runtime that runs your agent in a specific repo on a specific cadence against one well-scoped skill is enough to get genuinely good results.]
 
   #elem("hr")
-  #elem("h2")[the gate that lets the PRs merge themselves]
+  #elem("h2")[merge in CI]
 
   #elem("p")[These cleanup PRs are tiny, ten to twenty lines, and they merge without me looking at them.]
   #elem("p")[The obvious question is why you'd ever trust that.]
