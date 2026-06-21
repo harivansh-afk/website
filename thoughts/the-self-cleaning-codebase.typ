@@ -75,36 +75,9 @@
   #elem("p")[It's Elixir on the BEAM, which buys two things that matter here: OTP supervision, so a crashed run gets recovered instead of silently lost, and cheap distribution, so runs fan out across machines.]
   #elem("p")[A run looks like this:]
 
-  ```text
-  ╭─────────────────────────────────────────────────╮
-  │ cron trigger  ·  GenServer poll, 60s tick       │
-  ╰─────────────────────────────────────────────────╯
-                           │
-                           ▼
-  ╭─────────────────────────────────────────────────╮
-  │ ingress  ·  materialize workflow into a run DAG │
-  ╰─────────────────────────────────────────────────╯
-                           │
-                           ▼
-  ╭─────────────────────────────────────────────────╮
-  │ placement  ·  microVM, host, or remote worker   │
-  ╰─────────────────────────────────────────────────╯
-                           │
-                           ▼
-  ╭─────────────────────────────────────────────────╮
-  │ agent turn  ·  Claude or Codex runs the skill   │
-  ╰─────────────────────────────────────────────────╯
-                           │
-                           ▼
-  ╭─────────────────────────────────────────────────╮
-  │ small PR opened under a bot identity            │
-  ╰─────────────────────────────────────────────────╯
-                           │
-                           ▼
-  ╭─────────────────────────────────────────────────╮
-  │ verification gate (next section)                │
-  ╰─────────────────────────────────────────────────╯
-  ```
+  #elem("figure", attrs: (class: "diagram"))[
+    #elem("img", attrs: (src: "/diagrams/run-pipeline.png", alt: "a run, top to bottom: cron trigger, ingress, placement, agent turn, small PR, then the verification gate"))
+  ]
 
   #elem("p")[Under the hood the cadence is just a small cron parser and a `GenServer` that ticks every 60 seconds, starting one run per workflow whose moment has come (with sane "don't fire ten times because we just redeployed" semantics).]
   #elem("p")[Each run gets its own git checkout, runs a headless agent (Claude, e.g. `claude-opus-4-8`, or Codex) under a bot identity, and opens a PR.]
@@ -143,6 +116,7 @@
   #elem("p")[First, every rule is one opinion with a fix attached: each `lint` line is the canonical statement of a house-style rule and tells you what to do instead.]
   #elem("p")[The ruleset is just the opinions from earlier, made executable (right now: ~94 Nix lints, plus Rust, Cargo, and Elixir).]
   #elem("p")[Second, it runs the same way everywhere: the same `astlog scan` in the pre-commit hook and in CI, suppressions need an inline `astlog-ignore` you can audit later, and every rule ships a good/bad fixture pair so the rules themselves are tested.]
+  #elem("p")[Worth being clear about what astlog is _not_: a bug-finder. Whether the code _works_ is a separate axis, the one tests and #link("https://antithesis.com")[Antithesis] fault injection already cover. astlog only checks that it _looks_ the way we said it should.]
   #elem("p")[So the loop closes.]
   #elem("p")[The agent writes against the opinions, the gate enforces the opinions, and a ten-line cleanup either passes clean or gets bounced with a precise reason.]
   #elem("p")[That's what makes "merge it without me" a sane thing to say out loud.]

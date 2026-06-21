@@ -1,0 +1,6 @@
+flowchart TD
+    A["cron trigger · GenServer poll, 60s tick"] --> B["ingress · materialize workflow into a run DAG"]
+    B --> C["placement · microVM, host, or remote worker"]
+    C --> D["agent turn · Claude or Codex runs the skill"]
+    D --> E["small PR opened under a bot identity"]
+    E --> F["verification gate"]

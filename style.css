@@ -54,6 +54,8 @@ main.not-found {
 h1, h2 { color: var(--fg); font-weight: 400 }
 figure { margin-inline: 0 }
 img { max-width: 100% }
+figure.diagram { display: flex; justify-content: center; margin-block: 1.75rem }
+figure.diagram img { max-width: min(100%, 22rem) }
 code, pre, kbd, samp {
   /* avoid the UA `font-family: monospace` keyword, which shrinks text to ~0.81em */
   font-family: inherit;

@@ -1,0 +1,14 @@
+{
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "ui-monospace, SFMono-Regular, Menlo, monospace",
+    "fontSize": "15px",
+    "primaryColor": "#17170f",
+    "primaryTextColor": "#f3f3ee",
+    "primaryBorderColor": "#46443c",
+    "lineColor": "#8a887e",
+    "secondaryColor": "#17170f",
+    "tertiaryColor": "#17170f"
+  },
+  "flowchart": { "curve": "linear", "padding": 14, "nodeSpacing": 40, "rankSpacing": 40 }
+}
