@@ -83,7 +83,7 @@ figure.diagram img { max-width: min(100%, 34rem) }
 .ni-file::before { content: "\f146" }
 .ni-dir { color: var(--fg) }
 .ft-name { color: var(--fg) }
-.ft-note { color: var(--muted); font-style: italic; font-synthesis: style }
+.ft-note { color: var(--muted); font-style: italic; font-synthesis: style; margin-left: auto; padding-left: 1.5rem }
 .ft-note::before { content: "# " }
 code, pre, kbd, samp {
   /* avoid the UA `font-family: monospace` keyword, which shrinks text to ~0.81em */
