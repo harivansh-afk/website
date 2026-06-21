@@ -13,7 +13,7 @@
     #meta((name: "description", content: "Compute, AI and Distributed Systems"))
     #elem("title")[Hari]
     #og-tags(title: "Harivansh Rathi", description: "Compute, AI and Distributed Systems", url: site-url)
-    #elem("link", attrs: (rel: "stylesheet", href: "./style.css?v=callout-20260621"))
+    #elem("link", attrs: (rel: "stylesheet", href: "./style.css?v=callout-yellow-20260621"))
     #elem("link", attrs: (rel: "icon", href: "/icon.svg", type: "image/svg+xml"))
   ]
 

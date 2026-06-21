@@ -84,10 +84,14 @@ pre code {
 }
 a { color: inherit }
 
+.callout-warning { --callout-color: #d4a72c }
+@media (prefers-color-scheme: light) {
+  .callout-warning { --callout-color: #9a6700 }
+}
 .callout {
   margin-block: 1.5rem;
   padding-left: 1rem;
-  border-left: 2px solid color-mix(in srgb, var(--fg) 25%, transparent);
+  border-left: 2px solid var(--callout-color);
 }
 .callout-label {
   display: flex;
@@ -98,7 +102,7 @@ a { color: inherit }
   font-size: 0.8em;
   font-style: italic;
   font-synthesis: style;
-  color: var(--fg);
+  color: var(--callout-color);
 }
 .callout-icon { flex: none }
 .callout-label p { margin: 0 }

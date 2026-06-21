@@ -73,7 +73,7 @@
       #meta((name: "description", content: description))
       #elem("title")[#title]
       #og-tags(title: title, description: description, url: site-url + "/thoughts/")
-      #elem("link", attrs: (rel: "stylesheet", href: "../../style.css?v=callout-20260621"))
+      #elem("link", attrs: (rel: "stylesheet", href: "../../style.css?v=callout-yellow-20260621"))
       #elem("link", attrs: (rel: "icon", href: "/icon.svg", type: "image/svg+xml"))
     ]
     #elem("body")[
