@@ -14,28 +14,33 @@
 #let code(body) = elem("code", body)
 #let item(body) = elem("li", body)
 
-// GitHub-style admonition / callout (note, tip, important, warning, caution)
-#let _callout-icons = (
-  warning: "M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z",
-  note: "M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z",
-)
+// A quiet aside: small uppercase label + body, set off by a left rule.
+// Geometric warning mark: miter-cornered triangle, straight stem, square dot.
+#let _callout-icon = elem(
+  "svg",
+  attrs: (
+    class: "callout-icon",
+    viewBox: "0 0 16 16",
+    width: "13",
+    height: "13",
+    fill: "none",
+    stroke: "currentColor",
+    "stroke-width": "1.4",
+    "stroke-linejoin": "miter",
+    "stroke-linecap": "square",
+    "aria-hidden": "true",
+  ),
+)[
+  #elem("polygon", attrs: (points: "8,1.5 15,14.5 1,14.5"))
+  #elem("line", attrs: (x1: "8", y1: "6", x2: "8", y2: "10"))
+  #elem("rect", attrs: (x: "7.25", y: "11.6", width: "1.5", height: "1.5", fill: "currentColor", stroke: "none"))
+]
 
 #let callout(kind: "warning", body) = {
-  let title = upper(kind.at(0)) + kind.slice(1)
   elem("div", attrs: (class: "callout callout-" + kind))[
-    #elem("p", attrs: (class: "callout-title"))[
-      #elem(
-        "svg",
-        attrs: (
-          class: "callout-icon",
-          viewBox: "0 0 16 16",
-          width: "16",
-          height: "16",
-          fill: "currentColor",
-          "aria-hidden": "true",
-        ),
-      )[#elem("path", attrs: (d: _callout-icons.at(kind, default: _callout-icons.note)))]
-      #title
+    #elem("div", attrs: (class: "callout-label"))[
+      #_callout-icon
+      #elem("span")[#kind]
     ]
     #body
   ]
@@ -68,7 +73,7 @@
       #meta((name: "description", content: description))
       #elem("title")[#title]
       #og-tags(title: title, description: description, url: site-url + "/thoughts/")
-      #elem("link", attrs: (rel: "stylesheet", href: "../../style.css?v=code-bg-20260505"))
+      #elem("link", attrs: (rel: "stylesheet", href: "../../style.css?v=callout-20260621"))
       #elem("link", attrs: (rel: "icon", href: "/icon.svg", type: "image/svg+xml"))
     ]
     #elem("body")[
