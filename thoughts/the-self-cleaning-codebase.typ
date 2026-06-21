@@ -5,20 +5,28 @@
   description: "let the codebase clean itself: docs, opinions, and agents on a cadence",
   date: "June 2026",
 )[
-  #elem("p")[Nobody warns you about this when you go all-in on coding agents: your codebase rots faster than it ever did. The agents are fast, so the slop arrives fast too. The fallback that should have been a typed error, the helper copy-pasted instead of shared, the abstraction that technically works and reads like nothing you would have written. The usual advice is to review harder, which is funny, because the entire reason you reached for agents was to stop being the person reading every diff.]
-  #elem("p")[So we made a different bet. Instead of standing at the gate reviewing slop, let the codebase clean itself: bad patterns get detected and fixed by automation, on a cadence, and you wake up to a stack of small, already-merged PRs that nudged the code back toward how it is supposed to look.]
-  #elem("p")[This isn't magic and it isn't a single tool. It only works once the codebase is legible to the agents in the first place: they need to know how the code is meant to look before they can fix code that doesn't. Everything below is how we built that on #link("https://github.com/indexable-inc/index")[`index`], our monorepo of ~20 Rust crates plus a pile of Nix, Elixir, and Python that has nothing to do with each other.]
+  #elem("p")[Nobody warns you about this when you start abusing coding agents- your codebase rots faster than it ever did.]
+  #elem("p")[The agents are fast and the slop is too. The fallback that should have been a typed error, the helper copy-pasted 11 times instead of canonical, the abstraction that technically works but reads like a pile of shit. The usual advice is to review harder and read the code, which is funny, because the entire reason you spent an hour speccing was to not have to read the diff.]
+  #elem("p")[So we hedged our bet. Instead of spending all day reviewing slop and yelling at claude, we let the codebase clean itself] 
+  #elem("p")[Bad patterns can be detected and fixed automatically on a cadence if you just pay attention. You could be waking up to a stack of small merged PRs nudgeding the code toward the way its supposed to look.]
+
+  #callout(kind: "warning")[
+    #elem("p")[There is no magic and its not about a tool that will solve all your problems. So if thats what you're here for, leave now or forever hold your peace.]
+  ]
+  #elem("p")[This only works if your codebase is legible to the agents in the first place so they know how the code is meant to look before they can fix code that doesn't.]
+  #elem("p")[Everything below is how we built that on using a simple erlang stack and its here for you to use #link("https://github.com/indexable-inc/index/tree/main/packages/agent/symphony")[`symphony`]]
 
   #elem("hr")
-  #elem("h2")[make the codebase legible to agents]
+  #elem("h2")[making the codebase legible]
 
-  #elem("p")[Before any automation, an agent needs two things from you: a map of the place, and an opinion about how things are done here.]
+  #elem("p")[Before any automation, an agent needs two things: ]
+  #elem("p")[a map of the repo, and an opinion about how things are done in each language.]
 
-  #elem("h2")[docs are the map]
-
-  #elem("p")[We thought a lot about how to do docs effectively, and it really comes down to one decision: what do you want the docs to _mean_? Most doc systems never answer that, so they sprawl into a second codebase that drifts out of date and nobody reads.]
-  #elem("p")[For us, I wanted the docs to be the first place an agent looks. Not the complete reference, the _entry point_: just enough context for the agent to orient itself and then go do deeper exploration in the actual source. Read the page, know where you are, know what this thing is responsible for, then dive.]
-  #elem("p")[That means the structure is boring on purpose. One doc tree shaped like the package tree. A root `index.md` that is a dispatch table, one directory per package with an `overview.md`, and the bigger packages split into a couple of concern pages.]
+  #elem("p")[We thought a lot about how to do docs effectively, and it really comes down to one decision: what do you want the docs to _mean_?]
+  #elem("p")[Most doc systems never answer this, so they sprawl into a shitty _second codebase_ that drifts out of date and ends up confusing agents by holding out of date information.]
+  #elem("p")[For us, I wanted the docs to be the first place an agent looks before invoking the _rg_ tool. This is not supposed to be complete reference, its only the _entry point_] 
+  #elem("p")[Just enough context for the agent to orient itself and then go do deeper exploration in the actual source. Read the page, know where you are, know what this thing is responsible for, then dive in with ripgrep.]
+  #elem("p")[That means the structure is boring on purpose. One doc tree shaped like the package tree. A root `index.md` that is a dispatch table, one directory per package with an `overview.md`, and the bigger packages split into a couple of concern pages or nested with subdirs.]
 
   ```text
   docs/
@@ -30,8 +38,8 @@
     symphony/
       overview.md            # architecture + the load-bearing invariants
       dsl/overview.md
-      engine/overview.md
-      engine/contract.md
+      engine/overview.md     # engine subdir
+            /contract.md
   ```
 
   #elem("p")[And the content is deliberately thin: clean, concise docs that explain only the expectation for that piece of code, crate, or package. Nothing more. No API dumps, no tutorials, no restating what the types already say. What earns a place on the page is the stuff an agent can't infer and will otherwise break: the invariants and the gotchas. The `edit-applier` page, for example, says one load-bearing thing: _sort, then `check_overlaps`, then `apply`, in that order._ Every claim cites a real `path:line` back into the source, which is also how the docs stay honest without a generator: if the citation is wrong, it's obvious.]
