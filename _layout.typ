@@ -46,6 +46,20 @@
   ]
 }
 
+// file tree: nonicons glyphs + indented rows, styled to match code blocks
+#let folder = "ni-dir"
+#let doc = "ni-md"
+#let file = "ni-file"
+#let ftrow(depth, icon, name, note: none) = elem(
+  "div",
+  attrs: (class: "ft-row", style: "padding-left: " + str(depth * 1.25) + "rem"),
+)[
+  #elem("span", attrs: (class: "ft-i " + icon, "aria-hidden": "true"))[]
+  #elem("span", attrs: (class: "ft-name"))[#name]
+  #if note != none { elem("span", attrs: (class: "ft-note"))[#note] }
+]
+#let filetree(body) = elem("div", attrs: (class: "filetree"))[#body]
+
 #let site-url = "https://harivan.sh"
 #let og-image = site-url + "/og.png"
 
@@ -73,7 +87,7 @@
       #meta((name: "description", content: description))
       #elem("title")[#title]
       #og-tags(title: title, description: description, url: site-url + "/thoughts/")
-      #elem("link", attrs: (rel: "stylesheet", href: "../../style.css?v=callout-yellow-20260621"))
+      #elem("link", attrs: (rel: "stylesheet", href: "../../style.css?v=filetree-diagram-20260622"))
       #elem("link", attrs: (rel: "icon", href: "/icon.svg", type: "image/svg+xml"))
     ]
     #elem("body")[

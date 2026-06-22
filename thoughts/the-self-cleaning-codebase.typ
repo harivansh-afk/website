@@ -33,19 +33,22 @@
   #elem("p")[Just enough context for the agent to orient itself and then go do deeper exploration in the actual source. Read the page, know where you are, know what this thing is responsible for, then dive in with ripgrep.]
   #elem("p")[That means the structure is boring on purpose. One doc tree shaped like the package tree. A root `index.md` that is a dispatch table, one directory per package with an `overview.md`, and the bigger packages split into a couple of concern pages or nested with subdirs.]
 
-  ```text
-  docs/
-    index.md                 # one-row-per-package catalog
-    edit-applier/overview.md
-    search-core/
-      overview.md
-      internals.md           # concern page for a big package
-    symphony/
-      overview.md            # architecture + the load-bearing invariants
-      dsl/overview.md
-      engine/overview.md     # engine subdir
-            /contract.md
-  ```
+  #filetree[
+    #ftrow(0, folder, [docs/])
+    #ftrow(1, doc, [index.md], note: [one-row-per-package catalog])
+    #ftrow(1, folder, [edit-applier/])
+    #ftrow(2, doc, [overview.md])
+    #ftrow(1, folder, [search-core/])
+    #ftrow(2, doc, [overview.md])
+    #ftrow(2, doc, [internals.md], note: [concern page for a big package])
+    #ftrow(1, folder, [symphony/])
+    #ftrow(2, doc, [overview.md], note: [architecture + load-bearing invariants])
+    #ftrow(2, folder, [dsl/])
+    #ftrow(3, doc, [overview.md])
+    #ftrow(2, folder, [engine/])
+    #ftrow(3, doc, [overview.md])
+    #ftrow(3, doc, [contract.md])
+  ]
 
   #elem("h2")[forming opinions]
 
@@ -71,36 +74,9 @@
   #elem("p")[It's Elixir on the BEAM, which buys two things that matter here: OTP supervision, so a crashed run gets recovered instead of silently lost, and cheap distribution, so runs fan out across machines.]
   #elem("p")[A run looks like this:]
 
-  ```text
-  ╭─────────────────────────────────────────────────╮
-  │ cron trigger  ·  GenServer poll, 60s tick       │
-  ╰─────────────────────────────────────────────────╯
-                           │
-                           ▼
-  ╭─────────────────────────────────────────────────╮
-  │ ingress  ·  materialize workflow into a run DAG │
-  ╰─────────────────────────────────────────────────╯
-                           │
-                           ▼
-  ╭─────────────────────────────────────────────────╮
-  │ placement  ·  microVM, host, or remote worker   │
-  ╰─────────────────────────────────────────────────╯
-                           │
-                           ▼
-  ╭─────────────────────────────────────────────────╮
-  │ agent turn  ·  Claude or Codex runs the skill   │
-  ╰─────────────────────────────────────────────────╯
-                           │
-                           ▼
-  ╭─────────────────────────────────────────────────╮
-  │ small PR opened under a bot identity            │
-  ╰─────────────────────────────────────────────────╯
-                           │
-                           ▼
-  ╭─────────────────────────────────────────────────╮
-  │ verification gate (next section)                │
-  ╰─────────────────────────────────────────────────╯
-  ```
+  #elem("figure", attrs: (class: "diagram"))[
+    #elem("img", attrs: (src: "/diagrams/run-pipeline.png", alt: "a run: cron tick, ingress, placement, agent turn, small PR, then the verification gate"))
+  ]
 
   #elem("p")[Each run gets its own git checkout, runs a headless agent (Claude, e.g. `claude-opus-4-8`, or 5.5 gpt) under a bot identity on git, and opens a PR.]
 
