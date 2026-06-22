@@ -57,7 +57,7 @@
   #elem("p")[A spec says _what the code does_. It says almost nothing about _how the code is shaped_.]
   #elem("p")[That gap is filled by opinions, and they have to be concrete and language-level, not vibes.]
   #elem("p")[For Rust that's things like: errors go through `snafu` and preserve their source, never `anyhow` or `Result<_, String>`; no `unwrap`/`expect` in library code; how you expect borrows and mutability to flow; when an `impl` block earns its keep and when it doesn't.]
-  #elem("p")[And this is the part people get twitchy about: once you can have genuinely opinionated codebases, you can start to step away from reading every line of code (don't flame me for this \@dexhorthy).]
+  #elem("p")[And this is the part people get twitchy about: once you can have genuinely opinionated codebases, you can start to step away from reading every line of code (don't flame me for this] 
   #elem("p")[The opinions become the thing that keeps output looking like _you_ wrote it, which is exactly what frees you from having to confirm it line by line.]
 
   #elem("hr")
