@@ -5,26 +5,31 @@
   description: "let the codebase clean itself: docs, opinions, and agents on a cadence",
   date: "June 2026",
 )[
-  #elem("p")[Nobody warns you about this when you start abusing coding agents- your codebase rots faster than it ever did.]
-  #elem("p")[The agents are fast and the slop is too. The fallback that should have been a typed error, the helper copy-pasted 11 times instead of canonical, the abstraction that technically works but reads like a pile of shit. The usual advice is to review harder and read the code, which is funny, because the entire reason you spent an hour speccing was to not have to read the diff.]
-  #elem("p")[So we hedged our bet. Instead of spending all day reviewing slop and yelling at claude, we let the codebase clean itself] 
-  #elem("p")[Bad patterns can be detected and fixed automatically on a cadence if you just pay attention. You could be waking up to a stack of small merged PRs nudgeding the code toward the way its supposed to look.]
+  #elem("p")[Sooo, is your codebase rotting?]
+  #elem("p")[Is the slop winning?]
+  #elem("p")[The fallback that should have been a typed error, the helper copy-pasted 11 times instead of canonical, the abstraction that technically works but reads like a pile of shit.]
+  #elem("p")[The usual advice is to review harder and read the code, which is funny, because the entire reason you spent an hour speccing was to not have to review the diff.]
+  #elem("p")[And to be clear, none of this is about correctness.]
+  #elem("p")[The code works: it passes the tests, it passes Antithesis assertions for prod fault injection, it even handles all the layered edge cases.]
+  #elem("p")[It's just ugly. And it compounds.]
+  #elem("p")[It teaches the next agent the wrong patterns, and no test will ever catch it.]
+  #elem("p")[So we hedged our bet. Instead of spending all day reviewing slop and yelling at claude, we let the codebase clean itself.]
+  #elem("p")[Bad patterns can be detected and fixed automatically on a cadence if you just pay attention. You could be waking up to a stack of small merged PRs nudging the code toward the way its supposed to look.]
 
   #callout(kind: "warning")[
     #elem("p")[There is no magic and its not about a tool that will solve all your problems. So if thats what you're here for, leave now or forever hold your peace.]
   ]
   #elem("p")[This only works if your codebase is legible to the agents in the first place so they know how the code is meant to look before they can fix code that doesn't.]
-  #elem("p")[Everything below is how we built that on using a simple erlang stack and its here for you to use #link("https://github.com/indexable-inc/index/tree/main/packages/agent/symphony")[`symphony`]]
 
   #elem("hr")
-  #elem("h2")[making the codebase legible]
+  #elem("h2")[codebase legibility]
 
   #elem("p")[Before any automation, an agent needs two things: ]
   #elem("p")[a map of the repo, and an opinion about how things are done in each language.]
 
   #elem("p")[We thought a lot about how to do docs effectively, and it really comes down to one decision: what do you want the docs to _mean_?]
   #elem("p")[Most doc systems never answer this, so they sprawl into a shitty _second codebase_ that drifts out of date and ends up confusing agents by holding out of date information.]
-  #elem("p")[For us, I wanted the docs to be the first place an agent looks before invoking the _rg_ tool. This is not supposed to be complete reference, its only the _entry point_] 
+  #elem("p")[For us, I wanted the docs to be the first place an agent looks before invoking the _rg_ tool. This is not supposed to be complete reference, its only the _entry point_.]
   #elem("p")[Just enough context for the agent to orient itself and then go do deeper exploration in the actual source. Read the page, know where you are, know what this thing is responsible for, then dive in with ripgrep.]
   #elem("p")[That means the structure is boring on purpose. One doc tree shaped like the package tree. A root `index.md` that is a dispatch table, one directory per package with an `overview.md`, and the bigger packages split into a couple of concern pages or nested with subdirs.]
 
@@ -42,15 +47,7 @@
             /contract.md
   ```
 
-  #elem("p")[And the content is deliberately thin: clean, concise docs that explain only the expectation for that piece of code, crate, or package. Nothing more.]
-  #elem("p")[No API dumps, no tutorials, no restating what the types already say.]
-  #elem("p")[What earns a place on the page is the stuff an agent can't infer and will otherwise break: the invariants and the gotchas.]
-  #elem("p")[The `edit-applier` page, for example, says one load-bearing thing: _sort, then `check_overlaps`, then `apply`, in that order._]
-  #elem("p")[Every claim cites a real `path:line` back into the source, which is also how the docs stay honest without a generator: if the citation is wrong, it's obvious.]
-  #elem("p")[This is why mirroring the code beats one giant `ARCHITECTURE.md`.]
-  #elem("p")[An agent touching one package loads one small page instead of blowing its context window on a monolith, the lookup from open file to relevant doc is mechanical, and the contracts live right next to the code they constrain.]
-
-  #elem("h2")[opinions are the house style]
+  #elem("h2")[forming opinions]
 
   #elem("p")[Here's the failure everyone hits with spec-driven agents.]
   #elem("p")[You write a careful spec, the agent follows it to the letter, the behavior is correct, and then you zoom in on the abstractions and it's spaghetti. Right answers, reached through structures you'd never write.]
@@ -61,13 +58,12 @@
   #elem("p")[The opinions become the thing that keeps output looking like _you_ wrote it, which is exactly what frees you from having to confirm it line by line.]
 
   #elem("hr")
-  #elem("h2")[turn bad behavior into a list, then into skills]
+  #elem("h2")[deterministically bad behavior]
 
   #elem("p")[Once you have opinions, you finally have something to measure against.]
   #elem("p")[Now you can watch what your agents actually do and start writing down the recurring ways they produce slop.]
   #elem("p")[Each one gets a name.]
   #elem("p")[That list of named anti-patterns is the whole raw material for what comes next.]
-  #elem("p")[The shape is dead simple: one behavior, one skill, one cadence.]
   #elem("p")[Every bad behavior becomes a single skill, a tight deterministic cleanup for exactly that pattern, with all the house context baked in.]
   #elem("p")[Then something runs each skill on a schedule sized to the behavior, hourly for the noisy ones, weekly for the structural ones.]
   #elem("p")[We run that on #link("https://github.com/indexable-inc/index/tree/main/packages/agent/symphony")[`symphony`], which we've open-sourced.]
@@ -106,14 +102,10 @@
   ╰─────────────────────────────────────────────────╯
   ```
 
-  #elem("p")[Under the hood the cadence is just a small cron parser and a `GenServer` that ticks every 60 seconds, starting one run per workflow whose moment has come (with sane "don't fire ten times because we just redeployed" semantics).]
-  #elem("p")[Each run gets its own git checkout, runs a headless agent (Claude, e.g. `claude-opus-4-8`, or Codex) under a bot identity, and opens a PR.]
-  #elem("p")[Where it runs is decided per run: a short-lived microVM, a privilege-dropped unit on the host, or a separate worker box.]
-  #elem("p")[The thing I want to stress: none of this is fancy.]
-  #elem("p")[A runtime that runs your agent in a specific repo on a specific cadence against one well-scoped skill is enough to get genuinely good results.]
+  #elem("p")[Each run gets its own git checkout, runs a headless agent (Claude, e.g. `claude-opus-4-8`, or 5.5 gpt) under a bot identity on git, and opens a PR.]
 
   #elem("hr")
-  #elem("h2")[the gate that lets the PRs merge themselves]
+  #elem("h2")[merge in CI]
 
   #elem("p")[These cleanup PRs are tiny, ten to twenty lines, and they merge without me looking at them.]
   #elem("p")[The obvious question is why you'd ever trust that.]
@@ -123,26 +115,9 @@
   #elem("p")[We built it for a specific reason.]
   #elem("p")[Pattern tools (ast-grep, Semgrep, tree-sitter queries) answer "does this node match this shape."]
   #elem("p")[But the rules you actually want during cleanup are _joins_: an `unwrap()` inside a function that returns `Result`, or a value read from an attribute you just checked for existence.]
-  #elem("p")[That's a join across two unrelated parts of the tree, by value, and structural matchers can't express it.]
-  #elem("p")[astlog runs Datalog over the tree-sitter syntax tree, so the join is one rule.]
-  #elem("p")[Here's a real one. It bans file-scope `with lib;` in our Nix:]
-
-  ```lisp
-  (rule (no-with-lib n)
-    (match nix "
-      (with_expression
-        environment: (variable_expression) @e) @n")
-    (text e "lib"))
-  (lint no-with-lib error
-    "file-scope `with lib;` is banned; use explicit lib.foo qualifications")
-  ```
-
-  #elem("p")[The part ast-grep can't do is the value join: capture `s ? k` in one subtree and `s.k` in another, fire only when they're the same attribute, and rewrite `(s ? k) && <uses s.k>` into `s.k or DEFAULT`.]
-  #elem("p")[One rule, two unrelated places in the tree, matched by value.]
-  #elem("p")[Two things make this load-bearing.]
-  #elem("p")[First, every rule is one opinion with a fix attached: each `lint` line is the canonical statement of a house-style rule and tells you what to do instead.]
-  #elem("p")[The ruleset is just the opinions from earlier, made executable (right now: ~94 Nix lints, plus Rust, Cargo, and Elixir).]
-  #elem("p")[Second, it runs the same way everywhere: the same `astlog scan` in the pre-commit hook and in CI, suppressions need an inline `astlog-ignore` you can audit later, and every rule ships a good/bad fixture pair so the rules themselves are tested.]
+  #elem("p")[It runs the same way everywhere:]
+  #elem("p")[the same `astlog scan` in the pre-commit hook and in CI, suppressions need an inline `astlog-ignore` you can audit later, and every rule ships a good/bad fixture pair so the rules themselves are tested.]
+  #elem("p")[Which is the real point of astlog: it is not a bug-finder. Correctness is a different axis, already covered by tests and Antithesis. astlog only enforces shape.]
   #elem("p")[So the loop closes.]
   #elem("p")[The agent writes against the opinions, the gate enforces the opinions, and a ten-line cleanup either passes clean or gets bounced with a precise reason.]
   #elem("p")[That's what makes "merge it without me" a sane thing to say out loud.]
