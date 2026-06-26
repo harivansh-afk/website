@@ -21,7 +21,7 @@
     #elem("main")[
       #elem("h1")[Harivansh Rathi]
 
-      #elem("p")[I enjoy working on startups. Im currently building high-performance distributed systems #link("https://ix.dev", [\@indexable])]
+      #elem("p")[I build high-performance distributed systems and beautiful consumer experiences. Currently building #link("https://ix.dev", [\@indexable])]
 
       #section([experiences])[
         #elem("ul")[
