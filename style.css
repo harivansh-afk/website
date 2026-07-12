@@ -58,6 +58,25 @@ main.not-found {
 }
 
 h1, h2 { color: var(--fg); font-weight: 400 }
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.title-row h1 { margin: 0 }
+.social-links { display: flex; align-items: center; gap: 0.3rem }
+.social-links a { color: var(--muted); display: inline-flex; line-height: 0 }
+.social-links a:hover { color: var(--fg) }
+.social-links svg { fill: currentColor; display: block }
+/* Optical size equalization: a solid square (LinkedIn) reads larger than a
+   circle (GitHub) at the same bounding box; the X letterform sits between.
+   Equal-silhouette-area sizing: 18px circle ~ 16px square. */
+.icon-github svg { width: 18px; height: 18px }
+.icon-x svg { width: 17px; height: 17px }
+.icon-linkedin svg { width: 16px; height: 16px }
 figure { margin-inline: 0 }
 img { max-width: 100% }
 figure.diagram {

@@ -25,3 +25,7 @@ done
 
 cp style.css dist/style.css
 cp -R static/. dist/
+
+# Caddy serves this dir (bind-mounted at /srv/harivan.sh) as user caddy;
+# normalize perms so a restrictive umask cannot 403 the site.
+chmod -R a+rX dist
