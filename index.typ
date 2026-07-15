@@ -73,11 +73,11 @@
 
       #section([projects])[
         #elem("ul")[
+          #item([#link("https://mixbridge.app/", [mixbridge])])
           #item([#link("https://git.harivan.sh/harivansh-afk/pierrejo", [pierrejo])])
-          #item([#link("https://agentcomputer.ai", [agentcomputer])])
+          #item([#link("https://github.com/AgentComputerAI", [agentcomputer])])
           #item([#link("https://betternas.com", [betterNAS])])
           #item([#link("https://deskctl.dev", [deskctl])])
-          #item([#link("https://mixbridge.app/", [mixbridge])])
         ]
       ]
 
