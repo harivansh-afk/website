@@ -23,6 +23,11 @@ for source in thoughts/*.typ; do
   $typst_cmd compile --root . --features html --format html "$source" "dist/thoughts/$slug/index.html"
 done
 
+for page in dist/index.html dist/thoughts/*/index.html; do
+  sed 's#</body>#<script type="module" src="/counter-v1.js"></script></body>#' "$page" > "$page.counter"
+  mv "$page.counter" "$page"
+done
+
 cp style.css dist/style.css
 cp -R static/. dist/
 
