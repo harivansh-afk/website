@@ -31,7 +31,6 @@
           #item([founding engineer, #link("https://github.com/indexable-inc/", [indexable])])
           #item([SWE, #link("https://companion.ai", [companion])])
           #item([software engineer, #link("https://www.linkedin.com/company/phia-co/", [phia])])
-          #item([co-founder, #link("https://www.linkedin.com/company/atlasagentspage/", [atlas agents])])
           #item([web developer, #link("https://unikove.com/", [unikove])])
           #item([backend engineer, #link("https://www.moglix.com/", [moglix])])
         ]
