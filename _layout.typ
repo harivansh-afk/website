@@ -15,46 +15,21 @@
 #let item(body) = elem("li", body)
 
 // A quiet aside: small uppercase label + body, set off by a left rule.
-// Geometric warning mark: miter-cornered triangle, straight stem, square dot.
-#let _callout-icon = elem(
-  "svg",
-  attrs: (
-    class: "callout-icon",
-    viewBox: "0 0 16 16",
-    width: "13",
-    height: "13",
-    fill: "none",
-    stroke: "currentColor",
-    "stroke-width": "1.4",
-    "stroke-linejoin": "miter",
-    "stroke-linecap": "square",
-    "aria-hidden": "true",
-  ),
-)[
-  #elem("polygon", attrs: (points: "8,1.5 15,14.5 1,14.5"))
-  #elem("line", attrs: (x1: "8", y1: "6", x2: "8", y2: "10"))
-  #elem("rect", attrs: (x: "7.25", y: "11.6", width: "1.5", height: "1.5", fill: "currentColor", stroke: "none"))
-]
-
-#let callout(kind: "warning", body) = {
-  elem("div", attrs: (class: "callout callout-" + kind))[
+#let callout(kind: "aside", body) = {
+  elem("div", attrs: (class: "callout"))[
     #elem("div", attrs: (class: "callout-label"))[
-      #_callout-icon
       #elem("span")[#kind]
     ]
     #body
   ]
 }
 
-// file tree: nonicons glyphs + indented rows, styled to match code blocks
-#let folder = "ni-dir"
-#let doc = "ni-md"
-#let file = "ni-file"
-#let ftrow(depth, icon, name, note: none) = elem(
+// file tree: plain indented rows, styled to match code blocks;
+// dirs end in "/", notes render as trailing muted comments
+#let ftrow(depth, name, note: none) = elem(
   "div",
   attrs: (class: "ft-row", style: "padding-left: " + str(depth * 1.25) + "rem"),
 )[
-  #elem("span", attrs: (class: "ft-i " + icon, "aria-hidden": "true"))[]
   #elem("span", attrs: (class: "ft-name"))[#name]
   #if note != none { elem("span", attrs: (class: "ft-note"))[#note] }
 ]
@@ -87,7 +62,7 @@
       #meta((name: "description", content: description))
       #elem("title")[#title]
       #og-tags(title: title, description: description, url: site-url + "/thoughts/")
-      #elem("link", attrs: (rel: "stylesheet", href: "../../style.css?v=filetree-diagram-20260622"))
+      #elem("link", attrs: (rel: "stylesheet", href: "../../style.css?v=monotone-ft-20260805"))
       #elem("link", attrs: (rel: "icon", href: "/icon.svg", type: "image/svg+xml"))
     ]
     #elem("body")[

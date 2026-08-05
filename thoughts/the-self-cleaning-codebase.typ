@@ -16,12 +16,11 @@
   #elem("p")[So we hedged our bet. Instead of spending all day reviewing slop and yelling at claude, we let the codebase clean itself.]
   #elem("p")[Bad patterns can be detected and fixed automatically on a cadence if you just pay attention. You could be waking up to a stack of small merged PRs nudging the code toward the way its supposed to look.]
 
-  #callout(kind: "warning")[
+  #callout[
     #elem("p")[There is no magic and its not about a tool that will solve all your problems. So if thats what you're here for, leave now or forever hold your peace.]
   ]
   #elem("p")[This only works if your codebase is legible to the agents in the first place so they know how the code is meant to look before they can fix code that doesn't.]
 
-  #elem("hr")
   #elem("h2")[codebase legibility]
 
   #elem("p")[Before any automation, an agent needs two things: ]
@@ -34,20 +33,20 @@
   #elem("p")[That means the structure is boring on purpose. One doc tree shaped like the package tree. A root `index.md` that is a dispatch table, one directory per package with an `overview.md`, and the bigger packages split into a couple of concern pages or nested with subdirs.]
 
   #filetree[
-    #ftrow(0, folder, [docs/])
-    #ftrow(1, doc, [index.md], note: [one-row-per-package catalog])
-    #ftrow(1, folder, [edit-applier/])
-    #ftrow(2, doc, [overview.md])
-    #ftrow(1, folder, [search-core/])
-    #ftrow(2, doc, [overview.md])
-    #ftrow(2, doc, [internals.md], note: [concern page for a big package])
-    #ftrow(1, folder, [symphony/])
-    #ftrow(2, doc, [overview.md], note: [architecture + load-bearing invariants])
-    #ftrow(2, folder, [dsl/])
-    #ftrow(3, doc, [overview.md])
-    #ftrow(2, folder, [engine/])
-    #ftrow(3, doc, [overview.md])
-    #ftrow(3, doc, [contract.md])
+    #ftrow(0, [docs/])
+    #ftrow(1, [index.md], note: [one-row-per-package catalog])
+    #ftrow(1, [edit-applier/])
+    #ftrow(2, [overview.md])
+    #ftrow(1, [search-core/])
+    #ftrow(2, [overview.md])
+    #ftrow(2, [internals.md], note: [concern page for a big package])
+    #ftrow(1, [symphony/])
+    #ftrow(2, [overview.md], note: [architecture + load-bearing invariants])
+    #ftrow(2, [dsl/])
+    #ftrow(3, [overview.md])
+    #ftrow(2, [engine/])
+    #ftrow(3, [overview.md])
+    #ftrow(3, [contract.md])
   ]
 
   #elem("h2")[forming opinions]
@@ -57,10 +56,9 @@
   #elem("p")[A spec says _what the code does_. It says almost nothing about _how the code is shaped_.]
   #elem("p")[That gap is filled by opinions, and they have to be concrete and language-level, not vibes.]
   #elem("p")[For Rust that's things like: errors go through `snafu` and preserve their source, never `anyhow` or `Result<_, String>`; no `unwrap`/`expect` in library code; how you expect borrows and mutability to flow; when an `impl` block earns its keep and when it doesn't.]
-  #elem("p")[And this is the part people get twitchy about: once you can have genuinely opinionated codebases, you can start to step away from reading every line of code (don't flame me for this] 
+  #elem("p")[And this is the part people get twitchy about: once you can have genuinely opinionated codebases, you can start to step away from reading every line of code (don't flame me for this).]
   #elem("p")[The opinions become the thing that keeps output looking like _you_ wrote it, which is exactly what frees you from having to confirm it line by line.]
 
-  #elem("hr")
   #elem("h2")[deterministically bad behavior]
 
   #elem("p")[Once you have opinions, you finally have something to measure against.]
@@ -72,15 +70,8 @@
   #elem("p")[We run that on #link("https://github.com/indexable-inc/index/tree/main/packages/agent/symphony")[`symphony`], which we've open-sourced.]
   #elem("p")[It's a boring DAG runtime for deterministic agent workflows, and boring is the point.]
   #elem("p")[It's Elixir on the BEAM, which buys two things that matter here: OTP supervision, so a crashed run gets recovered instead of silently lost, and cheap distribution, so runs fan out across machines.]
-  #elem("p")[A run looks like this:]
-
-  #elem("figure", attrs: (class: "diagram"))[
-    #elem("img", attrs: (src: "/diagrams/run-pipeline.png", alt: "a run: cron tick, ingress, placement, agent turn, small PR, then the verification gate"))
-  ]
-
   #elem("p")[Each run gets its own git checkout, runs a headless agent (Claude, e.g. `claude-opus-4-8`, or 5.5 gpt) under a bot identity on git, and opens a PR.]
 
-  #elem("hr")
   #elem("h2")[merge in CI]
 
   #elem("p")[These cleanup PRs are tiny, ten to twenty lines, and they merge without me looking at them.]
