@@ -16,6 +16,20 @@ if ! command -v magick >/dev/null 2>&1; then
   exit 0
 fi
 
+# headless boxes often only ship dejavu, which makes shots render with the
+# wrong font; give fontconfig real ui fonts (inter + noto) for this run
+if command -v nix >/dev/null 2>&1; then
+  fontroot=$(mktemp -d)
+  mkdir -p "$fontroot/fonts"
+  for p in $(nix build nixpkgs#inter nixpkgs#noto-fonts --no-link --print-out-paths 2>/dev/null); do
+    for d in "$p"/share/fonts/*; do
+      ln -s "$d" "$fontroot/fonts/$(basename "$p")-$(basename "$d")" 2>/dev/null || true
+    done
+  done
+  XDG_DATA_HOME="$fontroot"
+  export XDG_DATA_HOME
+fi
+
 shot() {
   name=$1
   url=$2
@@ -57,14 +71,15 @@ shot companion "https://companion.ai"
 shot phia "https://phia.com"
 shot agentcomputer "https://github.com/AgentComputerAI"
 shot betternas "https://betternas.com"
-shot deskctl "https://deskctl.dev"
 
 # pierrejo: the diff UI screenshot from its README beats the repo page
 shotimg pierrejo "https://github.com/user-attachments/assets/c580bd48-a67a-498b-b914-5aa19d1decc4"
-# mixbridge: the og image ("world's first ai djay platform") beats the splash
-shotimg mixbridge "https://mixbridge.app/opengraph.png"
 
-# mux.webp is a frame from the README demo video; refresh by hand:
-#   ffmpeg -ss 4 -i <demo.mp4 from git.harivan.sh/harivansh-afk/mux releases> \
-#     -frames:v 1 f.png && magick f.png -resize 640x \
-#     -quality 82 static/previews/mux.webp
+# hand-baked assets (regenerate by hand, then bump IMG_V in previews.js):
+# - mixbridge.webp: animated webp cycling through iphone shots from
+#   mixbridge.app/prod/Slice*.png, cropped to the phone and crossfaded:
+#   magick c1 c2 c4 c5 c1 -resize 400x -morph 6 \
+#     -set delay "%[fx:(t%7==0)?170:6]" -loop 0 -quality 70 mixbridge.webp
+# - mux.mp4 / deskctl.mp4: README demo videos, re-encoded:
+#   ffmpeg -i <demo> -vf "scale=640:-2,fps=24" -an -c:v libx264 -crf 30 \
+#     -movflags +faststart static/previews/<name>.mp4

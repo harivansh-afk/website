@@ -5,8 +5,9 @@
   if (!pinned && !matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
   // bump when regenerating shots: the CDN caches assets immutably
-  const IMG_V = "3";
+  const IMG_V = "8";
   const imgSrc = (name) => "/previews/" + name + ".webp?v=" + IMG_V;
+  const vidSrc = (name) => "/previews/" + name + ".mp4?v=" + IMG_V;
   const HEATMAP_URL = "/previews/heatmap.json?d=1-" + new Date().toISOString().slice(0, 10);
 
   const pop = document.createElement("div");
@@ -110,6 +111,7 @@
     let left = Math.max(12, Math.min(r.left, innerWidth - p.width - 12));
     let top = r.bottom + 10;
     if (top + p.height > innerHeight - 12) top = r.top - p.height - 10;
+    top = Math.max(12, top);
     pop.style.left = left / z + "px";
     pop.style.top = top / z + "px";
   }
@@ -122,6 +124,15 @@
       const data = await loadHeatmap();
       if (!data) return false;
       pop.appendChild(calendar(data));
+    } else if (a.dataset.previewType === "video") {
+      const video = document.createElement("video");
+      video.muted = true;
+      video.loop = true;
+      video.autoplay = true;
+      video.playsInline = true;
+      video.onerror = hide;
+      video.src = vidSrc(name);
+      pop.appendChild(video);
     } else {
       const img = document.createElement("img");
       img.alt = "";
@@ -143,6 +154,15 @@
     if (img && !img.complete)
       img.addEventListener(
         "load",
+        () => {
+          if (anchor === a) place(a);
+        },
+        { once: true },
+      );
+    const video = pop.querySelector("video");
+    if (video)
+      video.addEventListener(
+        "loadeddata",
         () => {
           if (anchor === a) place(a);
         },
@@ -172,7 +192,12 @@
       for (const a of document.querySelectorAll("a[data-preview]")) {
         const name = a.dataset.preview;
         if (name === "heatmap") loadHeatmap();
-        else new Image().src = imgSrc(name);
+        else if (a.dataset.previewType === "video") {
+          const v = document.createElement("video");
+          v.preload = "auto";
+          v.muted = true;
+          v.src = vidSrc(name);
+        } else new Image().src = imgSrc(name);
       }
     },
     { once: true },

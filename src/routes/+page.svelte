@@ -14,7 +14,7 @@
   <meta name="twitter:title" content="Harivansh Rathi" />
   <meta name="twitter:description" content="Compute, AI and Distributed Systems" />
   <meta name="twitter:image" content="https://harivan.sh/og.png" />
-  <script src="/previews.js?v=svelte-1" defer></script>
+  <script src="/previews.js?v=svelte-7" defer></script>
 </svelte:head>
 
 <main>
@@ -127,7 +127,8 @@
           href="https://git.harivan.sh/harivansh-afk/mux"
           target="_blank"
           rel="noopener noreferrer"
-          data-preview="mux">mux</a
+          data-preview="mux"
+          data-preview-type="video">mux</a
         >
       </li>
       <li>
@@ -167,7 +168,8 @@
           href="https://deskctl.dev"
           target="_blank"
           rel="noopener noreferrer"
-          data-preview="deskctl">deskctl</a
+          data-preview="deskctl"
+          data-preview-type="video">deskctl</a
         >
       </li>
     </ul>
