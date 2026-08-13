@@ -131,9 +131,13 @@ a { color: inherit }
   opacity: 0;
 }
 .preview-pop.on { opacity: 1 }
-.preview-pop img {
+.preview-pop img,
+.preview-pop video {
   display: block;
-  width: 20rem;
+  max-width: 20rem;
+  max-height: min(34rem, 72vh);
+  width: auto;
+  height: auto;
   border-radius: 6px;
 }
 .preview-pop.heatmap {
