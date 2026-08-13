@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Berkeley Mono";
-  src: url("./fonts/BerkeleyMono-Regular.otf") format("opentype");
+  src: url("/fonts/BerkeleyMono-Regular.otf") format("opentype");
   font-display: swap;
 }
 
@@ -121,6 +121,49 @@ pre code {
 }
 a { color: inherit }
 
+/* link previews: hover popover, desktop only. images are bare (no chrome);
+   the text heatmap keeps a quiet box so it stays legible over the page */
+.preview-pop {
+  position: fixed;
+  z-index: 10;
+  max-width: 26rem;
+  pointer-events: none;
+  opacity: 0;
+}
+.preview-pop.on { opacity: 1 }
+.preview-pop img {
+  display: block;
+  width: 20rem;
+  border-radius: 6px;
+}
+.preview-pop.heatmap {
+  max-width: none;
+  padding: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--fg) 20%, transparent);
+  border-radius: 6px;
+  background: var(--bg);
+}
+/* the contribution calendar: github's green scale, both schemes */
+.preview-hm { display: block }
+.preview-hm .hm-label { fill: var(--muted); font-size: 9px; font-family: inherit }
+.preview-hm .hm-0 { fill: #161b22 }
+.preview-hm .hm-1 { fill: #0e4429 }
+.preview-hm .hm-2 { fill: #006d32 }
+.preview-hm .hm-3 { fill: #26a641 }
+.preview-hm .hm-4 { fill: #39d353 }
+@media (prefers-color-scheme: light) {
+  .preview-hm .hm-0 { fill: #ebedf0 }
+  .preview-hm .hm-1 { fill: #9be9a8 }
+  .preview-hm .hm-2 { fill: #40c463 }
+  .preview-hm .hm-3 { fill: #30a14e }
+  .preview-hm .hm-4 { fill: #216e39 }
+}
+.hm-total {
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
 .callout {
   margin-block: 1.5rem;
   padding-left: 1rem;
@@ -136,43 +179,6 @@ a { color: inherit }
 .callout > :first-child { margin-top: 0 }
 .callout > :last-child { margin-bottom: 0 }
 .callout > p { margin-block: 0.25rem 0 }
-
-/* link previews: hover popover, desktop only; monotone by construction
-   (shots are baked grayscale, heatmap is text) */
-.preview-pop {
-  position: fixed;
-  z-index: 10;
-  max-width: 26rem;
-  padding: 0.5rem;
-  border: 1px solid color-mix(in srgb, var(--fg) 20%, transparent);
-  border-radius: 6px;
-  background: var(--bg);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 120ms ease;
-}
-.preview-pop.on { opacity: 1 }
-.preview-pop img {
-  display: block;
-  width: 20rem;
-  border-radius: 4px;
-  filter: grayscale(1);
-}
-.preview-heatmap {
-  margin: 0;
-  padding: 0.25rem;
-  font-size: 10px;
-  line-height: 1.35;
-  background: transparent;
-  color: var(--fg);
-}
-.preview-caption {
-  margin-top: 0.4rem;
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted);
-}
 
 .back-link { text-decoration: none }
 .meta { text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg) }

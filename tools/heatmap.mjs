@@ -1,9 +1,7 @@
-// bake a monotone text heatmap of the last 52 weeks of commits
-// (forgejo heatmap API + github contributions page) to stdout.
+// bake the last 52 weeks of commits (forgejo heatmap API + github
+// contributions page) as JSON for the hover contribution chart: stdout.
 const USER = "harivansh-afk";
 const FORGEJO = "https://git.harivan.sh";
-const SHADES = ["·", "░", "▒", "▓", "█"];
-const MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 
 const counts = new Map(); // 'YYYY-MM-DD' -> contributions
 const key = (d) => d.toISOString().slice(0, 10);
@@ -42,52 +40,32 @@ if (failed.length === results.length) {
   process.exit(1);
 }
 
-// grid: columns are weeks (sunday-start), ending on today's week
+// grid: sunday-start weeks ending on today's week, like github's calendar
 const today = new Date();
 today.setUTCHours(0, 0, 0, 0);
 const start = new Date(today);
 start.setUTCDate(start.getUTCDate() - 364 - start.getUTCDay());
-const weeks = [];
+
 let total = 0;
 const nonzero = [];
+const days = [];
 for (let d = new Date(start); d <= today; d.setUTCDate(d.getUTCDate() + 1)) {
-  if (d.getUTCDay() === 0) weeks.push(new Array(7).fill(null));
   const n = counts.get(key(d)) || 0;
-  weeks[weeks.length - 1][d.getUTCDay()] = n;
+  days.push([key(d), n]);
   total += n;
   if (n > 0) nonzero.push(n);
 }
 
-// percentile thresholds over active days: max-scaled shading flattens the
+// percentile thresholds over active days: max-scaled levels flatten the
 // whole year to one shade when a few peak days dominate
 nonzero.sort((a, b) => a - b);
 const pct = (p) => nonzero[Math.min(nonzero.length - 1, Math.floor(p * nonzero.length))] || 1;
 const t = [pct(0.25), pct(0.5), pct(0.75)];
+const level = (n) => (n === 0 ? 0 : n <= t[0] ? 1 : n <= t[1] ? 2 : n <= t[2] ? 3 : 4);
 
-const shade = (n) => {
-  if (n === null) return " ";
-  if (n === 0) return SHADES[0];
-  if (n <= t[0]) return SHADES[1];
-  if (n <= t[1]) return SHADES[2];
-  if (n <= t[2]) return SHADES[3];
-  return SHADES[4];
-};
-
-// month labels above the first full week of each month
-let header = "";
-for (let w = 0; w < weeks.length; w++) {
-  const d = new Date(start);
-  d.setUTCDate(d.getUTCDate() + w * 7);
-  const label = d.getUTCDate() <= 7 ? MONTHS[d.getUTCMonth()] : null;
-  if (label && header.length <= w && w + label.length <= weeks.length) header = header.padEnd(w) + label;
-}
-header = header.padEnd(weeks.length);
-
-const rowLabel = ["   ", "mon", "   ", "wed", "   ", "fri", "   "];
-const lines = ["    " + header];
-for (let day = 0; day < 7; day++) {
-  lines.push(rowLabel[day] + " " + weeks.map((w) => shade(w[day])).join(""));
-}
-lines.push("");
-lines.push(`${total} commits in the last year`);
-console.log(lines.join("\n"));
+console.log(
+  JSON.stringify({
+    total,
+    days: days.map(([date, n]) => [date, n, level(n)]),
+  }),
+);
