@@ -140,3 +140,13 @@ a { color: inherit }
 .back-link { text-decoration: none }
 .meta { text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg) }
 a:hover { color: var(--fg) }
+
+/* /open-source/: weekly activity ranking, filetree-styled grid */
+.activity {
+  display: grid;
+  grid-template-columns: max-content max-content 1fr;
+  column-gap: 1.25rem;
+  white-space: nowrap;
+}
+.activity a { text-decoration: none }
+.act-bar { color: color-mix(in srgb, var(--fg) 80%, transparent) }

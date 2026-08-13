@@ -13,7 +13,7 @@
     #meta((name: "description", content: "Compute, AI and Distributed Systems"))
     #elem("title")[Hari]
     #og-tags(title: "Harivansh Rathi", description: "Compute, AI and Distributed Systems", url: site-url)
-    #elem("link", attrs: (rel: "stylesheet", href: "./style.css?v=mobile-fit-20260805"))
+    #elem("link", attrs: (rel: "stylesheet", href: "./style.css?v=open-source-20260813"))
     #elem("link", attrs: (rel: "icon", href: "/icon.svg", type: "image/svg+xml"))
   ]
 
@@ -43,6 +43,7 @@
           #item([#link("https://github.com/AgentComputerAI", [agentcomputer])])
           #item([#link("https://betternas.com", [betterNAS])])
           #item([#link("https://deskctl.dev", [deskctl])])
+          #item([#link("/open-source/", "...")])
         ]
       ]
 
