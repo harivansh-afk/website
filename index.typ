@@ -13,8 +13,9 @@
     #meta((name: "description", content: "Compute, AI and Distributed Systems"))
     #elem("title")[Hari]
     #og-tags(title: "Harivansh Rathi", description: "Compute, AI and Distributed Systems", url: site-url)
-    #elem("link", attrs: (rel: "stylesheet", href: "./style.css?v=mobile-fit-20260805"))
+    #elem("link", attrs: (rel: "stylesheet", href: "./style.css?v=link-previews-20260813d"))
     #elem("link", attrs: (rel: "icon", href: "/icon.svg", type: "image/svg+xml"))
+    #elem("script", attrs: (src: "/previews.js?v=link-previews-20260813f", defer: "defer"))[]
   ]
 
   #elem("body")[
@@ -25,23 +26,23 @@
 
       #elem("p")[The first thing i dismantled was my sisters piano when i was 6.]
 
-      #elem("p")[When i was 8 my mom bought me a #link("https://www.worldcubeassociation.org/persons/2015RATH01", [rubiks cube]) to stop me from taking apart more of her stuff.]
+      #elem("p")[When i was 8 my mom bought me a #link("https://www.worldcubeassociation.org/persons/2015RATH01", preview: "wca", [rubiks cube]) to stop me from taking apart more of her stuff.]
 
-      #elem("p")[I joined a #link("https://www.facebook.com/roboclubonline/posts/roboclub-team-supercalifragilisticexpialidocious-at-the-first-lego-league-nation/1565656036804624/", [robotics club]) when i was 8 and went on to rep india at the world championship in australia in 2019.]
+      #elem("p")[I joined a #link("https://www.facebook.com/roboclubonline/posts/roboclub-team-supercalifragilisticexpialidocious-at-the-first-lego-league-nation/1565656036804624/", preview: "fll", [robotics club]) when i was 8 and went on to rep india at the world championship in australia in 2019.]
 
       #elem("p")[I'm now a 4th year at #link("https://www.virginia.edu/", [The University Of Virginia]) studying computer science.]
 
       #elem("p")[I take pride in building high performance distributed systems and designing beautiful consumer experiences]
 
-      #elem("p")[currently hacking on #link("https://ix.dev", [\@indexable])]
+      #elem("p")[currently hacking on #link("https://ix.dev", preview: "ix", [\@indexable])]
 
-      #elem("p")[You can find me on #link("https://github.com/harivansh-afk", [github]), #link("https://linkedin.com/in/harivansh-rathi", [linkedin]) or #link("https://x.com/HarivanshRathi", [x.com])]
+      #elem("p")[You can find me on #link("https://github.com/harivansh-afk", preview: "heatmap", preview-label: "github + git.harivan.sh, last 12 months", [github]), #link("https://linkedin.com/in/harivansh-rathi", [linkedin]) or #link("https://x.com/HarivanshRathi", [x.com])]
 
       #section([experiences])[
         #elem("ul")[
-          #item([founding engineer, #link("https://github.com/indexable-inc/", [indexable])])
-          #item([SWE, #link("https://companion.ai", [companion])])
-          #item([software engineer, #link("https://www.linkedin.com/company/phia-co/", [phia])])
+          #item([founding engineer, #link("https://github.com/indexable-inc/", preview: "indexable", [indexable])])
+          #item([SWE, #link("https://companion.ai", preview: "companion", [companion])])
+          #item([software engineer, #link("https://www.linkedin.com/company/phia-co/", preview: "phia", preview-label: "phia.com", [phia])])
           #item([web developer, #link("https://unikove.com/", [unikove])])
           #item([backend engineer, #link("https://www.moglix.com/", [moglix])])
         ]
@@ -49,11 +50,12 @@
 
       #section([projects])[
         #elem("ul")[
-          #item([#link("https://mixbridge.app/", [mixbridge])])
-          #item([#link("https://git.harivan.sh/harivansh-afk/pierrejo", [pierrejo])])
-          #item([#link("https://github.com/AgentComputerAI", [agentcomputer])])
-          #item([#link("https://betternas.com", [betterNAS])])
-          #item([#link("https://deskctl.dev", [deskctl])])
+          #item([#link("https://git.harivan.sh/harivansh-afk/mux", preview: "mux", [mux])])
+          #item([#link("https://mixbridge.app/", preview: "mixbridge", [mixbridge])])
+          #item([#link("https://git.harivan.sh/harivansh-afk/pierrejo", preview: "pierrejo", [pierrejo])])
+          #item([#link("https://github.com/AgentComputerAI", preview: "agentcomputer", [agentcomputer])])
+          #item([#link("https://betternas.com", preview: "betternas", [betterNAS])])
+          #item([#link("https://deskctl.dev", preview: "deskctl", [deskctl])])
         ]
       ]
 

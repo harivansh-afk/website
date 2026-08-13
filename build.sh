@@ -28,8 +28,18 @@ for page in dist/index.html dist/thoughts/*/index.html; do
   mv "$page.counter" "$page"
 done
 
+# link previews: screenshots bake into static/ (only missing ones are fetched);
+# the commit heatmap regenerates every build so it stays current
+sh tools/screenshots.sh || echo "screenshots step failed, keeping existing shots" >&2
+
 cp style.css dist/style.css
 cp -R static/. dist/
+
+mkdir -p dist/previews
+node tools/heatmap.mjs > dist/previews/heatmap.txt || {
+  echo "heatmap generation failed, shipping without it" >&2
+  rm -f dist/previews/heatmap.txt
+}
 
 # Caddy serves this dir (bind-mounted at /srv/harivan.sh) as user caddy;
 # normalize perms so a restrictive umask cannot 403 the site.
