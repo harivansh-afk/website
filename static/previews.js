@@ -111,6 +111,7 @@
     let left = Math.max(12, Math.min(r.left, innerWidth - p.width - 12));
     let top = r.bottom + 10;
     if (top + p.height > innerHeight - 12) top = r.top - p.height - 10;
+    top = Math.max(12, top);
     pop.style.left = left / z + "px";
     pop.style.top = top / z + "px";
   }
