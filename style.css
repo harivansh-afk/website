@@ -137,6 +137,43 @@ a { color: inherit }
 .callout > :last-child { margin-bottom: 0 }
 .callout > p { margin-block: 0.25rem 0 }
 
+/* link previews: hover popover, desktop only; monotone by construction
+   (shots are baked grayscale, heatmap is text) */
+.preview-pop {
+  position: fixed;
+  z-index: 10;
+  max-width: 26rem;
+  padding: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--fg) 20%, transparent);
+  border-radius: 6px;
+  background: var(--bg);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.preview-pop.on { opacity: 1 }
+.preview-pop img {
+  display: block;
+  width: 20rem;
+  border-radius: 4px;
+  filter: grayscale(1);
+}
+.preview-heatmap {
+  margin: 0;
+  padding: 0.25rem;
+  font-size: 10px;
+  line-height: 1.35;
+  background: transparent;
+  color: var(--fg);
+}
+.preview-caption {
+  margin-top: 0.4rem;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
 .back-link { text-decoration: none }
 .meta { text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg) }
 a:hover { color: var(--fg) }

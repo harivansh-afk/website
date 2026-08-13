@@ -1,15 +1,16 @@
 #let elem = html.elem
 #let meta(attrs) = elem("meta", attrs: attrs)
 
-#let link(url, body) = elem(
-  "a",
-  attrs: if str(url).starts-with("/") {
+#let link(url, body, preview: none, preview-label: none) = {
+  let attrs = if str(url).starts-with("/") {
     (href: url)
   } else {
     (href: url, target: "_blank", rel: "noopener noreferrer")
-  },
-  body,
-)
+  }
+  if preview != none { attrs.insert("data-preview", preview) }
+  if preview-label != none { attrs.insert("data-preview-label", preview-label) }
+  elem("a", attrs: attrs, body)
+}
 
 #let code(body) = elem("code", body)
 #let item(body) = elem("li", body)
@@ -62,7 +63,7 @@
       #meta((name: "description", content: description))
       #elem("title")[#title]
       #og-tags(title: title, description: description, url: site-url + "/thoughts/")
-      #elem("link", attrs: (rel: "stylesheet", href: "../../style.css?v=mobile-fit-20260805"))
+      #elem("link", attrs: (rel: "stylesheet", href: "../../style.css?v=link-previews-20260813d"))
       #elem("link", attrs: (rel: "icon", href: "/icon.svg", type: "image/svg+xml"))
     ]
     #elem("body")[
