@@ -21,8 +21,19 @@
     #elem("main")[
       #elem("h1")[Harivansh Rathi]
 
-      #elem("p")[I build high-performance distributed systems and design beautiful consumer experiences.]
-      #elem("p")[Currently hacking on #link("https://ix.dev", [\@indexable])]
+      #elem("p")[Ive been breaking things since i was 5.]
+
+      #elem("p")[The first thing i dismantled was my sisters piano when i was 6.]
+
+      #elem("p")[When i was 8 my mom bought me a #link("https://www.worldcubeassociation.org/persons/2015RATH01", [rubiks cube]) to stop me from taking apart more of her stuff.]
+
+      #elem("p")[I joined a #link("https://www.facebook.com/roboclubonline/posts/roboclub-team-supercalifragilisticexpialidocious-at-the-first-lego-league-nation/1565656036804624/", [robotics club]) when i was 8 and went on to rep india at the world championship in australia in 2019.]
+
+      #elem("p")[I'm now a 4th year at #link("https://www.virginia.edu/", [The University Of Virginia]) studying computer science.]
+
+      #elem("p")[I take pride in building high performance distributed systems and designing beautiful consumer experiences]
+
+      #elem("p")[currently hacking on #link("https://ix.dev", [\@indexable])]
 
       #elem("p")[You can find me on #link("https://github.com/harivansh-afk", [github]), #link("https://linkedin.com/in/harivansh-rathi", [linkedin]) or #link("https://x.com/HarivanshRathi", [x.com])]
 
