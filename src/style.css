@@ -135,7 +135,7 @@ a { color: inherit }
 .preview-pop video {
   display: block;
   max-width: 20rem;
-  max-height: min(34rem, 72vh);
+  max-height: min(21rem, 50vh);
   width: auto;
   height: auto;
   border-radius: 6px;
