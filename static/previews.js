@@ -5,7 +5,7 @@
   if (!pinned && !matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
   // bump when regenerating shots: the CDN caches assets immutably
-  const IMG_V = "6";
+  const IMG_V = "7";
   const imgSrc = (name) => "/previews/" + name + ".webp?v=" + IMG_V;
   const vidSrc = (name) => "/previews/" + name + ".mp4?v=" + IMG_V;
   const HEATMAP_URL = "/previews/heatmap.json?d=1-" + new Date().toISOString().slice(0, 10);
