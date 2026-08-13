@@ -51,7 +51,7 @@
       if (heatmap === null) {
         try {
           // daily cache-buster: the CDN caches assets hard, the heatmap moves daily
-          const res = await fetch("/previews/heatmap.txt?d=" + new Date().toISOString().slice(0, 10));
+          const res = await fetch("/previews/heatmap.txt?d=2-" + new Date().toISOString().slice(0, 10));
           heatmap = res.ok ? await res.text() : "";
         } catch {
           heatmap = "";
@@ -67,7 +67,8 @@
       img.alt = "";
       img.decoding = "async";
       img.onerror = hide;
-      img.src = "/previews/" + name + ".webp";
+      // bump when regenerating shots: the CDN caches assets immutably
+      img.src = "/previews/" + name + ".webp?v=2";
       pop.appendChild(img);
     }
     const cap = document.createElement("div");

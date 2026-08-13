@@ -15,7 +15,7 @@
     #og-tags(title: "Harivansh Rathi", description: "Compute, AI and Distributed Systems", url: site-url)
     #elem("link", attrs: (rel: "stylesheet", href: "./style.css?v=link-previews-20260813d"))
     #elem("link", attrs: (rel: "icon", href: "/icon.svg", type: "image/svg+xml"))
-    #elem("script", attrs: (src: "/previews.js?v=link-previews-20260813d", defer: "defer"))[]
+    #elem("script", attrs: (src: "/previews.js?v=link-previews-20260813f", defer: "defer"))[]
   ]
 
   #elem("body")[
@@ -42,7 +42,7 @@
         #elem("ul")[
           #item([founding engineer, #link("https://github.com/indexable-inc/", preview: "indexable", [indexable])])
           #item([SWE, #link("https://companion.ai", preview: "companion", [companion])])
-          #item([software engineer, #link("https://www.linkedin.com/company/phia-co/", [phia])])
+          #item([software engineer, #link("https://www.linkedin.com/company/phia-co/", preview: "phia", preview-label: "phia.com", [phia])])
           #item([web developer, #link("https://unikove.com/", [unikove])])
           #item([backend engineer, #link("https://www.moglix.com/", [moglix])])
         ]
@@ -50,6 +50,7 @@
 
       #section([projects])[
         #elem("ul")[
+          #item([#link("https://git.harivan.sh/harivansh-afk/mux", preview: "mux", [mux])])
           #item([#link("https://mixbridge.app/", preview: "mixbridge", [mixbridge])])
           #item([#link("https://git.harivan.sh/harivansh-afk/pierrejo", preview: "pierrejo", [pierrejo])])
           #item([#link("https://github.com/AgentComputerAI", preview: "agentcomputer", [agentcomputer])])

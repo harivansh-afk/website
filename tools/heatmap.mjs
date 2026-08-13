@@ -49,20 +49,28 @@ const start = new Date(today);
 start.setUTCDate(start.getUTCDate() - 364 - start.getUTCDay());
 const weeks = [];
 let total = 0;
-let max = 0;
+const nonzero = [];
 for (let d = new Date(start); d <= today; d.setUTCDate(d.getUTCDate() + 1)) {
   if (d.getUTCDay() === 0) weeks.push(new Array(7).fill(null));
   const n = counts.get(key(d)) || 0;
   weeks[weeks.length - 1][d.getUTCDay()] = n;
   total += n;
-  max = Math.max(max, n);
+  if (n > 0) nonzero.push(n);
 }
+
+// percentile thresholds over active days: max-scaled shading flattens the
+// whole year to one shade when a few peak days dominate
+nonzero.sort((a, b) => a - b);
+const pct = (p) => nonzero[Math.min(nonzero.length - 1, Math.floor(p * nonzero.length))] || 1;
+const t = [pct(0.25), pct(0.5), pct(0.75)];
 
 const shade = (n) => {
   if (n === null) return " ";
   if (n === 0) return SHADES[0];
-  const q = Math.ceil((n / max) * 4);
-  return SHADES[Math.max(1, Math.min(4, q))];
+  if (n <= t[0]) return SHADES[1];
+  if (n <= t[1]) return SHADES[2];
+  if (n <= t[2]) return SHADES[3];
+  return SHADES[4];
 };
 
 // month labels above the first full week of each month
