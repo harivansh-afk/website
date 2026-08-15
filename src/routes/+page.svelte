@@ -45,14 +45,7 @@
   </p>
 
   <p>
-    I'm now a 4th year at
-    <a href="https://www.virginia.edu/" target="_blank" rel="noopener noreferrer"
-      >The University Of Virginia</a
-    > studying computer science.
-  </p>
-
-  <p>
-    I take pride in building high performance distributed systems and designing beautiful consumer
+    I now build high-performance distributed systems and design beautiful consumer
     experiences
   </p>
 
