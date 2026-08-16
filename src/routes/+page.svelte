@@ -22,10 +22,10 @@
 
   <p>Ive been breaking things since i was 5.</p>
 
-  <p>The first thing i dismantled was my sisters piano when i was 6.</p>
+  <p>The first thing i put back together was my sisters piano when i was 6.</p>
 
   <p>
-    When i was 8 my mom bought me a
+    When i turned 8, my mom bought me a
     <a
       href="https://www.worldcubeassociation.org/persons/2015RATH01"
       target="_blank"
@@ -41,19 +41,14 @@
       target="_blank"
       rel="noopener noreferrer"
       data-preview="fll">robotics club</a
-    > when i was 8 and went on to rep india at the world championship in australia in 2019.
+    > when i was 9 and went on to rep india at the world championship in sydney [2019].
   </p>
 
   <p>
     I now build high-performance distributed systems and design beautiful consumer
-    experiences
-  </p>
-
-  <p>
-    currently hacking on
+    experiences 
     <a href="https://ix.dev" target="_blank" rel="noopener noreferrer" data-preview="ix"
-      >@indexable</a
-    >
+      >@indexable</a>
   </p>
 
   <p>
