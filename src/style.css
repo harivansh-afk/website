@@ -129,8 +129,9 @@ a { color: inherit }
   max-width: 26rem;
   pointer-events: none;
   opacity: 0;
+  transition: opacity 0.2s ease; /* fade out only: .on shows instantly */
 }
-.preview-pop.on { opacity: 1 }
+.preview-pop.on { opacity: 1; transition: none }
 .preview-pop img,
 .preview-pop video {
   display: block;

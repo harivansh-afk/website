@@ -17,8 +17,11 @@
 
   let anchor = null;
   let heatmap = null;
+  let lingerTimer = 0;
+  const LINGER_MS = 300;
 
   function hide() {
+    clearTimeout(lingerTimer);
     anchor = null;
     pop.classList.remove("on");
   }
@@ -172,7 +175,9 @@
 
   document.addEventListener("mouseover", (e) => {
     const a = e.target.closest && e.target.closest("a[data-preview]");
-    if (!a || a === anchor) return;
+    if (!a) return;
+    clearTimeout(lingerTimer);
+    if (a === anchor) return;
     show(a);
   });
 
@@ -180,7 +185,8 @@
     const a = e.target.closest && e.target.closest("a[data-preview]");
     if (!a) return;
     if (e.relatedTarget && a.contains(e.relatedTarget)) return;
-    hide();
+    clearTimeout(lingerTimer);
+    lingerTimer = setTimeout(hide, LINGER_MS);
   });
 
   if (!pinned) addEventListener("scroll", hide, { passive: true });
