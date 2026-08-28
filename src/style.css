@@ -119,24 +119,25 @@ pre code {
   padding: 0;
   background: transparent;
 }
-/* dashed underline that fills solid left-to-right on hover. the two layers
-   are complementary, never stacked: the solid grows from the left while the
-   dashed shrinks toward the right, so exactly one line exists at every point
-   (overlaying them double-draws under the body zoom's fractional snapping) */
+/* dashed underline that fills solid left-to-right on hover. both layers are
+   the IDENTICAL dashed gradient; the top one is phase-shifted 3px so its
+   dashes land in the base layer's gaps, and growing it fills the line solid.
+   identical images at the same y cannot snap to different pixel rows, which
+   mixing gradient types did under the body zoom's fractional scaling */
 a {
   color: inherit;
   text-decoration: none;
   background-image:
-    linear-gradient(currentColor, currentColor),
+    repeating-linear-gradient(to right, currentColor 0 3px, transparent 3px 6px),
     repeating-linear-gradient(to right, currentColor 0 3px, transparent 3px 6px);
   background-repeat: no-repeat;
-  background-position: 0 100%, 100% 100%;
+  background-position: 3px 100%, 0 100%;
   background-size: 0 1px, 100% 1px;
   transition: background-size 0.25s ease;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
-a:hover { background-size: 100% 1px, 0 1px }
+a:hover { background-size: 100% 1px, 100% 1px }
 
 /* link previews: hover popover, desktop only. images are bare (no chrome);
    the text heatmap keeps a quiet box so it stays legible over the page */
