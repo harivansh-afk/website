@@ -160,6 +160,15 @@
           data-preview-type="video">deskctl</a
         >
       </li>
+      <li>
+        <a
+          href="https://git.harivan.sh/harivansh-afk/nap"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-preview="nap"
+          data-preview-type="video">nap</a
+        >
+      </li>
     </ul>
   </section>
 

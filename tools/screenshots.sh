@@ -83,3 +83,5 @@ shotimg pierrejo "https://github.com/user-attachments/assets/c580bd48-a67a-498b-
 # - mux.mp4 / deskctl.mp4: README demo videos, re-encoded:
 #   ffmpeg -i <demo> -vf "scale=640:-2,fps=24" -an -c:v libx264 -crf 30 \
 #     -movflags +faststart static/previews/<name>.mp4
+# - nap.mp4: demo video from the launch tweet (x.com/i/status/2093107659578786243,
+#   via yt-dlp), portrait so scaled by height: -vf "scale=-2:640,fps=24"
