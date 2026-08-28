@@ -18,7 +18,7 @@
   let anchor = null;
   let heatmap = null;
   let lingerTimer = 0;
-  const LINGER_MS = 300;
+  const LINGER_MS = 100;
 
   function hide() {
     clearTimeout(lingerTimer);
