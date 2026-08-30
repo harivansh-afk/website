@@ -177,6 +177,14 @@
           data-preview="einstein">einstein ai</a
         >
       </li>
+      <li>
+        <a
+          href="https://git.harivan.sh/harivansh-afk/nix"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-preview="nix">nix</a
+        >
+      </li>
     </ul>
   </section>
 

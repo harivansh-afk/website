@@ -71,6 +71,7 @@ shot companion "https://companion.ai"
 shot phia "https://phia.com"
 shot agentcomputer "https://github.com/AgentComputerAI"
 shot betternas "https://betternas.com"
+shot nix "https://git.harivan.sh/harivansh-afk/nix"
 
 # pierrejo: the diff UI screenshot from its README beats the repo page
 shotimg pierrejo "https://github.com/user-attachments/assets/c580bd48-a67a-498b-b914-5aa19d1decc4"
