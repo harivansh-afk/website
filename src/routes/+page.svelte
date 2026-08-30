@@ -14,7 +14,7 @@
   <meta name="twitter:title" content="Harivansh Rathi" />
   <meta name="twitter:description" content="Compute, AI and Distributed Systems" />
   <meta name="twitter:image" content="https://harivan.sh/og.png" />
-  <script src="/previews.js?v=svelte-12" defer></script>
+  <script src="/previews.js?v=svelte-13" defer></script>
 </svelte:head>
 
 <main>
@@ -182,7 +182,7 @@
           href="https://git.harivan.sh/harivansh-afk/nix"
           target="_blank"
           rel="noopener noreferrer"
-          data-preview="nix">nix</a
+          data-preview="dotfiles">dots</a
         >
       </li>
     </ul>
