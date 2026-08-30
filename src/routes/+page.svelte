@@ -182,7 +182,7 @@
           href="https://git.harivan.sh/harivansh-afk/nix"
           target="_blank"
           rel="noopener noreferrer"
-          data-preview="dotfiles">dots</a
+          data-preview="dotfiles">dotfiles</a
         >
       </li>
     </ul>
