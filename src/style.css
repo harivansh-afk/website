@@ -163,7 +163,6 @@ a:hover { background-size: 100% 1.5px, 0 1.25px }
   max-width: none;
   padding: 0.75rem;
   border: 1px solid color-mix(in srgb, var(--fg) 20%, transparent);
-  border-radius: 6px;
   background: var(--bg);
 }
 /* the contribution calendar: github's green scale, both schemes */

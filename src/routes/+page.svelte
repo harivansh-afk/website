@@ -14,7 +14,7 @@
   <meta name="twitter:title" content="Harivansh Rathi" />
   <meta name="twitter:description" content="Compute, AI and Distributed Systems" />
   <meta name="twitter:image" content="https://harivan.sh/og.png" />
-  <script src="/previews.js?v=svelte-14" defer></script>
+  <script src="/previews.js?v=svelte-15" defer></script>
 </svelte:head>
 
 <main>

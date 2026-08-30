@@ -81,7 +81,6 @@
         rect.setAttribute("y", TOP + d.day * STEP);
         rect.setAttribute("width", CELL);
         rect.setAttribute("height", CELL);
-        rect.setAttribute("rx", 2);
         rect.setAttribute("class", "hm-" + d.level);
         svg.appendChild(rect);
       }
