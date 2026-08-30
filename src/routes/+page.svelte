@@ -79,7 +79,7 @@
         >
       </li>
       <li>
-        SWE,
+        founding engineer,
         <a
           href="https://companion.ai"
           target="_blank"
@@ -167,6 +167,14 @@
           rel="noopener noreferrer"
           data-preview="nap"
           data-preview-type="video">nap</a
+        >
+      </li>
+      <li>
+        <a
+          href="https://www.cnet.com/tech/services-and-software/companion-einstein-ai-tool/"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-preview="einstein">einstein ai</a
         >
       </li>
     </ul>
