@@ -76,10 +76,10 @@ shot betternas "https://betternas.com"
 shotimg pierrejo "https://github.com/user-attachments/assets/c580bd48-a67a-498b-b914-5aa19d1decc4"
 
 # hand-baked assets (regenerate by hand, then bump IMG_V in previews.js):
-# - dots.webp: authed dark-theme screenshot of git.harivan.sh/harivansh-afk/nix
+# - dotfiles.webp: authed dark-theme screenshot of git.harivan.sh/harivansh-afk/nix
 #   (anonymous headless renders the light theme), cropped like shot():
 #   magick <shot.png> -resize 640x -gravity north -crop 640x400+0+0 +repage \
-#     -strip -quality 82 static/previews/dots.webp
+#     -strip -quality 82 static/previews/dotfiles.webp
 # - mixbridge.webp: animated webp cycling through iphone shots from
 #   mixbridge.app/prod/Slice*.png, cropped to the phone and crossfaded:
 #   magick c1 c2 c4 c5 c1 -resize 400x -morph 6 \
