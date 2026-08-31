@@ -31,7 +31,7 @@
           target="_blank"
           rel="noopener noreferrer"
           data-preview="indexable">indexable</a
-        >
+        >, summer 2026 - present
       </li>
       <li>
         founding engineer,
@@ -40,7 +40,7 @@
           target="_blank"
           rel="noopener noreferrer"
           data-preview="companion">companion</a
-        >
+        >, spring 2026
       </li>
       <li>
         software engineer,
@@ -49,15 +49,17 @@
           target="_blank"
           rel="noopener noreferrer"
           data-preview="phia">phia</a
-        >
+        >, summer & fall 2025
       </li>
       <li>
         web developer,
-        <a href="https://unikove.com/" target="_blank" rel="noopener noreferrer">unikove</a>
+        <a href="https://unikove.com/" target="_blank" rel="noopener noreferrer">unikove</a>,
+        summer 2024
       </li>
       <li>
         backend engineer,
-        <a href="https://www.moglix.com/" target="_blank" rel="noopener noreferrer">moglix</a>
+        <a href="https://www.moglix.com/" target="_blank" rel="noopener noreferrer">moglix</a>,
+        summer 2023
       </li>
     </ul>
   </section>
