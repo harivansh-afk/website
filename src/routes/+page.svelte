@@ -17,13 +17,13 @@
   </p>
 
   <p>
-    i'm now a fourth year student at the University Of Virginia and Founding Engineer at
+    i'm currently a fourth year student at the University Of Virginia and Founding Engineer at
     <a href="https://ix.dev" target="_blank" rel="noopener noreferrer" data-preview="ix"
       >indexable</a
     >
     (YC S26).<br />
     We build powerful, persistent virtual machine infrastructure, tackling the problem of compute
-    overscheduling and filesystem inefficiencies.
+    overscheduling and filesystem inefficiency
   </p>
 
   <p>
@@ -33,8 +33,8 @@
       target="_blank"
       rel="noopener noreferrer"
       data-preview="phia">phia</a
-    >, where i led internal + marketing automation system development.<br />
-    in my 9 months there, we went from 0 &rarr; 1M users and raised $35M.
+    >, where i led internal + marketing automation system development<br />
+    in my 9 months there, we went from 0 &rarr; 1M users and raised $35M
   </p>
 
   <p>
@@ -47,7 +47,7 @@
     >
     and represented my country in the
     <a href="https://www.firstinspires.org/" target="_blank" rel="noopener noreferrer">FIRST</a>
-    world championships in 2019, placing 9th world-wide.
+    world championships in 2019, placing 9th world-wide
   </p>
 
   <p>
@@ -57,7 +57,7 @@
       target="_blank"
       rel="noopener noreferrer"
       data-preview="wca">competitive cubing</a
-    > when i was 8.
+    > when i was 8
   </p>
 
   <p>
@@ -67,7 +67,7 @@
       target="_blank"
       rel="noopener noreferrer"
       data-preview="dotfiles">my software</a
-    > on personal compute.
+    > on personal compute
   </p>
 
   <p>

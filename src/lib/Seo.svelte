@@ -4,7 +4,7 @@
   let { title, description, ogTitle = title } = $props();
 
   const url = $derived(`https://harivan.sh${page.url.pathname}`);
-  const image = "https://harivan.sh/og.png";
+  const image = "https://harivan.sh/og-v3.png";
   const imageAlt = "hari";
 </script>
 

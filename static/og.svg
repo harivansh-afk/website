@@ -1,17 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <style>
-    @font-face {
-      font-family: "Berkeley Mono";
-      src: url("/fonts/BerkeleyMono-Regular.otf") format("opentype");
-    }
-    text { font-family: "Berkeley Mono", ui-monospace, monospace; }
-    .fg { fill: #f3f3ee; }
-  </style>
-
   <rect width="1200" height="630" fill="#0d0d0b"/>
-
-  <g class="fg" font-size="210" text-anchor="middle" transform="translate(-2 10)">
-    <text x="530" y="385">*</text>
-    <text x="670" y="385" transform="translate(670 315) skewX(-12) translate(-670 -315)">h</text>
-  </g>
+  <image href="hari-mark.png" x="433" y="176" width="334" height="277"/>
 </svg>
