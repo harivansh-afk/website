@@ -56,7 +56,7 @@
       width: 360,
       height: 640,
       desc: "Not Airplay™",
-      desc2: "a system to use a linux computer as an extended monitor in real time",
+      desc2: "turn a linux-owned monitor into an extended display for your mac",
     },
     {
       name: "deskctl",
