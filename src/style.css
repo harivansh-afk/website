@@ -39,6 +39,113 @@ main.thought {
   max-width: 60rem;
 }
 
+/* top-level pages: sidebar nav on the left, prose on the right. both are
+   vertically centered in the viewport; the sidebar stays put across pages
+   (sticky at the midline), the content column centers when it fits and
+   scrolls normally when it doesn't. svh units are scaled by the body zoom,
+   so divide through it to get real viewport lengths */
+.page {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 42rem);
+  gap: 3rem;
+  align-items: center;
+  width: fit-content;
+  box-sizing: border-box;
+  min-height: calc(100svh / 1.2);
+  margin-inline: auto;
+  padding: clamp(3rem, 8vw, 5rem) 24px;
+}
+.page main {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+.page main > :first-child {
+  margin-top: 0;
+}
+nav.side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-self: start;
+  position: sticky;
+  top: calc(50svh / 1.2);
+  translate: 0 -50%;
+}
+nav.side a {
+  background-image: none;
+  width: fit-content;
+  padding-left: 0.75rem;
+  border-left: 2px solid transparent;
+  line-height: 1.4;
+}
+nav.side a.active {
+  color: var(--fg);
+  border-left-color: color-mix(in srgb, var(--fg) 45%, transparent);
+}
+
+/* projects: thumbnail + name + one-line description per row */
+.project {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: center;
+  margin-block: 2rem;
+}
+.project .thumb {
+  background-image: none;
+}
+/* media fills the column width at its natural ratio: landscape rows stay
+   short, portrait media (mixbridge, nap) simply runs taller */
+.project .thumb :is(img, video) {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 2px;
+  cursor: zoom-in;
+}
+
+/* iphone screen recordings show the screen's own rounded corners; match them
+   (radius ≈ 14% of screen width on modern iphones, kept circular via the
+   slash syntax so it scales anywhere, lightbox included - cloneNode carries
+   the class over) */
+.project .thumb .phone,
+.lightbox .phone {
+  border-radius: 14% / 6.46%;
+}
+
+/* click-to-expand overlay (lightbox.js). fixed lengths run through the body
+   zoom, so viewport units divide by it */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: none;
+  place-items: center;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  cursor: zoom-out;
+}
+.lightbox.on {
+  display: grid;
+}
+.lightbox :is(img, video) {
+  max-width: calc(92vw / 1.2);
+  max-height: calc(92svh / 1.2);
+  width: auto;
+  height: auto;
+}
+.project .info a {
+  color: var(--fg);
+}
+.project .info p {
+  margin: 0.25rem 0 0;
+}
+.project .info .note {
+  margin-top: 0.1rem;
+  font-size: 0.85em;
+  color: color-mix(in srgb, var(--muted) 75%, transparent);
+}
+
 main.not-found {
   display: flex;
   flex-direction: column;
@@ -73,6 +180,28 @@ main.not-found {
   main:not(.thought) ul {
     margin-block: 0;
     padding-left: 1.4em;
+  }
+  /* sidebar collapses to a horizontal nav above the prose */
+  .page {
+    display: block;
+    width: auto;
+    min-height: auto;
+    padding: 1.5rem 16px;
+  }
+  .project {
+    grid-template-columns: 8rem minmax(0, 1fr);
+    gap: 1rem;
+  }
+  nav.side {
+    flex-direction: row;
+    gap: 1.25rem;
+    position: static;
+    translate: none;
+    margin-bottom: 1.5rem;
+  }
+  nav.side a {
+    padding-left: 0;
+    border-left: none;
   }
 }
 
