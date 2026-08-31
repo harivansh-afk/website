@@ -1,9 +1,6 @@
 #!/usr/bin/env sh
 set -eu
 
-# link-preview screenshots bake into static/ (only missing ones are fetched)
-sh tools/screenshots.sh || echo "screenshots step failed, keeping existing shots" >&2
-
 # sveltekit + adapter-static prerenders everything into dist/
 if command -v bun >/dev/null 2>&1; then
   bun run build

@@ -1,25 +1,8 @@
 <script>
-  const title = "thoughts";
-  const description = "writing on systems, agents and computers";
+  import Seo from "$lib/Seo.svelte";
 </script>
 
-<svelte:head>
-  <title>{title}</title>
-  <meta name="description" content={description} />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="Harivansh Rathi" />
-  <meta property="og:title" content={title} />
-  <meta property="og:description" content={description} />
-  <meta property="og:url" content="https://harivan.sh/thoughts/" />
-  <meta property="og:image" content="https://harivan.sh/og.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Harivansh Rathi - distributed systems and ai computers" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={title} />
-  <meta name="twitter:description" content={description} />
-  <meta name="twitter:image" content="https://harivan.sh/og.png" />
-</svelte:head>
+<Seo title="thoughts" description="writing on systems, agents and computers" />
 
 <main>
   <section>

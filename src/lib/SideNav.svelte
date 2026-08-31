@@ -1,6 +1,6 @@
-<script>
-  let { current } = $props();
-  const items = [
+<script module>
+  // the top-level pages that share the sidebar shell, in nav order
+  export const sections = [
     ["about", "/"],
     ["projects", "/projects/"],
     ["work", "/work/"],
@@ -8,10 +8,16 @@
   ];
 </script>
 
+<script>
+  import { page } from "$app/state";
+</script>
+
 <nav class="side" aria-label="site">
-  {#each items as [name, href]}
-    <a {href} class:active={current === name} aria-current={current === name ? "page" : undefined}
-      >{name}</a
+  {#each sections as [name, href]}
+    <a
+      {href}
+      class:active={page.url.pathname === href}
+      aria-current={page.url.pathname === href ? "page" : undefined}>{name}</a
     >
   {/each}
 </nav>

@@ -9,10 +9,5 @@
   </head>
   <body data-sveltekit-preload-data="hover">
     %sveltekit.body%
-    <script type="module" src="/counter-v1.js"></script>
-    <!-- delegation-based, so they load once here and keep working across
-         client-side navigations (svelte:head scripts don't re-run on nav) -->
-    <script src="/previews.js?v=svelte-15" defer></script>
-    <script src="/lightbox.js?v=1" defer></script>
   </body>
 </html>
