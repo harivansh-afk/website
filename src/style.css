@@ -88,12 +88,10 @@ nav.side a {
   background-image: none;
   width: fit-content;
   padding-left: 0.75rem;
-  border-left: 2px solid transparent;
   line-height: 1.4;
 }
 nav.side a.active {
   color: var(--fg);
-  border-left-color: color-mix(in srgb, var(--fg) 45%, transparent);
 }
 
 /* projects: thumbnail + name + one-line description per row.
@@ -264,7 +262,6 @@ main.not-found {
   }
   nav.side a {
     padding-left: 0;
-    border-left: none;
   }
 }
 
@@ -381,7 +378,6 @@ a:hover { background-size: 100% 1.5px, 0 1.25px }
 .callout {
   margin-block: 1.5rem;
   padding-left: 1rem;
-  border-left: 2px solid color-mix(in srgb, var(--fg) 25%, transparent);
 }
 .callout-label {
   text-transform: uppercase;

@@ -13,7 +13,7 @@
       width: 590,
       height: 1280,
       phone: true, // raw iphone screen recording: media carries the screen's rounded corners
-      desc: "a beautiful listening experience on iOS (with a built-in ai dj)",
+      desc: "a beautiful listening experience on iOS that mixes music on the go",
     },
     {
       name: "einstein ai",
@@ -38,7 +38,7 @@
       media: "pierrejo.mp4",
       width: 1280,
       height: 894,
-      desc: "beautiful diff viewing for forgejo",
+      desc: "beautiful and instantaneous diff viewing for forgejo",
     },
     {
       name: "agentcomputer",
