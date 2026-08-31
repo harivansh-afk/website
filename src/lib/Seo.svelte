@@ -5,7 +5,7 @@
 
   const url = $derived(`https://harivan.sh${page.url.pathname}`);
   const image = "https://harivan.sh/og.png";
-  const imageAlt = "Harivansh Rathi - distributed systems, ai computers and beautiful software";
+  const imageAlt = "hari";
 </script>
 
 <svelte:head>

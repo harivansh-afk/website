@@ -3,9 +3,9 @@
 </script>
 
 <Seo
-  title="Hari"
+  title="hari"
   ogTitle="Harivansh Rathi"
-  description="20 y/o software engineer - low-latency distributed systems and consumer experiences"
+  description="performant distributed systems and beautiful consumer experiences"
 />
 
 <main>
@@ -13,7 +13,7 @@
 
   <p>
     i'm a 20 y/o software engineer.<br />
-    i enjoy building low-latency distributed systems and designing beautiful consumer experiences
+    i enjoy building performant distributed systems and designing beautiful consumer experiences
   </p>
 
   <p>
