@@ -104,8 +104,8 @@ nav.side a.active {
   gap: 1.5rem;
   align-items: center;
   margin-block: 2rem;
-  animation: row-in 0.45s ease both;
-  animation-delay: calc(var(--i, 0) * 70ms);
+  animation: row-in 0.8s ease both;
+  animation-delay: calc(var(--i, 0) * 120ms);
 }
 @keyframes row-in {
   from {
@@ -122,8 +122,45 @@ nav.side a.active {
     animation: none;
   }
 }
+/* the thumb is a button (click expands into the lightbox), stripped bare */
 .project .thumb {
-  background-image: none;
+  display: block;
+  position: relative;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: zoom-in;
+}
+/* sits under the media in the reserved box: painted media covers it, so it
+   only shows while pixels are missing */
+.thumb .skeleton {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--fg) 7%, transparent);
+  animation: skeleton-pulse 1.6s ease-in-out infinite alternate;
+}
+/* media joins the paint order above the (positioned) skeleton; late arrivals
+   fade in via .pending, media ready at hydration never gets the class */
+.project .thumb :is(img, video) {
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+.project .thumb .pending {
+  opacity: 0;
+}
+@keyframes skeleton-pulse {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .thumb .skeleton {
+    animation: none;
+  }
 }
 /* media fills the column width at its natural ratio: landscape rows stay
    short, portrait media (mixbridge, nap) simply runs taller */
@@ -137,26 +174,22 @@ nav.side a.active {
 
 /* iphone screen recordings show the screen's own rounded corners; match them
    (radius ≈ 14% of screen width on modern iphones, kept circular via the
-   slash syntax so it scales anywhere, lightbox included - cloneNode carries
-   the class over) */
+   slash syntax so it scales anywhere, lightbox included) */
 .project .thumb .phone,
 .lightbox .phone {
   border-radius: 14% / 6.46%;
 }
 
-/* click-to-expand overlay (lightbox.js). fixed lengths run through the body
-   zoom, so viewport units divide by it */
+/* click-to-expand overlay (only in the dom while open). fixed lengths run
+   through the body zoom, so viewport units divide by it */
 .lightbox {
   position: fixed;
   inset: 0;
   z-index: 20;
-  display: none;
+  display: grid;
   place-items: center;
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   cursor: zoom-out;
-}
-.lightbox.on {
-  display: grid;
 }
 .lightbox :is(img, video) {
   max-width: calc(92vw / 1.2);
