@@ -20,9 +20,15 @@
   }
 }
 
+html {
+  /* no rubber-band overscroll at the top/bottom of a page */
+  overscroll-behavior: none;
+}
+
 body {
   margin: 0;
   zoom: 1.2;
+  overscroll-behavior: none;
   background: var(--bg);
   color: var(--muted);
   font-family: "Berkeley Mono", ui-monospace, monospace;
@@ -63,6 +69,12 @@ main.thought {
 .page main > :first-child {
   margin-top: 0;
 }
+/* work/thoughts lists: plain lines, no bullet markers */
+.page main ul {
+  list-style: none;
+  padding-left: 0;
+  margin-block: 0;
+}
 nav.side {
   display: flex;
   flex-direction: column;
@@ -84,13 +96,31 @@ nav.side a.active {
   border-left-color: color-mix(in srgb, var(--fg) 45%, transparent);
 }
 
-/* projects: thumbnail + name + one-line description per row */
+/* projects: thumbnail + name + one-line description per row.
+   rows fade in top to bottom on load, staggered by index (--i) */
 .project {
   display: grid;
-  grid-template-columns: 11rem minmax(0, 1fr);
+  grid-template-columns: 15.4rem minmax(0, 1fr);
   gap: 1.5rem;
   align-items: center;
   margin-block: 2rem;
+  animation: row-in 0.45s ease both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+@keyframes row-in {
+  from {
+    opacity: 0;
+    translate: 0 0.6rem;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .project {
+    animation: none;
+  }
 }
 .project .thumb {
   background-image: none;
@@ -189,7 +219,7 @@ main.not-found {
     padding: 1.5rem 16px;
   }
   .project {
-    grid-template-columns: 8rem minmax(0, 1fr);
+    grid-template-columns: 11.2rem minmax(0, 1fr);
     gap: 1rem;
   }
   nav.side {

@@ -2,8 +2,8 @@
   let { current } = $props();
   const items = [
     ["about", "/"],
-    ["work", "/work/"],
     ["projects", "/projects/"],
+    ["work", "/work/"],
     ["thoughts", "/thoughts/"],
   ];
 </script>

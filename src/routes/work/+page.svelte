@@ -19,7 +19,6 @@
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content="https://harivan.sh/og.png" />
-  <script src="/previews.js?v=svelte-15" defer></script>
 </svelte:head>
 
 <main>

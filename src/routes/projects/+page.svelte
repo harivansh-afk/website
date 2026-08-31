@@ -2,6 +2,21 @@
   const title = "projects";
   const description = "things i've built";
 
+  // videos ship preload="metadata" (first frame only, ~a few hundred KB for
+  // the whole page instead of 18MB); this action streams and plays each one
+  // as it approaches the viewport, and pauses it on the way out
+  function lazyplay(node) {
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) node.play();
+        else node.pause();
+      },
+      { rootMargin: "300px" },
+    );
+    io.observe(node);
+    return { destroy: () => io.disconnect() };
+  }
+
   // media lives in static/previews (shared with the hover previews, same
   // cache-busted urls)
   const V = "12";
@@ -25,6 +40,7 @@
       href: "https://www.cnet.com/tech/services-and-software/companion-einstein-ai-tool/",
       media: "einstein.webp",
       desc: "ai agent that does your canvas assignments autonomously",
+      note: "cease and desisted",
     },
     {
       name: "mux",
@@ -78,13 +94,12 @@
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content="https://harivan.sh/og.png" />
-  <script src="/lightbox.js?v=1" defer></script>
 </svelte:head>
 
 <main>
   <section>
-    {#each projects as p}
-      <div class="project">
+    {#each projects as p, i}
+      <div class="project" style="--i: {i}">
         <a
           class="thumb"
           href={p.href}
@@ -97,7 +112,8 @@
             <video
               class={p.phone ? "phone" : ""}
               src="/previews/{p.media}?v={V}"
-              autoplay
+              preload="metadata"
+              use:lazyplay
               muted
               loop
               playsinline

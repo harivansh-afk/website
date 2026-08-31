@@ -23,7 +23,6 @@
     content="20 y/o software engineer - low-latency distributed systems and consumer experiences"
   />
   <meta name="twitter:image" content="https://harivan.sh/og.png" />
-  <script src="/previews.js?v=svelte-15" defer></script>
 </svelte:head>
 
 <main>
