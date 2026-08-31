@@ -13,7 +13,7 @@
       width: 590,
       height: 1280,
       phone: true, // raw iphone screen recording: media carries the screen's rounded corners
-      desc: "a beautiful, seamless listening experience with a built-in ai dj",
+      desc: "a beautiful listening experience on iOS (with a built-in ai dj)",
     },
     {
       name: "einstein ai",
@@ -30,7 +30,7 @@
       media: "mux.mp4",
       width: 1280,
       height: 830,
-      desc: "a stateless macos native multiplexer using ghosttykit",
+      desc: "a stateless, host-agnostic, macos-native terminal multiplexing client for ghostty",
     },
     {
       name: "pierrejo",
