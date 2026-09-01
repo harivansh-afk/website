@@ -1,5 +1,8 @@
 <script>
   import Seo from "$lib/Seo.svelte";
+  import Projects from "$lib/Projects.svelte";
+  import WorkList from "$lib/WorkList.svelte";
+  import ThoughtsList from "$lib/ThoughtsList.svelte";
 </script>
 
 <Seo
@@ -84,4 +87,32 @@
     or
     <a href="https://x.com/HarivanshRathi" target="_blank" rel="noopener noreferrer">x.com</a>
   </p>
+
+  <!-- mobile is one scrollable page: the other sections render here (lazy
+       media, so the desktop-hidden rows fetch nothing) and the nav is gone -->
+  <div class="one-page">
+    <section>
+      <h2>work</h2>
+      <WorkList />
+    </section>
+    <section>
+      <h2>projects</h2>
+      <Projects lazy />
+    </section>
+    <section>
+      <h2>thoughts</h2>
+      <ThoughtsList />
+    </section>
+  </div>
 </main>
+
+<style>
+  .one-page {
+    display: none;
+  }
+  @media (max-width: 640px) {
+    .one-page {
+      display: block;
+    }
+  }
+</style>

@@ -242,7 +242,11 @@ main.not-found {
     margin-block: 0;
     padding-left: 1.4em;
   }
-  /* sidebar collapses to a horizontal nav above the prose */
+  /* work/thoughts lists are unbulleted; don't inherit the prose-list indent */
+  .page main ul {
+    padding-left: 0;
+  }
+  /* mobile has no nav: the index is one scrollable page with every section */
   .page {
     display: block;
     width: auto;
@@ -254,14 +258,7 @@ main.not-found {
     gap: 1rem;
   }
   nav.side {
-    flex-direction: row;
-    gap: 1.25rem;
-    position: static;
-    translate: none;
-    margin-bottom: 1.5rem;
-  }
-  nav.side a {
-    padding-left: 0;
+    display: none;
   }
 }
 

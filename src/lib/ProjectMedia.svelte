@@ -15,7 +15,10 @@
   // that arrives late fades in; media that is ready at hydration renders
   // instantly. the lightbox variant plays immediately, no skeleton (the
   // thumb already warmed the cache).
-  let { media, width, height, phone = false, thumb = false } = $props();
+  // lazy thumbs (the index's mobile-only sections) defer everything to the
+  // viewport: display:none on desktop means they never intersect, so the
+  // hidden rows cost zero bytes there
+  let { media, width, height, phone = false, thumb = false, lazy = false } = $props();
 
   const video = $derived(media.endsWith(".mp4"));
   const src = $derived(`/previews/${media}?v=${V}`);
@@ -61,7 +64,7 @@
     {height}
     class:phone
     class:pending
-    preload="metadata"
+    preload={lazy ? "none" : "metadata"}
     use:watch
     use:lazyplay
     onloadeddata={done}
@@ -72,7 +75,17 @@
 {:else if video}
   <video {src} {width} {height} class:phone autoplay muted loop playsinline></video>
 {:else if thumb}
-  <img {src} {width} {height} class:phone class:pending alt="" use:watch onload={done} />
+  <img
+    {src}
+    {width}
+    {height}
+    class:phone
+    class:pending
+    loading={lazy ? "lazy" : "eager"}
+    alt=""
+    use:watch
+    onload={done}
+  />
 {:else}
   <img {src} {width} {height} class:phone alt="" />
 {/if}
