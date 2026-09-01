@@ -3,6 +3,7 @@
   import Projects from "$lib/Projects.svelte";
   import WorkList from "$lib/WorkList.svelte";
   import ThoughtsList from "$lib/ThoughtsList.svelte";
+  import ResearchList from "$lib/ResearchList.svelte";
 </script>
 
 <Seo
@@ -102,6 +103,10 @@
     <section>
       <h2>thoughts</h2>
       <ThoughtsList />
+    </section>
+    <section>
+      <h2>research</h2>
+      <ResearchList />
     </section>
   </div>
 </main>

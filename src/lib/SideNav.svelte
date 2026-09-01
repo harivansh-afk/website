@@ -5,6 +5,7 @@
     ["projects", "/projects/"],
     ["work", "/work/"],
     ["thoughts", "/thoughts/"],
+    ["research", "/research/"],
   ];
 </script>
 
