@@ -38,11 +38,12 @@
 </ul>
 
 <style>
+  /* title column flexes, dates sit flush with the content column's right
+     edge - the same x on every page regardless of the longest title */
   ul {
     display: grid;
-    grid-template-columns: max-content max-content;
+    grid-template-columns: minmax(0, 1fr) max-content;
     column-gap: 3rem;
-    width: fit-content;
   }
 
   li {
@@ -64,7 +65,6 @@
   @media (max-width: 640px) {
     ul {
       display: block;
-      width: auto;
     }
     li {
       display: block;
