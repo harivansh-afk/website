@@ -15,6 +15,9 @@
     </header>
     <ul>
       <li>
+        How you do anything is how you do everything.
+      </li>
+      <li>
         Action is the antidote to anxiety. Thinking, planning, or talking about doing the thing
         isn’t the same as doing the thing.
       </li>
