@@ -2,7 +2,7 @@
   <li>
     <span>
       <a href="https://harivansh-afk.github.io/cas/" target="_blank" rel="noopener noreferrer"
-        >cas</a
+        >Content-addressed Deduplication</a
       >
     </span>
     <span class="date">[fall 2026]</span>
