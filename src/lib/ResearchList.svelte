@@ -7,15 +7,7 @@
     </span>
     <span class="date">[fall 2026]</span>
   </li>
-  <li>
-    <span>
-      <a href="https://harivansh-afk.github.io/llt" target="_blank" rel="noopener noreferrer"
-        >llt</a
-      >
-    </span>
-    <span class="date">[fall 2026]</span>
-  </li>
-</ul>
+  </ul>
 
 <style>
   /* title column flexes, dates sit flush with the content column's right
