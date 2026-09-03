@@ -61,7 +61,7 @@
       target="_blank"
       rel="noopener noreferrer"
       data-preview="wca">competitive cubing</a
-    > when i was 8
+    > when i was 9 y/o
   </p>
 
   <p>
