@@ -13,15 +13,17 @@ cp -R dist/_mockup2 dist/mockup2 /home/rathi/Documents/Git/website/dist/
 
 A full `./build.sh` in the main checkout wipes `dist/` and removes it.
 
-Direction: the normal sidebar shell, with the content column widened to
-60rem for this page only. Eight projects as a two-column grid of identical
-16:9 plates in the site's panel fill (the code-block tint, 2px radius), each
-media centered and contained at its own ratio, so portrait recordings tile
-with landscape shots. Captions are the existing rows' name, description and
-note. Click a plate to expand (the existing lightbox), esc closes. One
-column on mobile. The layout and SideNav treat /mockup2/ as the projects
-page; when adopted, the grid replaces Projects.svelte on /projects/ and that
-special-casing goes away.
+Direction: the normal sidebar shell, content column widened to 60rem for
+this page only. Eight projects as a two-column grid of identical 16:9 tiles.
+Landscape media covers its tile edge to edge (the lightbox shows the whole
+frame); the two portrait phone recordings stand on a quiet plate, the one
+place a background is needed. Captions are name and status on one line and a
+single description that reserves two lines, so every row ends level. Videos
+show their first frame and play only while hovered (touch devices keep the
+viewport observer). No stagger animation, one gap value. Click a tile to
+expand, esc closes. One column on mobile. The layout and SideNav treat
+/mockup2/ as the projects page; when adopted, the grid replaces
+Projects.svelte on /projects/ and that special-casing goes away.
 
 The supplied Figma was unreachable (403 headless; the desktop browser needs
 a one-time "Allow remote debugging" click), so this is built from the brief

@@ -3,10 +3,14 @@
   import ProjectMedia from "$lib/ProjectMedia.svelte";
   import { projects } from "$lib/projects.js";
 
-  // the projects as a grid: every project sits on an identical 16:9 plate,
-  // so portrait recordings (mixbridge, nap) and odd-ratio screenshots tile
-  // into one even grid. two columns and eight projects come out square.
+  // the projects as a grid of identical 16:9 tiles. landscape media fills
+  // its tile edge to edge (the lightbox shows the whole frame); the two
+  // portrait phone recordings are the only ones that need a plate behind
+  // them, so only they get one. two columns and eight projects come out even.
   let expanded = $state(null); // click-to-expand lightbox
+
+  // one description per project; the status note rides on the name line
+  const blurb = (p) => (p.desc2 ? `${p.desc}: ${p.desc2}` : p.desc);
 
   onMount(() => {
     // #expand=<name> pins one open; used to screenshot the site itself
@@ -18,22 +22,25 @@
 <svelte:window onkeydown={(e) => e.key === "Escape" && (expanded = null)} />
 
 <div class="grid">
-  {#each projects as p, i}
-    <div class="cell" style="--i: {i}">
-      <button class="plate" onclick={() => (expanded = p)} tabindex="-1" aria-hidden="true">
-        <span class="stage">
-          <ProjectMedia media={p.media} width={p.width} height={p.height} phone={p.phone} thumb />
-        </span>
+  {#each projects as p}
+    <div class="cell" data-hover>
+      <button
+        class="tile"
+        class:portrait={p.height > p.width}
+        onclick={() => (expanded = p)}
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <ProjectMedia media={p.media} width={p.width} height={p.height} phone={p.phone} thumb hover />
       </button>
       <div class="info">
-        <a href={p.href} target="_blank" rel="noopener noreferrer">{p.name}</a>
-        <p>{p.desc}</p>
-        {#if p.desc2}
-          <p>{p.desc2}</p>
-        {/if}
-        {#if p.note}
-          <p class="note">({p.note})</p>
-        {/if}
+        <div class="row">
+          <a href={p.href} target="_blank" rel="noopener noreferrer">{p.name}</a>
+          {#if p.note}
+            <span class="note">{p.note}</span>
+          {/if}
+        </div>
+        <p>{blurb(p)}</p>
       </div>
     </div>
   {/each}
@@ -53,24 +60,18 @@
 
 <style>
   .grid {
+    --gap: 1.5rem;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2rem 1.5rem;
+    gap: var(--gap);
   }
   .cell {
     min-width: 0;
-    animation: row-in 0.8s ease both;
-    animation-delay: calc(var(--i, 0) * 90ms);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .cell {
-      animation: none;
-    }
   }
 
-  /* the plate: a fixed 16:9 box in the site's quiet panel fill (same as code
-     blocks). media is centered and contained inside it at its own ratio */
-  .plate {
+  /* the tile: a fixed 16:9 box. landscape media covers it; the frame shown
+     is the middle of the shot, the click shows all of it */
+  .tile {
     position: relative;
     display: block;
     width: 100%;
@@ -79,56 +80,70 @@
     padding: 0;
     border: 0;
     border-radius: 2px;
-    background: color-mix(in srgb, var(--fg) 7%, transparent);
+    overflow: hidden;
+    background: none;
     cursor: zoom-in;
   }
-  .stage {
+  .tile :global(:is(img, video)) {
+    display: block;
     position: absolute;
-    inset: 8%;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+  }
+  .tile :global(.pending) {
+    opacity: 0;
+  }
+  .tile :global(.skeleton) {
+    display: none;
+  }
+  /* portrait recordings: the phone stands on a quiet plate (the code-block
+     tint), the one place a background is actually needed */
+  .tile.portrait {
     display: flex;
     align-items: center;
     justify-content: center;
+    background: color-mix(in srgb, var(--fg) 7%, transparent);
   }
-  .stage :global(:is(img, video)) {
-    display: block;
-    position: relative;
+  .tile.portrait :global(:is(img, video)) {
+    position: static;
     width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 100%;
-    border-radius: 2px;
-    transition: opacity 0.3s ease;
-  }
-  .stage :global(.pending) {
-    opacity: 0;
-  }
-  /* iphone recordings show the screen's own rounded corners; match them */
-  .stage :global(.phone) {
+    height: 88%;
+    object-fit: contain;
+    /* iphone recordings show the screen's own rounded corners; match them */
     border-radius: 14% / 6.46%;
   }
-  .stage :global(.skeleton) {
-    display: none;
-  }
 
+  /* caption: name and status on one line, one description under it. the
+     description reserves two lines so every row ends level */
   .info {
-    margin-top: 0.75rem;
+    margin-top: 0.6rem;
   }
-  .info a {
+  .row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .row a {
     color: var(--fg);
   }
-  .info p {
-    margin: 0.25rem 0 0;
-  }
-  .info .note {
-    margin-top: 0.1rem;
+  .note {
     font-size: 0.85em;
     color: color-mix(in srgb, var(--muted) 75%, transparent);
+  }
+  .info p {
+    margin: 0.2rem 0 0;
+    min-height: 2lh;
   }
 
   @media (max-width: 640px) {
     .grid {
       grid-template-columns: minmax(0, 1fr);
-      gap: 1.5rem;
+    }
+    .info p {
+      min-height: 0;
     }
   }
 </style>

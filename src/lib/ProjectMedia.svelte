@@ -18,7 +18,9 @@
   // lazy thumbs (the index's mobile-only sections) defer everything to the
   // viewport: display:none on desktop means they never intersect, so the
   // hidden rows cost zero bytes there
-  let { media, width, height, phone = false, thumb = false, lazy = false } = $props();
+  // hover: play only while the cursor is over the media (grid tiles), instead
+  // of whenever it nears the viewport. touch devices fall back to the observer
+  let { media, width, height, phone = false, thumb = false, lazy = false, hover = false } = $props();
 
   const video = $derived(media.endsWith(".mp4"));
   const src = $derived(`/previews/${media}?v=${V}`);
@@ -41,6 +43,19 @@
   // the whole page instead of 18MB); this action streams and plays each one
   // as it approaches the viewport, and pauses it on the way out
   function lazyplay(node) {
+    if (hover && matchMedia("(hover: hover)").matches) {
+      const parent = node.closest("[data-hover]") ?? node;
+      const play = () => node.play();
+      const pause = () => node.pause();
+      parent.addEventListener("pointerenter", play);
+      parent.addEventListener("pointerleave", pause);
+      return {
+        destroy: () => {
+          parent.removeEventListener("pointerenter", play);
+          parent.removeEventListener("pointerleave", pause);
+        },
+      };
+    }
     const io = new IntersectionObserver(
       ([e]) => {
         if (e.isIntersecting) node.play();
