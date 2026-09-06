@@ -3,11 +3,11 @@
   import ProjectMedia from "$lib/ProjectMedia.svelte";
   import { projects } from "$lib/projects.js";
 
-  // the projects as a grid of identical 16:9 tiles. none of the shots are
-  // 16:9, so each one fits inside its tile on a solid color from its own
-  // palette: the phones stand on theirs, landscape shots sit inset on
-  // theirs, and shots whose edge already is that color are seamless.
-  // two columns and eight projects come out even.
+  // the projects as a grid of identical 16:9 tiles. shots that are near
+  // enough 16:9 fill their tile edge to edge (the lightbox shows the whole
+  // frame); the ones that can't (the phones, deskctl's wide pair of windows)
+  // fit inside on a background of their own. two columns and eight projects
+  // come out even.
   let expanded = $state(null); // click-to-expand lightbox
 
   // one description per project; the status note rides on the name line
@@ -27,8 +27,8 @@
     <div class="cell">
       <button
         class="tile"
-        class:portrait={p.height > p.width}
-        style="background: {p.bg}"
+        class:fit={!!p.bg}
+        style={p.bg ? `background: ${p.bg}` : undefined}
         onclick={() => (expanded = p)}
         tabindex="-1"
         aria-hidden="true"
@@ -71,8 +71,8 @@
     min-width: 0;
   }
 
-  /* the tile: a fixed 16:9 box painted in the project's color. media is
-     centered and contained, never cropped; the click shows it full size */
+  /* the tile: a fixed 16:9 box. by default the media covers it (the frame
+     shown is the middle of the shot, the click shows all of it) */
   .tile {
     position: relative;
     display: flex;
@@ -85,15 +85,16 @@
     border: 0;
     border-radius: 2px;
     overflow: hidden;
+    background: none;
     cursor: zoom-in;
   }
   .tile :global(:is(img, video)) {
     display: block;
-    width: auto;
-    height: auto;
-    max-width: 88%;
-    max-height: 86%;
-    object-fit: contain;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     transition: opacity 0.3s ease;
   }
   .tile :global(.pending) {
@@ -102,12 +103,18 @@
   .tile :global(.skeleton) {
     display: none;
   }
+  /* tiles with a background: media is centered and contained, never cropped */
+  .tile.fit :global(:is(img, video)) {
+    position: static;
+    width: auto;
+    height: auto;
+    max-width: 90%;
+    max-height: 88%;
+    object-fit: contain;
+  }
   /* iphone recordings show the screen's own rounded corners; match them */
   .tile :global(.phone) {
     border-radius: 14% / 6.46%;
-  }
-  .tile.portrait :global(:is(img, video)) {
-    max-height: 88%;
   }
 
   /* caption: name and status on one line, one description under it. the

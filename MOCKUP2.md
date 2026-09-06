@@ -15,9 +15,10 @@ A full `./build.sh` in the main checkout wipes `dist/` and removes it.
 
 Direction: the normal sidebar shell, content column widened to 60rem for
 this page only. Eight projects as a two-column grid of identical 16:9 tiles.
-None of the shots are 16:9, so each fits inside its tile, never cropped, on a
-solid color from its own palette (projects.js `bg`); shots whose edge already
-is that color (einstein yellow, betternas white) are seamless. Captions are
+Shots near enough 16:9 cover their tile edge to edge (the lightbox shows the
+whole frame). The three that cannot fit inside on a background of their own
+(projects.js `bg`): mixbridge on a blue-to-orange gradient echoing the clip,
+nap and deskctl on white. Captions are
 name and status on one line and a single description that reserves two
 lines, so every row ends level. Videos autoplay as they near the viewport,
 as on the live page. No stagger animation, one gap value. Click a tile to
