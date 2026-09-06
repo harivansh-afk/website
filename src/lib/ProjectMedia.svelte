@@ -19,7 +19,7 @@
   // viewport: display:none on desktop means they never intersect, so the
   // hidden rows cost zero bytes there
   // hover: play only while the cursor is over the media (grid tiles), instead
-  // of whenever it nears the viewport. touch devices fall back to the observer
+  // of whenever it nears the viewport. touch devices keep the viewport observer
   let { media, width, height, phone = false, thumb = false, lazy = false, hover = false } = $props();
 
   const video = $derived(media.endsWith(".mp4"));
@@ -43,7 +43,7 @@
   // the whole page instead of 18MB); this action streams and plays each one
   // as it approaches the viewport, and pauses it on the way out
   function lazyplay(node) {
-    if (hover && matchMedia("(hover: hover)").matches) {
+    if (hover && navigator.maxTouchPoints === 0) {
       const parent = node.closest("[data-hover]") ?? node;
       const play = () => node.play();
       const pause = () => node.pause();
