@@ -8,7 +8,9 @@
   let { children } = $props();
 
   // top-level pages share the sidebar shell; thought pages and 404 render bare
-  const shell = $derived(sections.some(([, href]) => href === page.url.pathname));
+  const shell = $derived(
+    sections.some(([, href]) => href === page.url.pathname) || page.url.pathname === "/mockup2/",
+  );
 
   // page-load beacon: the layout mounts once per page entry, so this counts
   // entries only, never client-side navigations

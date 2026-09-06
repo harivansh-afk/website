@@ -13,15 +13,15 @@ cp -R dist/_mockup2 dist/mockup2 /home/rathi/Documents/Git/website/dist/
 
 A full `./build.sh` in the main checkout wipes `dist/` and removes it.
 
-Direction: monotone, Berkeley Mono, hard 1px shared grid lines, no radii.
-A top bar replaces the sidebar. Masthead is the word at display size with a
-spec sheet beside it. Cell 1 is an index (table of contents) that makes 3x3
-even and hovers into the tiles. Every project sits on an identical 16:9 plate
-(graph-paper dots) with its media contained at its own ratio and a hairline
-window edge, so portrait recordings tile with landscape shots. Caption:
-number, name, destination host, description, status. Click a plate to expand
-(the existing lightbox), esc closes. 2 columns under 1400px (index spans),
-1 column under 700px.
+Direction: the normal sidebar shell, with the content column widened to
+60rem for this page only. Eight projects as a two-column grid of identical
+16:9 plates in the site's panel fill (the code-block tint, 2px radius), each
+media centered and contained at its own ratio, so portrait recordings tile
+with landscape shots. Captions are the existing rows' name, description and
+note. Click a plate to expand (the existing lightbox), esc closes. One
+column on mobile. The layout and SideNav treat /mockup2/ as the projects
+page; when adopted, the grid replaces Projects.svelte on /projects/ and that
+special-casing goes away.
 
 The supplied Figma was unreachable (403 headless; the desktop browser needs
 a one-time "Allow remote debugging" click), so this is built from the brief
