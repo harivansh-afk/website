@@ -1,7 +1,7 @@
 <script module>
   // media lives in static/previews (shared with the hover previews); bump
   // when regenerating clips: static/ assets are CDN-cached immutably
-  const V = "12";
+  const V = "13";
 </script>
 
 <script>
@@ -18,9 +18,7 @@
   // lazy thumbs (the index's mobile-only sections) defer everything to the
   // viewport: display:none on desktop means they never intersect, so the
   // hidden rows cost zero bytes there
-  // hover: play only while the cursor is over the media (grid tiles), instead
-  // of whenever it nears the viewport. touch devices keep the viewport observer
-  let { media, width, height, phone = false, thumb = false, lazy = false, hover = false } = $props();
+  let { media, width, height, phone = false, thumb = false, lazy = false } = $props();
 
   const video = $derived(media.endsWith(".mp4"));
   const src = $derived(`/previews/${media}?v=${V}`);
@@ -43,19 +41,6 @@
   // the whole page instead of 18MB); this action streams and plays each one
   // as it approaches the viewport, and pauses it on the way out
   function lazyplay(node) {
-    if (hover && navigator.maxTouchPoints === 0) {
-      const parent = node.closest("[data-hover]") ?? node;
-      const play = () => node.play();
-      const pause = () => node.pause();
-      parent.addEventListener("pointerenter", play);
-      parent.addEventListener("pointerleave", pause);
-      return {
-        destroy: () => {
-          parent.removeEventListener("pointerenter", play);
-          parent.removeEventListener("pointerleave", pause);
-        },
-      };
-    }
     const io = new IntersectionObserver(
       ([e]) => {
         if (e.isIntersecting) node.play();

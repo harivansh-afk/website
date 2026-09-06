@@ -3,10 +3,11 @@
   import ProjectMedia from "$lib/ProjectMedia.svelte";
   import { projects } from "$lib/projects.js";
 
-  // the projects as a grid of identical 16:9 tiles. landscape media fills
-  // its tile edge to edge (the lightbox shows the whole frame); the two
-  // portrait phone recordings are the only ones that need a plate behind
-  // them, so only they get one. two columns and eight projects come out even.
+  // the projects as a grid of identical 16:9 tiles. none of the shots are
+  // 16:9, so each one fits inside its tile on a solid color from its own
+  // palette: the phones stand on theirs, landscape shots sit inset on
+  // theirs, and shots whose edge already is that color are seamless.
+  // two columns and eight projects come out even.
   let expanded = $state(null); // click-to-expand lightbox
 
   // one description per project; the status note rides on the name line
@@ -23,15 +24,16 @@
 
 <div class="grid">
   {#each projects as p}
-    <div class="cell" data-hover>
+    <div class="cell">
       <button
         class="tile"
         class:portrait={p.height > p.width}
+        style="background: {p.bg}"
         onclick={() => (expanded = p)}
         tabindex="-1"
         aria-hidden="true"
       >
-        <ProjectMedia media={p.media} width={p.width} height={p.height} phone={p.phone} thumb hover />
+        <ProjectMedia media={p.media} width={p.width} height={p.height} phone={p.phone} thumb />
       </button>
       <div class="info">
         <div class="row">
@@ -69,11 +71,13 @@
     min-width: 0;
   }
 
-  /* the tile: a fixed 16:9 box. landscape media covers it; the frame shown
-     is the middle of the shot, the click shows all of it */
+  /* the tile: a fixed 16:9 box painted in the project's color. media is
+     centered and contained, never cropped; the click shows it full size */
   .tile {
     position: relative;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     aspect-ratio: 16 / 9;
     margin: 0;
@@ -81,16 +85,15 @@
     border: 0;
     border-radius: 2px;
     overflow: hidden;
-    background: none;
     cursor: zoom-in;
   }
   .tile :global(:is(img, video)) {
     display: block;
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width: auto;
+    height: auto;
+    max-width: 88%;
+    max-height: 86%;
+    object-fit: contain;
     transition: opacity 0.3s ease;
   }
   .tile :global(.pending) {
@@ -99,21 +102,12 @@
   .tile :global(.skeleton) {
     display: none;
   }
-  /* portrait recordings: the phone stands on a quiet plate (the code-block
-     tint), the one place a background is actually needed */
-  .tile.portrait {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: color-mix(in srgb, var(--fg) 7%, transparent);
+  /* iphone recordings show the screen's own rounded corners; match them */
+  .tile :global(.phone) {
+    border-radius: 14% / 6.46%;
   }
   .tile.portrait :global(:is(img, video)) {
-    position: static;
-    width: auto;
-    height: 88%;
-    object-fit: contain;
-    /* iphone recordings show the screen's own rounded corners; match them */
-    border-radius: 14% / 6.46%;
+    max-height: 88%;
   }
 
   /* caption: name and status on one line, one description under it. the

@@ -15,13 +15,14 @@ A full `./build.sh` in the main checkout wipes `dist/` and removes it.
 
 Direction: the normal sidebar shell, content column widened to 60rem for
 this page only. Eight projects as a two-column grid of identical 16:9 tiles.
-Landscape media covers its tile edge to edge (the lightbox shows the whole
-frame); the two portrait phone recordings stand on a quiet plate, the one
-place a background is needed. Captions are name and status on one line and a
-single description that reserves two lines, so every row ends level. Videos
-show their first frame and play only while hovered (touch devices keep the
-viewport observer). No stagger animation, one gap value. Click a tile to
-expand, esc closes. One column on mobile. The layout and SideNav treat
+None of the shots are 16:9, so each fits inside its tile, never cropped, on a
+solid color from its own palette (projects.js `bg`); shots whose edge already
+is that color (einstein yellow, betternas white) are seamless. Captions are
+name and status on one line and a single description that reserves two
+lines, so every row ends level. Videos autoplay as they near the viewport,
+as on the live page. No stagger animation, one gap value. Click a tile to
+expand, esc closes. One column on mobile. betternas.webp was recropped to
+center the window (media version bumped to 13). The layout and SideNav treat
 /mockup2/ as the projects page; when adopted, the grid replaces
 Projects.svelte on /projects/ and that special-casing goes away.
 
