@@ -62,7 +62,7 @@
       width: 720,
       height: 1280,
       contain: true,
-      desc: "Play any movie or TV-show under the sun, one text away",
+      desc: "Play any movie, TV-show or music video under the sun, one text away",
     },
     {
       name: "Nap",
