@@ -3,35 +3,7 @@
     <span><a href="/thoughts/the-self-cleaning-codebase/">the self-cleaning codebase</a></span>
     <span class="date">[June 2026]</span>
   </li>
-  <li>
-    <span><a href="/thoughts/throw-out-your-macbook/">throw out your macbook</a></span>
-    <span class="date">[April 2026]</span>
-  </li>
-  <li>
-    <span>
-      <a href="/thoughts/reflections-on-the-agent-environment/"
-        >reflections on the agent environment</a
-      >
-    </span>
-    <span class="date">[March 2026]</span>
-  </li>
-  <li>
-    <span>
-      <a href="/thoughts/isolated-long-running-agents-with-kubernetes/">the agent environment</a>
-    </span>
-    <span class="date">[February 2026]</span>
-  </li>
-  <li>
-    <span>
-      <a href="/thoughts/the-asymmetry-of-verification/">the asymmetry of verification</a>
-    </span>
-    <span class="date">[January 2026]</span>
-  </li>
-  <li>
-    <span><a href="/thoughts/the-growth-team-is-dead/">the growth team</a></span>
-    <span class="date">[December 2025]</span>
-  </li>
-  <li>
+    <li>
     <span><a href="/thoughts/my-core-principles/">core principles</a></span>
     <span class="date">[May 2025]</span>
   </li>
