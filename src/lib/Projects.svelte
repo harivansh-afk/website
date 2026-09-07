@@ -242,19 +242,11 @@
 
   @media (max-width: 640px) {
     .grid {
-      grid-template-columns: minmax(0, 1fr);
+      gap: 1.25rem 0.75rem;
     }
-    /* Let contained demos use their natural proportions on mobile. */
-    .tile.contain {
-      aspect-ratio: auto;
-      border: 0;
-      border-radius: 0;
-    }
-    .tile.contain :global(:is(img, video)) {
-      width: 100%;
-      height: auto;
-      max-width: 100%;
-      max-height: none;
+    .row {
+      flex-wrap: wrap;
+      gap: 0.15rem 0.5rem;
     }
     .info p {
       min-height: 0;
