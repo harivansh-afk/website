@@ -244,6 +244,18 @@
     .grid {
       grid-template-columns: minmax(0, 1fr);
     }
+    /* Let contained demos use their natural proportions on mobile. */
+    .tile.contain {
+      aspect-ratio: auto;
+      border: 0;
+      border-radius: 0;
+    }
+    .tile.contain :global(:is(img, video)) {
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+      max-height: none;
+    }
     .info p {
       min-height: 0;
     }
