@@ -1,8 +1,4 @@
 <ul>
-  <li>
-    <span><a href="/thoughts/the-self-cleaning-codebase/">the self-cleaning codebase</a></span>
-    <span class="date">[June 2026]</span>
-  </li>
     <li>
     <span><a href="/thoughts/my-core-principles/">core principles</a></span>
     <span class="date">[May 2025]</span>
