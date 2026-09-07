@@ -19,7 +19,7 @@
       name: "TouchTips",
       href: "https://touchtips.app",
       media: null, // demo still being recorded: renders a bare placeholder tile
-      desc: "Remember when, where you who you met",
+      desc: "Remember when, where you who you met: never forget someone again",
     },
     {
       name: "Einstein AI",
