@@ -18,7 +18,11 @@
     {
       name: "TouchTips",
       href: "https://touchtips.app",
-      media: null, // demo still being recorded: renders a bare placeholder tile
+      media: "touchtips.mp4",
+      width: 588,
+      height: 1280,
+      phone: true,
+      contain: true,
       desc: "Remember when, where you who you met: never forget someone again",
     },
     {
