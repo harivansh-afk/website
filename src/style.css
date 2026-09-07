@@ -45,26 +45,30 @@ main.thought {
   max-width: 60rem;
 }
 
-/* top-level pages: sidebar nav on the left, prose on the right. both are
-   vertically centered in the viewport; the sidebar stays put across pages
-   (sticky at the midline), the content column centers when it fits and
-   scrolls normally when it doesn't. svh units are scaled by the body zoom,
-   so divide through it to get real viewport lengths */
+/* top-level pages: the sidebar nav is pinned to the left edge of the viewport
+   (fixed, vertically centered) and never moves between pages; the content
+   column is centered in the full viewport at its own width. the page keeps a
+   symmetric inline padding equal to the sidebar's strip so centered content
+   can never run under the nav. svh units are scaled by the body zoom, so
+   divide through it to get real viewport lengths */
 .page {
+  --side: 8rem;
+  --pad: 24px;
+  --strip: calc(var(--side) + 2 * var(--pad));
   display: grid;
-  grid-template-columns: 8rem minmax(0, 42rem);
-  gap: 3rem;
   align-items: center;
-  width: fit-content;
   box-sizing: border-box;
   min-height: calc(100svh / 1.2);
-  margin-inline: auto;
-  padding: clamp(3rem, 8vw, 5rem) 24px;
+  padding: clamp(3rem, 8vw, 5rem) var(--strip);
 }
 .page main {
-  max-width: none;
-  margin: 0;
+  width: 100%;
+  max-width: 42rem;
+  margin-inline: auto;
   padding: 0;
+}
+.page main.projects {
+  max-width: 72rem;
 }
 .page main > :first-child {
   margin-top: 0;
@@ -79,10 +83,11 @@ nav.side {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  align-self: start;
-  position: sticky;
+  position: fixed;
+  left: var(--pad, 24px);
   top: calc(50svh / 1.2);
   translate: 0 -50%;
+  width: var(--side, 8rem);
 }
 nav.side a {
   background-image: none;
@@ -94,86 +99,8 @@ nav.side a.active {
   color: var(--fg);
 }
 
-/* projects: thumbnail + name + one-line description per row.
-   rows fade in top to bottom on load, staggered by index (--i) */
-.project {
-  display: grid;
-  grid-template-columns: 15.4rem minmax(0, 1fr);
-  gap: 1.5rem;
-  align-items: center;
-  margin-block: 2rem;
-  animation: row-in 0.8s ease both;
-  animation-delay: calc(var(--i, 0) * 120ms);
-}
-@keyframes row-in {
-  from {
-    opacity: 0;
-    translate: 0 0.6rem;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .project {
-    animation: none;
-  }
-}
-/* the thumb is a button (click expands into the lightbox), stripped bare */
-.project .thumb {
-  display: block;
-  position: relative;
-  border: 0;
-  padding: 0;
-  background: none;
-  cursor: zoom-in;
-}
-/* sits under the media in the reserved box: painted media covers it, so it
-   only shows while pixels are missing */
-.thumb .skeleton {
-  position: absolute;
-  inset: 0;
-  border-radius: 2px;
-  background: color-mix(in srgb, var(--fg) 7%, transparent);
-  animation: skeleton-pulse 1.6s ease-in-out infinite alternate;
-}
-/* media joins the paint order above the (positioned) skeleton; late arrivals
-   fade in via .pending, media ready at hydration never gets the class */
-.project .thumb :is(img, video) {
-  position: relative;
-  transition: opacity 0.3s ease;
-}
-.project .thumb .pending {
-  opacity: 0;
-}
-@keyframes skeleton-pulse {
-  from {
-    opacity: 0.6;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .thumb .skeleton {
-    animation: none;
-  }
-}
-/* media fills the column width at its natural ratio: landscape rows stay
-   short, portrait media (mixbridge, nap) simply runs taller */
-.project .thumb :is(img, video) {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 2px;
-  cursor: zoom-in;
-}
-
-/* iphone screen recordings show the screen's own rounded corners; match them
-   (radius ≈ 14% of screen width on modern iphones, kept circular via the
-   slash syntax so it scales anywhere, lightbox included) */
-.project .thumb .phone,
+/* projects lightbox media: iphone recordings keep the screen's own rounded
+   corners (radius ≈ 14% of screen width, kept circular via the slash syntax) */
 .lightbox .phone {
   border-radius: 14% / 6.46%;
 }
@@ -195,18 +122,6 @@ nav.side a.active {
   width: auto;
   height: auto;
 }
-.project .info a {
-  color: var(--fg);
-}
-.project .info p {
-  margin: 0.25rem 0 0;
-}
-.project .info .note {
-  margin-top: 0.1rem;
-  font-size: 0.85em;
-  color: color-mix(in srgb, var(--muted) 75%, transparent);
-}
-
 main.not-found {
   display: flex;
   flex-direction: column;
@@ -252,10 +167,6 @@ main.not-found {
     width: auto;
     min-height: auto;
     padding: 1.5rem 16px;
-  }
-  .project {
-    grid-template-columns: 11.2rem minmax(0, 1fr);
-    gap: 1rem;
   }
   nav.side {
     display: none;

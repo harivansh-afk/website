@@ -1,13 +1,9 @@
 <script>
   import { onMount } from "svelte";
   import ProjectMedia from "$lib/ProjectMedia.svelte";
-
-  // lazy: the index's mobile sections render these rows in DOM that is
-  // display:none on desktop; lazy media fetches nothing until it can intersect
+  // Hidden homepage media stays lazy on desktop.
   let { lazy = false } = $props();
 
-  // width/height are each file's intrinsic pixels (measured with ffprobe);
-  // they reserve every row's box before the media loads
   const projects = [
     {
       name: "mixbridge",
@@ -16,7 +12,14 @@
       width: 590,
       height: 1280,
       phone: true, // raw iphone screen recording: media carries the screen's rounded corners
+      contain: true,
       desc: "a beautiful listening experience on iOS that mixes music on the go",
+    },
+    {
+      name: "TouchTips",
+      href: "https://touchtips.app",
+      media: null, // demo still being recorded: renders a bare placeholder tile
+      desc: "remember when and where you met people, alongside your iphone contacts",
     },
     {
       name: "einstein ai",
@@ -53,11 +56,21 @@
       note: "no longer maintained",
     },
     {
+      name: "roomcast",
+      href: "https://git.harivan.sh/harivansh-afk/roomcast",
+      media: "roomcast.mp4",
+      width: 720,
+      height: 1280,
+      contain: true,
+      desc: "a group-chat agent that plays any movie or show on a roku tv, right where you left off",
+    },
+    {
       name: "nap",
       href: "https://git.harivan.sh/harivansh-afk/nap",
       media: "nap.mp4",
       width: 360,
       height: 640,
+      contain: true,
       desc: "Not Airplay™",
       desc2: "turn a linux-owned monitor into an extended display for your mac",
     },
@@ -67,6 +80,7 @@
       media: "deskctl.mp4",
       width: 640,
       height: 336,
+      contain: true,
       desc: "non-interactive x11 desktop control for ai agents",
       note: "no longer maintained",
     },
@@ -75,43 +89,54 @@
       href: "https://betternas.com",
       media: "betternas.webp",
       width: 640,
-      height: 400,
+      height: 326,
       desc: "macos native filesystem admin over http",
       note: "no longer maintained",
     },
   ];
 
-  // click-to-expand lightbox; click anywhere or esc closes
   let expanded = $state(null);
+
+  // one description per project; the status note rides on the name line
+  const blurb = (p) => (p.desc2 ? `${p.desc}: ${p.desc2}` : p.desc);
 
   onMount(() => {
     // #expand=<name> pins one open; used to screenshot the site itself
     const pin = location.hash.match(/^#expand=([\w-]+)$/);
-    if (pin) expanded = projects.find((p) => p.media.includes(pin[1])) ?? null;
+    if (pin) expanded = projects.find((p) => p.media?.includes(pin[1])) ?? null;
   });
 </script>
 
 <svelte:window onkeydown={(e) => e.key === "Escape" && (expanded = null)} />
 
-{#each projects as p, i}
-  <div class="project" style="--i: {i}">
-    <button class="thumb" onclick={() => (expanded = p)} tabindex="-1" aria-hidden="true">
-      <ProjectMedia media={p.media} width={p.width} height={p.height} phone={p.phone} thumb {lazy} />
-    </button>
-    <div class="info">
-      <a href={p.href} target="_blank" rel="noopener noreferrer">{p.name}</a>
-      {#if p.desc}
-        <p>{p.desc}</p>
+<div class="grid">
+  {#each projects as p}
+    <div class="cell">
+      {#if p.media}
+        <button
+          class="tile"
+          class:contain={p.contain}
+          onclick={() => (expanded = p)}
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <ProjectMedia media={p.media} width={p.width} height={p.height} phone={p.phone} thumb {lazy} />
+        </button>
+      {:else}
+        <div class="tile placeholder" aria-hidden="true">demo soon</div>
       {/if}
-      {#if p.desc2}
-        <p>{p.desc2}</p>
-      {/if}
-      {#if p.note}
-        <p class="note">({p.note})</p>
-      {/if}
+      <div class="info">
+        <div class="row">
+          <a href={p.href} target="_blank" rel="noopener noreferrer">{p.name}</a>
+          {#if p.note}
+            <span class="note">{p.note}</span>
+          {/if}
+        </div>
+        <p>{blurb(p)}</p>
+      </div>
     </div>
-  </div>
-{/each}
+  {/each}
+</div>
 
 {#if expanded}
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
@@ -124,3 +149,100 @@
     />
   </div>
 {/if}
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+  .cell {
+    min-width: 0;
+  }
+
+  /* the tile is a bare button with one hairline border; media fills it edge
+     to edge (or sits centered inside it for .contain rows). no hover state:
+     the cursor is the affordance */
+  .tile {
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    margin: 0;
+    padding: 0;
+    border: 1px solid color-mix(in srgb, var(--muted) 45%, transparent);
+    border-radius: 3px;
+    overflow: hidden;
+    background: none;
+    cursor: zoom-in;
+  }
+  /* a row with no media yet: the same bordered box, empty but for a label */
+  .tile.placeholder {
+    cursor: default;
+    font-size: 0.85em;
+    color: color-mix(in srgb, var(--muted) 75%, transparent);
+  }
+  /* the bordered box is the placeholder; no skeleton inside tiles */
+  .tile :global(.skeleton) {
+    display: none;
+  }
+  .tile :global(:is(img, video)) {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+  }
+  .tile :global(.pending) {
+    opacity: 0;
+  }
+  /* media is centered and contained, never cropped */
+  .tile.contain :global(:is(img, video)) {
+    position: relative;
+    width: auto;
+    height: auto;
+    max-width: 90%;
+    max-height: 88%;
+    object-fit: contain;
+  }
+  /* iphone recordings show the screen's own rounded corners; match them */
+  .tile :global(:is(img, video).phone) {
+    border-radius: 14% / 6.46%;
+  }
+
+  /* caption: name and status on one line, one description under it. the
+     description reserves two lines so every row ends level */
+  .info {
+    margin-top: 0.6rem;
+  }
+  .row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .row a {
+    color: var(--fg);
+  }
+  .note {
+    font-size: 0.85em;
+    color: color-mix(in srgb, var(--muted) 75%, transparent);
+  }
+  .info p {
+    margin: 0.2rem 0 0;
+    min-height: 2lh;
+  }
+
+  @media (max-width: 640px) {
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .info p {
+      min-height: 0;
+    }
+  }
+</style>

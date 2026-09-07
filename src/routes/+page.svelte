@@ -37,7 +37,7 @@
       target="_blank"
       rel="noopener noreferrer"
       data-preview="phia">phia</a
-    >, where i led internal + marketing automation system development<br />
+    >, where i led automation system development<br />
     in my 9 months there, we went from 0 &rarr; 1M users and raised $35M
   </p>
 

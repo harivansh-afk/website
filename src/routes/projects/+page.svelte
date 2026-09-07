@@ -5,7 +5,7 @@
 
 <Seo title="projects" description="things i've built" />
 
-<main>
+<main class="projects">
   <section>
     <Projects />
   </section>
