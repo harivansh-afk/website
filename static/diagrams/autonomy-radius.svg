@@ -1,27 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 510" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 400" role="img" aria-labelledby="title desc">
 <title id="title">The autonomy radius</title>
-<desc id="desc">Concentric boundaries around an agent show compiler feedback, structural checks, runtime validation and production evidence. The expanding boundary is conceptual.</desc>
+<desc id="desc">Horizontal ovals surround an agent. Compiler feedback, structural checks, runtime validation and production evidence expand the work it can evaluate independently. Colors distinguish outlines; the areas remain unfilled.</desc>
 <style>
-  :root { color: #1a1a1a; --bg: #fdfdfc; }
-  @media (prefers-color-scheme: dark) { :root { color: #f3f3ee; --bg: #0d0d0b; } }
-  text { fill: currentColor; font-family: monospace; font-size: 17px; }
-  .small { font-size: 14px; }
-  rect, circle, path, line { stroke: currentColor; stroke-width: 1.3; fill: none; }
-  .box { fill: var(--bg); }
-  .dot, .arrow { fill: currentColor; stroke: none; }
-  .muted { opacity: .65; }
+  :root { color: #1a1a1a; --gold: #967010; --green: #38816c; --blue: #4e7da5; }
+  @media (prefers-color-scheme: dark) {
+    :root { color: #f3f3ee; --gold: #e4c564; --green: #81baa4; --blue: #85abc9; }
+  }
+  text { fill: currentColor; font-family: monospace; font-size: 17px; text-anchor: middle; }
+  ellipse, path { fill: none; stroke-width: 1.4; }
+  .agent { stroke: currentColor; }
+  .compiler { stroke: var(--gold); }
+  .structure { stroke: var(--green); }
+  .runtime { stroke: var(--blue); }
+  .production { stroke: var(--blue); stroke-dasharray: 4 6; }
+  .direction { stroke: var(--gold); }
+  .note { font-size: 14px; opacity: .7; }
 </style>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow" d="M0 0 10 5 0 10Z" /></marker></defs>
-
-<circle cx="320" cy="239" r="211" />
-<circle cx="320" cy="239" r="146" />
-<circle cx="320" cy="239" r="78" stroke-dasharray="4 6" />
-<text x="320" y="67" text-anchor="middle" class="">production evidence</text>
-<text x="320" y="145" text-anchor="middle" class="">runtime validation</text>
-<text x="320" y="198" text-anchor="middle" class="">compiler</text>
-<circle class="dot" cx="320" cy="239" r="5" />
-<text x="320" y="269" text-anchor="middle" class="">agent</text>
-<text x="320" y="330" text-anchor="middle" class="">structural checks</text>
-<path d="M 412 239 H 566" marker-end="url(#arrow)" />
-<text x="320" y="491" text-anchor="middle" class="small">Build feedback to bring more work inside.</text>
+<ellipse class="production" cx="390" cy="180" rx="365" ry="165" />
+<ellipse class="runtime" cx="390" cy="180" rx="295" ry="128" />
+<ellipse class="structure" cx="390" cy="180" rx="225" ry="93" />
+<ellipse class="compiler" cx="390" cy="180" rx="148" ry="59" />
+<ellipse class="agent" cx="390" cy="180" rx="58" ry="25" />
+<text x="390" y="36">production evidence</text>
+<text x="390" y="75">runtime validation</text>
+<text x="390" y="110">structural checks</text>
+<text x="390" y="186">agent</text>
+<text x="390" y="224">compiler feedback</text>
+<path class="direction" d="M 469 180 H 763 M 755 175 L 763 180 L 755 185" />
+<text class="note" x="390" y="384">More useful feedback. More work carried independently.</text>
 </svg>
