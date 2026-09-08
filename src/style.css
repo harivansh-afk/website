@@ -331,7 +331,7 @@ a:hover { color: var(--fg) }
 .autonomy figcaption { margin-top: 0.75rem; font-size: 0.85em; }
 
 /* Editorial emphasis: a restrained yellow marker that wraps with the prose. */
-.autonomy mark {
+mark {
   color: var(--fg);
   background: rgb(230 194 55 / 23%);
   padding: 0.08em 0.12em;
@@ -339,5 +339,5 @@ a:hover { color: var(--fg) }
   -webkit-box-decoration-break: clone;
 }
 @media (prefers-color-scheme: light) {
-  .autonomy mark { background: rgb(250 220 75 / 42%); }
+  mark { background: rgb(250 220 75 / 42%); }
 }
