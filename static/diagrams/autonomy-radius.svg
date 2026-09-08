@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 400" role="img" aria-labelledby="title desc">
 <title id="title">The autonomy radius</title>
-<desc id="desc">Horizontal ovals surround an agent. Compiler feedback, structural checks, runtime validation and production evidence expand the work it can evaluate independently. Colors distinguish outlines; the areas remain unfilled.</desc>
+<desc id="desc">Horizontal ovals surround an agent. Compiler feedback, structural checks, runtime validation and production evidence expand the work it can evaluate independently. Neutral outlines distinguish the boundaries; the areas remain unfilled.</desc>
 <style>
-  :root { color: #1a1a1a; --gold: #967010; --green: #38816c; --blue: #4e7da5; }
+  :root { color: #1a1a1a; --gold: #968044; }
   @media (prefers-color-scheme: dark) {
-    :root { color: #f3f3ee; --gold: #e4c564; --green: #81baa4; --blue: #85abc9; }
+    :root { color: #f3f3ee; --gold: #b7a16a; }
   }
   text { fill: currentColor; font-family: monospace; font-size: 17px; text-anchor: middle; }
   ellipse, path { fill: none; stroke-width: 1.4; }
   .agent { stroke: currentColor; }
-  .compiler { stroke: var(--gold); }
-  .structure { stroke: var(--green); }
-  .runtime { stroke: var(--blue); }
-  .production { stroke: var(--blue); stroke-dasharray: 4 6; }
+  .compiler { stroke: currentColor; opacity: .75; }
+  .structure { stroke: currentColor; opacity: .6; }
+  .runtime { stroke: currentColor; opacity: .45; }
+  .production { stroke: currentColor; opacity: .35; stroke-dasharray: 4 6; }
   .direction { stroke: var(--gold); }
   .note { font-size: 14px; opacity: .7; }
 </style>

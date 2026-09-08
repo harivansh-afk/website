@@ -54,7 +54,7 @@ We have to define what the protocol promises and give the agent a way to check i
 
 <figure>
 <div class="diagram-scroll" tabindex="0" role="region" aria-label="Feedback expands the work an agent can evaluate independently.">
-<img src="/diagrams/autonomy-radius.svg?rev=7705d82d1463" width="780" height="400" alt="Feedback expands the work an agent can evaluate independently." />
+<img src="/diagrams/autonomy-radius.svg?rev=5ddb55a229c1" width="780" height="400" alt="Feedback expands the work an agent can evaluate independently." />
 </div>
 <figcaption>Figure 1. A conceptual boundary, not a measurement. Each added check makes another kind of decision available to the agent.</figcaption>
 </figure>
