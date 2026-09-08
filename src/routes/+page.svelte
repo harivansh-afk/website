@@ -68,8 +68,7 @@
     i'm a strong supporter of
     <a href="https://opensource.org/about" target="_blank" rel="noopener noreferrer"
       >open source initiative</a
-    > and self-host most of
-    <a
+    > and self-host most of&nbsp;<a
       href="https://git.harivan.sh/harivansh-afk/nix"
       target="_blank"
       rel="noopener noreferrer"

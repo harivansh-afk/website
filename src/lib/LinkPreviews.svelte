@@ -74,18 +74,16 @@
     visible = false;
   }
 
-  // body carries `zoom`; fixed-position coordinates are interpreted in the
-  // zoomed space, so translate viewport px back through the effective zoom
+  // Fixed positioning and DOM rectangles both use viewport coordinates.
   function place(a) {
     const p = pop.getBoundingClientRect();
-    const z = pop.offsetWidth ? p.width / pop.offsetWidth : 1;
     const r = a.getBoundingClientRect();
     const left = Math.max(12, Math.min(r.left, innerWidth - p.width - 12));
     let top = r.bottom + 10;
     if (top + p.height > innerHeight - 12) top = r.top - p.height - 10;
     top = Math.max(12, top);
-    pop.style.left = left / z + "px";
-    pop.style.top = top / z + "px";
+    pop.style.left = left + "px";
+    pop.style.top = top + "px";
   }
 
   async function show(a) {
@@ -159,6 +157,9 @@
           <div>
             <svg
               class="preview-hm"
+              viewBox={`0 0 ${LEFT + calendar.weeks.length * STEP} ${TOP + 7 * STEP}`}
+              style:width={`${(LEFT + calendar.weeks.length * STEP) / 16}rem`}
+              style:height={`${(TOP + 7 * STEP) / 16}rem`}
               width={LEFT + calendar.weeks.length * STEP}
               height={TOP + 7 * STEP}
             >

@@ -177,8 +177,8 @@
     aspect-ratio: 16 / 9;
     margin: 0;
     padding: 0;
-    border: 1px solid color-mix(in srgb, var(--muted) 45%, transparent);
-    border-radius: 3px;
+    border: 0.0625rem solid color-mix(in srgb, var(--muted) 45%, transparent);
+    border-radius: 0.1875rem;
     overflow: hidden;
     background: none;
     cursor: zoom-in;
