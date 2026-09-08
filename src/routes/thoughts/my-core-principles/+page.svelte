@@ -61,8 +61,8 @@
 
 <style>
   mark {
-    background: #564b24;
-    color: var(--fg);
+    background: #302c1d;
+    color: inherit;
     padding-inline: 0.12em;
     border-radius: 0.15em;
     box-decoration-break: clone;
@@ -71,7 +71,7 @@
 
   @media (prefers-color-scheme: light) {
     mark {
-      background: #f5e7ae;
+      background: #f4efdc;
     }
   }
 </style>
