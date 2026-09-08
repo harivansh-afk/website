@@ -325,7 +325,12 @@ a:hover { color: var(--fg) }
 
 /* Article figures scroll within the prose column on narrow screens. */
 .autonomy figure { max-width: 40rem; margin: 2rem auto; }
-.autonomy .diagram-scroll { overflow-x: auto; }
+.autonomy .diagram-scroll {
+  overflow-x: auto;
+  padding: clamp(0.75rem, 2vw, 1.25rem);
+  border: 1px solid color-mix(in srgb, var(--muted) 45%, transparent);
+  border-radius: 6px;
+}
 .autonomy .diagram-scroll:focus-visible { outline: 1px solid var(--fg); outline-offset: 4px; }
 .autonomy figure img { display: block; width: 100%; min-width: 32rem; max-width: none; height: auto; }
 .autonomy figcaption { margin-top: 0.75rem; font-size: 0.85em; }
