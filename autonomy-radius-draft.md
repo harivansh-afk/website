@@ -20,7 +20,7 @@ Bad abstractions and hidden failures accumulate until ur codebase turns into chi
 
 You can keep finding these things in review but if every implementation needs you to explain what is wrong, check the fix, and interpret the result, meaning you are still in the loop of every change made to ur codebase.
 
-You can spend thousands of $ on tokens and still have every task waiting on you for approval.
+You can spend thousands of $ on tokens and <mark>still have every task waiting on you for approval</mark>.
 
 Adding more agents only makes that queue longer.
 
@@ -29,7 +29,7 @@ When we keep making the same correction, we look for a check that can make it fo
 When a feature has a difficult correctness question, we build something the agent can run to answer it.
 That work lets us hand over more of the development lifecycle without personally conducting every iteration.
 
-I call that the autonomy radius- how long can i extend an agent's leash before it needs me to provide feedback.
+I call that the autonomy radius- <mark>how long can i extend an agent's leash before it needs me to provide feedback</mark>.
 
 ## the circle is made of feedback
 
@@ -44,7 +44,7 @@ This is where the environment starts to determine how much you can delegate.
 If the benchmark produces a page of numbers that only you know how to interpret, the task still comes back to you.
 If it applies a defined acceptance rule and explains a failure, the agent has something it can work against.
 
-The feedback has to check what you care about and arrive soon enough to affect the work.
+<mark>The feedback has to check what you care about and arrive soon enough to affect the work.</mark>
 A compiler error belongs inside an implementation attempt.
 A longer simulation run can search for failures after merge and produce the next debugging task. Both are useful, on different clocks.
 
@@ -54,7 +54,7 @@ We have to define what the protocol promises and give the agent a way to check i
 
 <figure>
 <div class="diagram-scroll" tabindex="0" role="region" aria-label="Feedback expands the work an agent can evaluate independently.">
-<img src="/diagrams/autonomy-radius.svg" width="640" height="510" alt="Feedback expands the work an agent can evaluate independently." />
+<img src="/diagrams/autonomy-radius.svg?rev=7705d82d1463" width="780" height="400" alt="Feedback expands the work an agent can evaluate independently." />
 </div>
 <figcaption>Figure 1. A conceptual boundary, not a measurement. Each added check makes another kind of decision available to the agent.</figcaption>
 </figure>
@@ -69,7 +69,7 @@ let port = u16::try_from(cfg.port).unwrap_or_default();
 
 If the conversion fails, the program gets zero. An invalid configuration has become an apparently successful result. We wanted the error propagated while it still explained what went wrong.
 
-That's a concrete opinion. So is wanting named fields instead of an anonymous tuple of three integers, or wanting shared queue handling instead of another copy of the same loop. Behavioral tests alone don't express all of those decisions.
+That's a concrete opinion. So is wanting named fields instead of an anonymous tuple of three integers, or wanting shared queue handling instead of another copy of the same loop. <mark>Behavioral tests alone don't express all of those decisions.</mark>
 
 We built astlog to make structural rules executable. It runs Datalog over syntax trees, which lets us relate a call to the function containing it. Finding an `unwrap` inside a function returning `Result` is a small example of the kind of rule it can express.
 
@@ -81,7 +81,7 @@ The detector gave it somewhere to look. Choosing the abstraction was still imple
 
 These rules need maintenance too. In one case, a rule banning `mkForce` was followed by a rule catching its numeric `mkOverride` workaround. We had to close the hole in what we'd asked the checker to enforce. Each lint also gets examples it should accept and reject; a check that never fires is easy to mistake for a healthy one.
 
-A review comment helps with the change in front of you. Encoding the correction gives the next agent the same feedback.
+A review comment helps with the change in front of you. <mark>Encoding the correction gives the next agent the same feedback.</mark>
 
 ## make the code explain itself later
 
@@ -107,7 +107,7 @@ future.await?;
 
 Looking only for an instrumentation call next to `.await` would miss this. The compiler can follow the future's type through the binding.
 
-This is one reason I think about the whole lifecycle together. A check while writing code improves the evidence available when production misbehaves. By the time someone opens the trace, it's too late to record the operation we left out.
+This is one reason I think about the whole lifecycle together. <mark>A check while writing code improves the evidence available when production misbehaves.</mark> By the time someone opens the trace, it's too late to record the operation we left out.
 
 ## a harness per problem
 
@@ -119,7 +119,7 @@ Our restore drill snapshots a machine running a database workload, restores it, 
 
 The drain benchmark does something similar for performance. Its comparison command applies the ship rule from the design document. It compares matching workload shapes and refuses comparisons whose inputs don't belong together. A regression produces a failing process status, so the result can drive the next step in a workflow.
 
-Writing that comparison is engineering work. You have to decide what counts as an improvement and when the measurements are usable. Once those decisions are executable, an agent can use them on the next candidate without asking you to read another report.
+Writing that comparison is engineering work. You have to decide what counts as an improvement and when the measurements are usable. <mark>Once those decisions are executable, an agent can use them on the next candidate without asking you to read another report.</mark>
 
 That is the investment: give the agent a way to evaluate the specific thing you asked it to build. Keep the harness close enough to development that it can run it, inspect the failure, and try again.
 
@@ -149,7 +149,7 @@ A workload that killed the writer and reopened the journal caught exactly that: 
 <figcaption>Figure 4. A simplified journal showing the recorded failure. The checker retains the durable boundary across the restart.</figcaption>
 </figure>
 
-A successful append wouldn't tell you this was wrong. The checker needed to remember history across the crash. We had to encode what the sequence numbers meant and what reopening was required to preserve.
+A successful append wouldn't tell you this was wrong. <mark>The checker needed to remember history across the crash.</mark> We had to encode what the sequence numbers meant and what reopening was required to preserve.
 
 The counterexample gives us a starting point for debugging. Replay helps establish whether the mistake is in the implementation or in the workload and assertion. We also check that the workload actually reached the hazards it was meant to exercise. A fault test that never reaches its fault can give you a very reassuring result.
 
@@ -159,7 +159,7 @@ These longer searches have a different job from the checks on an individual chan
 
 When a VM operation stalls, the explanation may cross the control plane, the hypervisor, and storage. Source access lets an agent read how those components are supposed to work. It also needs evidence from the operation that stalled.
 
-Our fleet IDE puts hosts, VMs, journal output, CI runs, and agents in one place. Agents query the same operational data underneath the interface. They can investigate without waiting for us to copy logs into a conversation.
+Our fleet IDE puts hosts, VMs, journal output, CI runs, and agents in one place. <mark>Agents query the same operational data underneath the interface.</mark> They can investigate without waiting for us to copy logs into a conversation.
 
 This connects back to the tracing lint. We need to record useful evidence in the first place, then make it accessible during an investigation. Missing either end puts a person back in the loop to reconstruct what happened.
 
@@ -167,7 +167,7 @@ This connects back to the tracing lint. We need to record useful evidence in the
 
 We choose what to build and what the system must guarantee. We decide which structural opinions are worth enforcing. When a checker accepts something it shouldn't, or rejects something reasonable, we have to improve it.
 
-We also decide when the existing evidence is insufficient. A passing harness can establish a particular behavior while leaving an architectural question unanswered. That question still needs attention; running the same check again won't settle it.
+<mark>We also decide when the existing evidence is insufficient.</mark> A passing harness can establish a particular behavior while leaving an architectural question unanswered. That question still needs attention; running the same check again won't settle it.
 
 That is how I think about maintaining this codebase with three people. The feedback we build for one task remains available to the next agent. We can spend more of our time on the questions those checks don't yet answer.
 
