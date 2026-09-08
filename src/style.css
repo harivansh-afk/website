@@ -98,6 +98,7 @@ nav.side a {
 }
 nav.side a.active {
   color: var(--fg);
+  background-size: 100% 1.5px, 0 1.25px;
 }
 
 /* projects lightbox media: iphone recordings keep the screen's own rounded
