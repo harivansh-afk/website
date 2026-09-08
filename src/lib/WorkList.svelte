@@ -9,7 +9,7 @@
         data-preview="indexable">indexable</a
       >
     </span>
-    <span class="date">[summer 2026 - present]</span>
+    <span class="date">[summer 2026]</span>
   </li>
   <li>
     <span>
