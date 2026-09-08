@@ -2,9 +2,9 @@
 
 *Adapted from my talk at the YC AI unconference, August 2026.*
 
-At Indexable, we're a team of three maintaining a monorepo with over 1.5 million lines of Rust.
+At [Indexable](https://ix.dev/), we're a team of three maintaining a monorepo with over 1.5 million lines of [Rust](https://www.rust-lang.org/).
 
-We build VM infrastructure: our own hypervisor, a POSIX file system, and the replicated storage underneath it- evrything was built from scratch
+We build VM infrastructure: our own hypervisor, a [POSIX](https://pubs.opengroup.org/onlinepubs/9799919799/) file system, and the replicated storage underneath it- evrything was built from scratch
 
 Agents write code throughout this stack.
 
@@ -71,25 +71,25 @@ If the conversion fails, the program gets zero. An invalid configuration has bec
 
 That's a concrete opinion. So is wanting named fields instead of an anonymous tuple of three integers, or wanting shared queue handling instead of another copy of the same loop. <mark>Behavioral tests alone don't express all of those decisions.</mark>
 
-We built astlog to make structural rules executable. It runs Datalog over syntax trees, which lets us relate a call to the function containing it. Finding an `unwrap` inside a function returning `Result` is a small example of the kind of rule it can express.
+We built [astlog](https://github.com/indexable-inc/index) to make structural rules executable. It runs [Datalog](https://souffle-lang.github.io/tutorial) over [syntax trees](https://tree-sitter.github.io/tree-sitter/), which lets us relate a call to the function containing it. Finding an [`unwrap`](https://doc.rust-lang.org/std/result/enum.Result.html#method.unwrap) inside a function returning [`Result`](https://doc.rust-lang.org/std/result/enum.Result.html) is a small example of the kind of rule it can express.
 
 We also fingerprint syntax to detect copied code even when the variable names or constants change. New duplication counts against the change. The agent gets a failure it can address before another person has to point out the copy.
 
-Once those patterns are detectable, they can become scheduled cleanup work. Our Symphony workflows have agents find a candidate, make a change, and run the applicable checks. One example was a queue-drain loop repeated across three virtio devices. The agent pulled out the shared mechanics and left the device-specific behavior in a closure.
+Once those patterns are detectable, they can become scheduled cleanup work. Our Symphony workflows have agents find a candidate, make a change, and run the applicable checks. One example was a queue-drain loop repeated across three [virtio](https://docs.oasis-open.org/virtio/virtio/v1.3/virtio-v1.3.html) devices. The agent pulled out the shared mechanics and left the device-specific behavior in a closure.
 
 The detector gave it somewhere to look. Choosing the abstraction was still implementation work, and the resulting change still needed validation. But the whole task could run against requirements we had already established.
 
-These rules need maintenance too. In one case, a rule banning `mkForce` was followed by a rule catching its numeric `mkOverride` workaround. We had to close the hole in what we'd asked the checker to enforce. Each lint also gets examples it should accept and reject; a check that never fires is easy to mistake for a healthy one.
+These rules need maintenance too. In one case, a rule banning [`mkForce`](https://nixos.org/manual/nixos/stable/#sec-option-definitions-setting-priorities) was followed by a rule catching its numeric [`mkOverride`](https://nixos.org/manual/nixos/stable/#sec-option-definitions-setting-priorities) workaround. We had to close the hole in what we'd asked the checker to enforce. Each lint also gets examples it should accept and reject; a check that never fires is easy to mistake for a healthy one.
 
 A review comment helps with the change in front of you. <mark>Encoding the correction gives the next agent the same feedback.</mark>
 
 ## make the code explain itself later
 
-Some decisions need more than syntax. We carry a Clippy fork for checks that need the compiler's understanding of types.
+Some decisions need more than syntax. We carry a [Clippy fork](https://github.com/indexable-inc/index/tree/main/views/clippy) for checks that need the compiler's understanding of types.
 
-One of those checks is `uninstrumented_await`. Suppose a function instruments some of its asynchronous operations but leaves another one bare. The trace accounts for part of the work. Time spent waiting on the bare operation appears as an unexplained gap.
+One of those checks is [`uninstrumented_await`](https://github.com/indexable-inc/index/blob/main/views/clippy/clippy_lints/src/uninstrumented_await.rs). Suppose a function instruments some of its asynchronous operations but leaves another one bare. The trace accounts for part of the work. Time spent waiting on the bare operation appears as an unexplained gap.
 
-The lint catches that partial instrumentation. If you've decided that individual awaits need spans in a function, it asks you to finish the job. It doesn't require every function in the program to have them.
+The lint catches that partial instrumentation. If you've decided that individual awaits need [spans](https://docs.rs/tracing/latest/tracing/span/index.html) in a function, it asks you to finish the job. It doesn't require every function in the program to have them.
 
 <figure>
 <div class="diagram-scroll" tabindex="0" role="region" aria-label="Two illustrative traces: an unexplained gap becomes a named receive-body operation.">
@@ -136,7 +136,7 @@ We use the same loop for delegated work. Workers get their own snapshot-forked V
 
 A focused harness can check a known scenario. Production combines operations in orders we didn't write down. A process dies during recovery. A journal reopens between a change to memory and a change to disk.
 
-We use deterministic simulation to explore those executions under faults. A failing execution can be replayed, giving an investigation a particular sequence of events to explain.
+We use [deterministic simulation](https://antithesis.com/docs/resources/deterministic_simulation_testing/) to explore those executions under faults. A failing execution can be replayed, giving an investigation a particular sequence of events to explain.
 
 One example from the talk involved our block-volume journal. In a simplified version, each write receives a sequence number. Once the journal has made records through sequence 4 durable, reopening that history must not issue sequence 0 again.
 
