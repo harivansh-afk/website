@@ -54,7 +54,7 @@ We have to define what the protocol promises and give the agent a way to check i
 
 <figure>
 <div class="diagram-scroll" tabindex="0" role="region" aria-label="Feedback expands the work an agent can evaluate independently.">
-<img src="/diagrams/autonomy-radius.svg?rev=5ddb55a229c1" width="780" height="400" alt="Feedback expands the work an agent can evaluate independently." />
+<img src="/diagrams/autonomy-radius.svg?rev=053dbdf4311c" width="780" height="400" alt="Feedback expands the work an agent can evaluate independently." />
 </div>
 <figcaption>Figure 1. A conceptual boundary, not a measurement. Each added check makes another kind of decision available to the agent.</figcaption>
 </figure>
@@ -93,7 +93,7 @@ The lint catches that partial instrumentation. If you've decided that individual
 
 <figure>
 <div class="diagram-scroll" tabindex="0" role="region" aria-label="Two illustrative traces: an unexplained gap becomes a named receive-body operation.">
-<img src="/diagrams/missing-span.svg" width="640" height="370" alt="Two illustrative traces: an unexplained gap becomes a named receive-body operation." />
+<img src="/diagrams/missing-span.svg?rev=17e38f5a0dca" width="640" height="370" alt="Two illustrative traces: an unexplained gap becomes a named receive-body operation." />
 </div>
 <figcaption>Figure 2. The same illustrative operation, with and without a span around the wait. Widths are schematic, not measured timings.</figcaption>
 </figure>
@@ -125,7 +125,7 @@ That is the investment: give the agent a way to evaluate the specific thing you 
 
 <figure>
 <div class="diagram-scroll" tabindex="0" role="region" aria-label="An agent revises a candidate against a harness; failures return evidence and passing work proceeds to the next gate.">
-<img src="/diagrams/harness-loop.svg" width="640" height="560" alt="An agent revises a candidate against a harness; failures return evidence and passing work proceeds to the next gate." />
+<img src="/diagrams/harness-loop.svg?rev=ddd7ab23f39c" width="640" height="560" alt="An agent revises a candidate against a harness; failures return evidence and passing work proceeds to the next gate." />
 </div>
 <figcaption>Figure 3. The agent can iterate against an existing contract. Humans define the requirements and revise checks that fail to capture them.</figcaption>
 </figure>
@@ -144,7 +144,7 @@ A workload that killed the writer and reopened the journal caught exactly that: 
 
 <figure>
 <div class="diagram-scroll" tabindex="0" role="region" aria-label="A journal flushes through sequence 4, restarts, and incorrectly acknowledges sequence 0.">
-<img src="/diagrams/journal-history.svg" width="640" height="510" alt="A journal flushes through sequence 4, restarts, and incorrectly acknowledges sequence 0." />
+<img src="/diagrams/journal-history.svg?rev=4035098fb52c" width="640" height="510" alt="A journal flushes through sequence 4, restarts, and incorrectly acknowledges sequence 0." />
 </div>
 <figcaption>Figure 4. A simplified journal showing the recorded failure. The checker retains the durable boundary across the restart.</figcaption>
 </figure>
