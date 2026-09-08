@@ -341,3 +341,9 @@ mark {
 @media (prefers-color-scheme: light) {
   mark { background: rgb(250 220 75 / 42%); }
 }
+
+/* Syntax tokens follow the page theme; code blocks keep the shared background. */
+.shiki, .shiki span { color: var(--shiki-dark); }
+@media (prefers-color-scheme: light) {
+  .shiki, .shiki span { color: var(--shiki-light); }
+}
