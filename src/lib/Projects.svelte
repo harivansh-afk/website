@@ -23,7 +23,7 @@
       height: 1280,
       phone: true,
       contain: true,
-      desc: "Remember when, where you who you met: never forget someone again",
+      desc: "Remember when, where and who you met. Never forget someone again",
     },
     {
       name: "Einstein AI",
