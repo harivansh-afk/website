@@ -90,7 +90,8 @@ nav.side {
   width: var(--side, 8rem);
 }
 nav.side a {
-  background-image: none;
+  background-origin: content-box;
+  background-clip: content-box;
   width: fit-content;
   padding-left: 0.75rem;
   line-height: 1.4;
