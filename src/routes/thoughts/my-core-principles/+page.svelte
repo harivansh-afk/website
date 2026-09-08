@@ -13,7 +13,7 @@
       <h1>{title}</h1>
       <p class="meta">May 2025</p>
     </header>
-    <ul>
+    <ol>
       <li>
         How you do anything is how you do everything.
       </li>
@@ -55,6 +55,6 @@
         and build your character, pick your hill and die on it proudly.
       </li>
       <li>The grass is greener where you decide to water it.</li>
-    </ul>
+    </ol>
   </article>
 </main>
