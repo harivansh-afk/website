@@ -212,6 +212,9 @@ p > code {
   background: color-mix(in srgb, var(--fg) 10%, transparent);
 }
 pre {
+  width: max-content;
+  max-width: 100%;
+  box-sizing: border-box;
   overflow-x: auto;
   margin-block: 1.5rem;
   padding: 1rem;

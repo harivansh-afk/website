@@ -1,19 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 400" role="img" aria-labelledby="title desc">
 <title id="title">The autonomy radius</title>
-<desc id="desc">Horizontal ovals surround an agent. Compiler feedback, structural checks, runtime validation and production evidence expand the work it can evaluate independently. Neutral outlines distinguish the boundaries; the areas remain unfilled.</desc>
+<desc id="desc">Horizontal ovals surround an agent. Compiler feedback, structural checks, runtime validation and production evidence expand the work it can evaluate independently. A muted blue outline emphasizes available compiler feedback and the outward direction; other boundaries remain neutral and unfilled.</desc>
 <style>
-  :root { color: #1a1a1a; --gold: #968044; }
+  :root { color: #1a1a1a; --accent: #52778c; }
   @media (prefers-color-scheme: dark) {
-    :root { color: #f3f3ee; --gold: #b7a16a; }
+    :root { color: #f3f3ee; --accent: #8daab9; }
   }
   text { fill: currentColor; font-family: monospace; font-size: 17px; text-anchor: middle; }
   ellipse, path { fill: none; stroke-width: 1.4; }
   .agent { stroke: currentColor; }
-  .compiler { stroke: currentColor; opacity: .75; }
+  .compiler { stroke: var(--accent); }
   .structure { stroke: currentColor; opacity: .6; }
   .runtime { stroke: currentColor; opacity: .45; }
   .production { stroke: currentColor; opacity: .35; stroke-dasharray: 4 6; }
-  .direction { stroke: currentColor; opacity: .65; }
+  .direction { stroke: var(--accent); }
   .note { font-size: 14px; opacity: .7; }
 </style>
 <ellipse class="production" cx="390" cy="180" rx="365" ry="165" />
