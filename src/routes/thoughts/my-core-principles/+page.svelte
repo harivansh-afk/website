@@ -58,20 +58,3 @@
     </ol>
   </article>
 </main>
-
-<style>
-  mark {
-    background: #302c1d;
-    color: inherit;
-    padding-inline: 0.12em;
-    border-radius: 0.15em;
-    box-decoration-break: clone;
-    -webkit-box-decoration-break: clone;
-  }
-
-  @media (prefers-color-scheme: light) {
-    mark {
-      background: #f4efdc;
-    }
-  }
-</style>
