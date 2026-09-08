@@ -13,7 +13,7 @@
   .structure { stroke: currentColor; opacity: .6; }
   .runtime { stroke: currentColor; opacity: .45; }
   .production { stroke: currentColor; opacity: .35; stroke-dasharray: 4 6; }
-  .direction { stroke: var(--gold); }
+  .direction { stroke: currentColor; opacity: .65; }
   .note { font-size: 14px; opacity: .7; }
 </style>
 <ellipse class="production" cx="390" cy="180" rx="365" ry="165" />
