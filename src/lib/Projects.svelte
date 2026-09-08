@@ -119,6 +119,7 @@
         <button
           class="tile"
           class:contain={p.contain}
+          style:--media-ratio={p.width / p.height}
           onclick={() => (expanded = p)}
           tabindex="-1"
           aria-hidden="true"
@@ -198,20 +199,22 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
     transition: opacity 0.3s ease;
   }
   .tile :global(.pending) {
     opacity: 0;
   }
-  /* media is centered and contained, never cropped */
+  /* Resolve both dimensions against the tile, rather than asking a flex
+     item's auto height to obey a percentage max-height (unreliable in Safari).
+     Fit the intrinsic ratio inside 90% width / 88% height of a 16:9 tile.
+     The element itself hugs the media so phone corner radii stay correct. */
   .tile.contain :global(:is(img, video)) {
-    position: relative;
-    width: auto;
-    height: auto;
-    max-width: 90%;
-    max-height: 88%;
-    object-fit: contain;
+    inset: 50% auto auto 50%;
+    width: min(90%, calc(88% * 9 / 16 * var(--media-ratio)));
+    height: min(88%, calc(90% * 16 / 9 / var(--media-ratio)));
+    transform: translate(-50%, -50%);
   }
   /* iphone recordings show the screen's own rounded corners; match them */
   .tile :global(:is(img, video).phone) {
