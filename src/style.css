@@ -301,3 +301,18 @@ a:hover { background-size: 100% 1.5px, 0 1.25px }
 .back-link { background-image: none }
 .meta { text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg) }
 a:hover { color: var(--fg) }
+
+
+/* Autonomy radius: static figures inherit the site's light/dark palette. */
+.autonomy figure { margin-block: 2rem; }
+.autonomy .diagram-scroll,
+.autonomy .table-scroll { overflow-x: auto; }
+.autonomy svg { display: block; width: 100%; min-width: 38rem; color: var(--fg); }
+.autonomy svg rect { fill: var(--bg); stroke: currentColor; }
+.autonomy svg path { stroke: currentColor; }
+.autonomy svg text { fill: currentColor; font-family: inherit; font-size: 13px; }
+.autonomy svg .arrowhead { fill: currentColor; stroke: none; }
+.autonomy figcaption { margin-top: 0.75rem; font-size: 0.85em; }
+.autonomy table { border-collapse: collapse; text-align: left; min-width: 38rem; }
+.autonomy th, .autonomy td { padding: 0.75rem; vertical-align: top; border-bottom: 1px solid var(--muted); }
+.autonomy th { color: var(--fg); font-weight: 400; }

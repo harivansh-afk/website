@@ -1,4 +1,8 @@
 <ul>
+  <li>
+    <span><a href="/thoughts/the-autonomy-radius/">the autonomy radius</a></span>
+    <span class="date">[September 2026]</span>
+  </li>
     <li>
     <span><a href="/thoughts/my-core-principles/">core principles</a></span>
     <span class="date">[May 2025]</span>
