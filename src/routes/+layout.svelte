@@ -4,8 +4,11 @@
   import { page } from "$app/state";
   import SideNav, { sections } from "$lib/SideNav.svelte";
   import LinkPreviews from "$lib/LinkPreviews.svelte";
+  import { mountInteractionSounds } from "$lib/interactionSounds.js";
 
   let { children } = $props();
+
+  onMount(mountInteractionSounds);
 
   // top-level pages share the sidebar shell; thought pages and 404 render bare
   const shell = $derived(sections.some(([, href]) => href === page.url.pathname));
