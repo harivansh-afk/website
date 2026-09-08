@@ -2,21 +2,41 @@ import clickSound from "$lib/sounds/click.mp3";
 
 export function mountInteractionSounds() {
   // react-sounds' ui/button_soft, bundled locally (see sounds/LICENSE).
-  // Reuse one player so a click cuts off hover and unlocks subsequent hovers.
-  const audio = new Audio(clickSound);
-  audio.preload = "auto";
-  audio.preservesPitch = false;
+  // Decode once. Restarting an HTMLAudioElement on every hover stalls WebKit's
+  // rendering; buffer sources keep short sounds off that media-player path.
+  const context = new AudioContext();
+  const request = new AbortController();
+  let buffer = null;
+  let playing = null;
+  let disposed = false;
+
+  fetch(clickSound, { signal: request.signal })
+    .then((response) => response.ok ? response.arrayBuffer() : Promise.reject())
+    .then((bytes) => context.decodeAudioData(bytes))
+    .then((decoded) => { if (!disposed) buffer = decoded; })
+    .catch(() => {});
 
   const interactive = 'a[href], button, input:not([type="hidden"]), select, textarea, summary, [role="button"], [data-sound-click]';
   const targetFor = (target) => target instanceof Element ? target.closest(interactive) : null;
 
   function play(hover) {
-    audio.pause();
-    audio.currentTime = 0;
-    audio.volume = hover ? 0.12 : 0.35;
-    audio.playbackRate = hover ? 1.6 : 1;
-    // Autoplay restrictions and audio failures must never affect interaction.
-    void audio.play().catch(() => {});
+    // Only a click can unlock audio. Hovers before that stay silent.
+    if (!hover && context.state === "suspended") void context.resume().catch(() => {});
+    if (!buffer || disposed || (hover && context.state !== "running")) return;
+    playing?.stop();
+    const source = context.createBufferSource();
+    const gain = context.createGain();
+    source.buffer = buffer;
+    source.playbackRate.value = hover ? 1.6 : 1;
+    gain.gain.value = hover ? 0.12 : 0.35;
+    source.connect(gain).connect(context.destination);
+    source.onended = () => {
+      source.disconnect();
+      gain.disconnect();
+      if (playing === source) playing = null;
+    };
+    playing = source;
+    source.start();
   }
 
   function click(event) {
@@ -40,6 +60,9 @@ export function mountInteractionSounds() {
   return () => {
     document.removeEventListener("click", click, true);
     document.removeEventListener("pointerover", hover, true);
-    audio.pause();
+    disposed = true;
+    request.abort();
+    playing?.stop();
+    void context.close().catch(() => {});
   };
 }
