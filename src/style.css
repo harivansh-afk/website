@@ -8,6 +8,11 @@
   --bg: #0d0d0b;
   --fg: #f3f3ee;
   --muted: hsl(45 5% 65%);
+  --underline-thickness: 1.25px;
+  --underline-dash: 2.5px;
+  --underline-inset: 2px;
+  --underline-padding: 3px;
+  --underline-duration: 0.25s;
   color-scheme: dark;
 }
 
@@ -90,15 +95,14 @@ nav.side {
   width: var(--side, 8rem);
 }
 nav.side a {
-  background-origin: content-box;
-  background-clip: content-box;
+  background-image: none;
   width: fit-content;
   padding-left: 0.75rem;
+  padding-bottom: 0;
   line-height: 1.4;
 }
 nav.side a.active {
   color: var(--fg);
-  background-size: 100% 1.5px, 0 1.25px;
 }
 
 /* projects lightbox media: iphone recordings keep the screen's own rounded
@@ -218,25 +222,39 @@ pre code {
   padding: 0;
   background: transparent;
 }
-/* dashed underline that fills solid left-to-right on hover. complementary
-   layers: the solid grows from the left while the dashed layer, anchored
-   right, shrinks by the same amount - the dashes slide as they retreat.
-   the solid is 1.5px (dashes are 1.25px) so it swallows the one-device-pixel row
-   mismatch between gradient types under the body zoom's fractional scaling */
+/* Paint inside the inline text box, leaving room below the stroke so fractional
+   pixel snapping cannot clip its bottom edge. Sidebar labels use the same box
+   as prose links. Both layers have the same thickness; the right-anchored
+   dashes slide as they shrink and the solid grows from the left. */
 a {
   color: inherit;
   text-decoration: none;
+}
+a, .link-label {
+  padding-bottom: var(--underline-padding);
   background-image:
     linear-gradient(currentColor, currentColor),
-    repeating-linear-gradient(to right, currentColor 0 3px, transparent 3px 6px);
+    repeating-linear-gradient(to right,
+      currentColor 0 var(--underline-dash),
+      transparent var(--underline-dash) calc(2 * var(--underline-dash)));
   background-repeat: no-repeat;
-  background-position: 0 100%, 100% 100%;
-  background-size: 0 1.5px, 100% 1.25px;
-  transition: background-size 0.25s ease;
+  background-position:
+    0 calc(100% - var(--underline-inset)),
+    100% calc(100% - var(--underline-inset));
+  background-size: 0 var(--underline-thickness), 100% var(--underline-thickness);
+  transition: background-size var(--underline-duration) ease;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
-a:hover { background-size: 100% 1.5px, 0 1.25px }
+a:is(:hover, :focus-visible, [aria-current="page"]),
+a:is(:hover, :focus-visible, [aria-current="page"]) .link-label {
+  background-size: 100% var(--underline-thickness), 0 var(--underline-thickness);
+}
+
+/* Desktop's 1.2 zoom turns 2.5px dashes into 3px; mobile is unscaled. */
+@media (max-width: 640px) {
+  :root { --underline-dash: 3px; }
+}
 
 /* link previews: hover popover, desktop only. images are bare (no chrome);
    the text heatmap keeps a quiet box so it stays legible over the page */

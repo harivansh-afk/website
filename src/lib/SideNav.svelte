@@ -18,7 +18,7 @@
     <a
       {href}
       class:active={page.url.pathname === href}
-      aria-current={page.url.pathname === href ? "page" : undefined}>{name}</a
+      aria-current={page.url.pathname === href ? "page" : undefined}><span class="link-label">{name}</span></a
     >
   {/each}
 </nav>
