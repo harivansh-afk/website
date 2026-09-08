@@ -2,35 +2,55 @@
 
 *Adapted from my talk at the YC AI unconference, August 2026.*
 
-At Indexable, we're a team of three maintaining a monorepo with over 1.5 million lines of Rust. We build VM infrastructure: our own hypervisor, a POSIX file system, and the replicated storage underneath it.
+At Indexable, we're a team of three maintaining a monorepo with over 1.5 million lines of Rust.
+
+We build VM infrastructure: our own hypervisor, a POSIX file system, and the replicated storage underneath it- evrything was built from scratch
 
 Agents write code throughout this stack.
 
-And yes, there are parts of the codebase we don't read and don't understand in detail. We still need to understand what those components must guarantee and how to check those guarantees.
+And yes, there are parts of the codebase we don't read and don't understand in detail.
+We still need to understand what those components must guarantee and how to check those guarantees.
 
-This takes work to make reasonable when real customers depend on it.
+This takes work to make reasonable when real people depend on it.
 
-The code an agent produces can pass all your integration tests and still be a heap of shit to maintain. Every change leaves behind patterns the next agent will follow. Bad abstractions and hidden failures accumulate unless something keeps pushing back.
+The code an agent produces can pass all your integration tests and still be a heap of shit to maintain/change.
+Every change leaves behind patterns the next agent will follow.
+Bad abstractions and hidden failures accumulate until ur codebase turns into chicken-scratch !
+(yes even with models like Fable 5.1 and GPT 6)
 
-You can keep finding these things in review. But if every implementation needs you to explain what is wrong, check the fix, and interpret the result, you are still in the loop of every task. You can spend thousands on tokens and still have every task waiting on you.
+You can keep finding these things in review but if every implementation needs you to explain what is wrong, check the fix, and interpret the result, meaning you are still in the loop of every change made to ur codebase.
 
-Adding more agents makes that queue longer.
+You can spend thousands of $ on tokens and still have every task waiting on you for approval.
 
-So a lot of our engineering time goes into building the feedback around them. When we keep making the same correction, we look for a check that can make it for us. When a feature has a difficult correctness question, we build something the agent can run to answer it. That work lets us hand over more of the development lifecycle without personally conducting every iteration.
+Adding more agents only makes that queue longer.
 
-I call that the autonomy radius: how much work an agent can carry before it needs fresh judgment from us.
+So a lot of our engineering time goes into building the feedback around them.
+When we keep making the same correction, we look for a check that can make it for us.
+When a feature has a difficult correctness question, we build something the agent can run to answer it.
+That work lets us hand over more of the development lifecycle without personally conducting every iteration.
+
+I call that the autonomy radius- how long can i extend an agent's leash before it needs me to provide feedback.
 
 ## the circle is made of feedback
 
-The compiler gives an agent a useful place to start. Write code, compile it, inspect the error, try again. The agent can complete that loop without asking you whether the code compiled.
+The compiler gives an agent a useful place to start.
+Write code, compile it, inspect the error, try again.
+The agent can complete loop against this pretty comfortably.
 
-Now ask whether a snapshot can restore a working database, or whether a storage optimization actually improved throughput. The agent needs a way to observe those things too. Reading the implementation again won't tell it what happened when the machine was restored.
+Now ask whether a snapshot can restore a working database, or whether a storage optimization actually improved throughput. The agent needs a way to observe those things too.
+Reading the implementation again doesnt really help in cases like this.
 
-This is where the environment starts to determine how much you can delegate. If the benchmark produces a page of numbers that only you know how to interpret, the task still comes back to you. If it applies a defined acceptance rule and explains a failure, the agent has something it can work against.
+This is where the environment starts to determine how much you can delegate.
+If the benchmark produces a page of numbers that only you know how to interpret, the task still comes back to you.
+If it applies a defined acceptance rule and explains a failure, the agent has something it can work against.
 
-The feedback has to check what you care about and arrive soon enough to affect the work. A compiler error belongs inside an implementation attempt. A longer simulation run can search for failures after merge and produce the next debugging task. Both are useful, on different clocks.
+The feedback has to check what you care about and arrive soon enough to affect the work.
+A compiler error belongs inside an implementation attempt.
+A longer simulation run can search for failures after merge and produce the next debugging task. Both are useful, on different clocks.
 
-Better models help. Asking a stronger model to reread the code still doesn't establish which writes survived a crash. We have to define what the protocol promises and give the agent a way to check it.
+Better models do help.
+Asking a stronger model to reread the code still doesn't establish which writes survived a crash.
+We have to define what the protocol promises and give the agent a way to check it if we expect it to be able to deploy to prod.
 
 <figure>
 <div class="diagram-scroll" tabindex="0" role="region" aria-label="Feedback expands the work an agent can evaluate independently.">
