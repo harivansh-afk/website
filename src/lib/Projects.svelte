@@ -98,7 +98,7 @@
     },
     {
       name: "Draw",
-      href: "https://draw.harivan.sh",
+      href: "https://git.harivan.sh/harivansh-afk/draw",
       media: "draw.mp4",
       width: 1718,
       height: 720,
