@@ -6,14 +6,6 @@
 
   const projects = [
     {
-      name: "Draw",
-      href: "https://draw.harivan.sh",
-      media: "draw.mp4",
-      width: 1718,
-      height: 720,
-      desc: "Self-hosted Excalidraw with real-time collaboration and link sharing",
-    },
-    {
       name: "Mixbridge",
       href: "https://mixbridge.app/",
       media: "mixbridge.mp4",
@@ -103,6 +95,14 @@
       height: 326,
       desc: "MacOS-native filesystem admin over HTTP",
       note: "no longer maintained",
+    },
+    {
+      name: "Draw",
+      href: "https://draw.harivan.sh",
+      media: "draw.mp4",
+      width: 1718,
+      height: 720,
+      desc: "Self-hosted Excalidraw with real-time collaboration and link sharing",
     },
   ];
 
