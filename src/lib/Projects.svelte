@@ -72,13 +72,13 @@
       desc: "Play any movie, TV-show or music video under the sun, one text away",
     },
     {
-      name: "Nap",
+      name: "Not Airplay™",
       href: "https://git.harivan.sh/harivansh-afk/nap",
       media: "nap.mp4",
       width: 360,
       height: 640,
       contain: true,
-      desc: "Not Airplay™, airplay from MacOS to Linux seamlessly",
+      desc: "Extend your Mac's display to a Linux machine",
     },
     {
       name: "Deskctl",
