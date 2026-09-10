@@ -38,8 +38,8 @@
       name: "Mux",
       href: "https://git.harivan.sh/harivansh-afk/mux",
       media: "mux.mp4",
-      width: 1280,
-      height: 830,
+      width: 1184,
+      height: 780,
       desc: "A stateless, host-agnostic, macos-native terminal multiplexing client for LibGhostty",
     },
     {
@@ -83,7 +83,6 @@
       media: "deskctl.mp4",
       width: 640,
       height: 336,
-      contain: true,
       desc: "Non-interactive x11 control CLI",
       note: "no longer maintained",
     },
@@ -91,8 +90,8 @@
       name: "BetterNAS",
       href: "https://betternas.com",
       media: "betternas.webp",
-      width: 640,
-      height: 326,
+      width: 448,
+      height: 262,
       desc: "MacOS-native filesystem admin over HTTP",
       note: "no longer maintained",
     },
@@ -100,8 +99,8 @@
       name: "Draw",
       href: "https://git.harivan.sh/harivansh-afk/draw",
       media: "draw.mp4",
-      width: 1718,
-      height: 720,
+      width: 1652,
+      height: 692,
       desc: "Self-hosted Excalidraw with real-time collaboration and link sharing",
     },
   ];
@@ -172,9 +171,11 @@
     min-width: 0;
   }
 
-  /* the tile is a bare button with one hairline border; media fills it edge
-     to edge (or sits centered inside it for .contain rows). no hover state:
-     the cursor is the affordance */
+  /* the tile is a bare button with one hairline border. landscape media
+     fills it edge to edge (object-fit: cover, so a 3:2 or 2.4:1 recording is
+     cropped to 16:9 rather than letterboxed against the page bg); portrait
+     .contain rows sit centered inside it. no hover state: the cursor is the
+     affordance */
   .tile {
     box-sizing: border-box;
     position: relative;
@@ -207,7 +208,7 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
     transition: opacity 0.3s ease;
   }
