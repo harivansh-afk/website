@@ -40,6 +40,7 @@
       media: "mux.mp4",
       width: 1184,
       height: 780,
+      pos: "bottom", // keep the mux status bar; the top is scrolling terminal text
       desc: "A stateless, host-agnostic, macos-native terminal multiplexing client for LibGhostty",
     },
     {
@@ -48,6 +49,7 @@
       media: "pierrejo.mp4",
       width: 1280,
       height: 894,
+      pos: "top", // keep the review header intact
       desc: "Beautiful, instantaneous diff viewing for Forgejo",
     },
     {
@@ -56,6 +58,7 @@
       media: "agentcomputer.mp4",
       width: 1280,
       height: 782,
+      pos: "top",
       desc: "Isolated cloud computers for AI-agents",
       note: "no longer maintained",
     },
@@ -92,6 +95,7 @@
       media: "betternas.mp4",
       width: 1280,
       height: 800,
+      pos: "top", // keep the browser toolbar intact
       desc: "MacOS-native filesystem admin over HTTP",
       note: "no longer maintained",
     },
@@ -127,6 +131,7 @@
           class="tile"
           class:contain={p.contain}
           style:--media-ratio={p.width / p.height}
+          style:--media-pos={p.pos ?? "center"}
           onclick={() => (expanded = p)}
           tabindex="-1"
           aria-hidden="true"
@@ -173,9 +178,10 @@
 
   /* the tile is a bare button with one hairline border. landscape media
      fills it edge to edge (object-fit: cover, so a 3:2 or 2.4:1 recording is
-     cropped to 16:9 rather than letterboxed against the page bg); portrait
-     .contain rows sit centered inside it. no hover state: the cursor is the
-     affordance */
+     cropped to 16:9 rather than letterboxed against the page bg); a row's
+     `pos` anchors the crop so app chrome (a header bar, a status bar) is kept
+     whole rather than sliced. portrait .contain rows sit centered inside it.
+     no hover state: the cursor is the affordance */
   .tile {
     box-sizing: border-box;
     position: relative;
@@ -209,7 +215,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: var(--media-pos, center);
     transition: opacity 0.3s ease;
   }
   .tile :global(.pending) {
