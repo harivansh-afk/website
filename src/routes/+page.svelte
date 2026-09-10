@@ -33,7 +33,7 @@
   <p>
     just before that, i was an early employee at
     <a
-      href="https://www.linkedin.com/company/phia-co/"
+      href="https://www.phia.com"
       target="_blank"
       rel="noopener noreferrer"
       data-preview="phia">phia</a
