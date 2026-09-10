@@ -78,7 +78,7 @@
       width: 360,
       height: 640,
       contain: true,
-      desc: "Extend your Mac's display to a Linux machine",
+      desc: "Extend your Mac's display to a Linux machine (realtime)",
     },
     {
       name: "Deskctl",
