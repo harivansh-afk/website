@@ -1,7 +1,7 @@
 <script module>
   // media lives in static/previews (shared with the hover previews); bump
   // when regenerating clips: static/ assets are CDN-cached immutably
-  const V = "15";
+  const V = "16";
 </script>
 
 <script>
