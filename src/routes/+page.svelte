@@ -16,12 +16,12 @@
   <p>Hey, i'm Hari</p>
 
   <p>
-    i'm a 20 y/o software engineer.<br />
+    i'm a 20 y/o fourth year at the University Of Virginia<br />
     i enjoy building performant distributed systems and designing beautiful consumer experiences
   </p>
 
   <p>
-    i'm currently a fourth year student at the University Of Virginia and Founding Engineer at
+    i'm a Founding Engineer at
     <a href="https://ix.dev" target="_blank" rel="noopener noreferrer" data-preview="ix"
       >indexable</a
     >
@@ -38,7 +38,7 @@
       rel="noopener noreferrer"
       data-preview="phia">phia</a
     >, where i led automation system development<br />
-    in my 9 months there, we went from 0 &rarr; 1M users and raised $35M
+    in my 9 months there, we went from 0 &rarr; 1M users and raised $40M
   </p>
 
   <p>
