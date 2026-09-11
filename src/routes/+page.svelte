@@ -99,7 +99,7 @@
       <WorkList />
     </section>
     <section>
-      <h2>projects</h2>
+      <h2>software</h2>
       <Projects lazy />
     </section>
     <section>

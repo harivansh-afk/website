@@ -2,7 +2,7 @@
   // the top-level pages that share the sidebar shell, in nav order
   export const sections = [
     ["about", "/"],
-    ["projects", "/projects/"],
+    ["software", "/projects/"],
     ["work", "/work/"],
     ["thoughts", "/thoughts/"],
     ["research", "/research/"],

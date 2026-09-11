@@ -3,7 +3,7 @@
   import Projects from "$lib/Projects.svelte";
 </script>
 
-<Seo title="projects" description="things i've built" />
+<Seo title="software" description="things i've built" />
 
 <main class="projects">
   <section>
