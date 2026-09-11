@@ -1,6 +1,7 @@
 <script>
   import Seo from "$lib/Seo.svelte";
   import Projects from "$lib/Projects.svelte";
+  import ProjectsList from "$lib/ProjectsList.svelte";
   import WorkList from "$lib/WorkList.svelte";
   import ThoughtsList from "$lib/ThoughtsList.svelte";
   import ResearchList from "$lib/ResearchList.svelte";
@@ -101,6 +102,10 @@
     <section>
       <h2>software</h2>
       <Projects lazy />
+    </section>
+    <section>
+      <h2>projects</h2>
+      <ProjectsList />
     </section>
     <section>
       <h2>thoughts</h2>

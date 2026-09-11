@@ -72,7 +72,7 @@ main.thought {
   margin-inline: auto;
   padding: 0;
 }
-.page main.projects {
+.page main.software {
   max-width: 72rem;
 }
 .page main > :first-child {
