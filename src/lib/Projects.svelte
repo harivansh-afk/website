@@ -21,7 +21,6 @@
       media: "touchtips.mp4",
       width: 1920,
       height: 1080,
-      contain: true,
       desc: "Remember when, where and who you met."
     },
     {
