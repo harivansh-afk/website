@@ -328,7 +328,7 @@ a:hover { color: var(--fg) }
 
 
 /* Article figures scroll within the prose column on narrow screens. */
-.autonomy figure { max-width: 40rem; margin: 2rem auto; }
+.autonomy figure { margin: 2rem 0; }
 .autonomy .diagram-scroll {
   overflow-x: auto;
   padding: clamp(0.75rem, 2.4vw, 1.25rem);
