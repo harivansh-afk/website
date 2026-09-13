@@ -19,9 +19,8 @@
       name: "TouchTips",
       href: "https://touchtips.app",
       media: "touchtips.mp4",
-      width: 588,
-      height: 1280,
-      phone: true,
+      width: 1920,
+      height: 1080,
       contain: true,
       desc: "Remember when, where and who you met."
     },
