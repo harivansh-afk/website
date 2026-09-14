@@ -13,8 +13,3 @@
   <meta name="robots" content="noindex" />
   <meta http-equiv="refresh" content={`0;url=${bookingUrl}`} />
 </svelte:head>
-
-<main>
-  <h1>Book a time</h1>
-  <p>Redirecting to my booking page. <a href={bookingUrl}>Continue to Cal.com</a>.</p>
-</main>
