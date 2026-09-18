@@ -1,6 +1,6 @@
 <script module>
   // bump when regenerating shots: static/ assets are CDN-cached immutably
-  const IMG_V = "10";
+  const IMG_V = "11";
   const imgSrc = (name) => `/previews/${name}.webp?v=${IMG_V}`;
 </script>
 
