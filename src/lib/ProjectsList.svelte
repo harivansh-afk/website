@@ -1,6 +1,13 @@
 <ul>
   <li>
-    <span><a href="https://uva.builders" target="_blank" rel="noopener noreferrer">uva.builders</a></span>
+    <span>
+      <a
+        href="https://uva.builders"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-preview="uva-builders">uva.builders</a
+      >
+    </span>
     <span class="date">[fall 2026]</span>
   </li>
   <li>
