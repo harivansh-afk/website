@@ -13,18 +13,6 @@
   </li>
   <li>
     <span>
-      founding engineer,
-      <a
-        href="https://companion.ai"
-        target="_blank"
-        rel="noopener noreferrer"
-        data-preview="companion">companion</a
-      >
-    </span>
-    <span class="date">[spring 2026]</span>
-  </li>
-  <li>
-    <span>
       software engineer,
       <a
         href="https://www.linkedin.com/company/phia-co/"
