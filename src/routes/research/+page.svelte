@@ -3,7 +3,7 @@
   import ResearchList from "$lib/ResearchList.svelte";
 </script>
 
-<Seo title="research" description="research on storage systems and low-latency trading" />
+<Seo title="research" description="research on low-latency storage systems" />
 
 <main>
   <section>
