@@ -28,14 +28,14 @@
       web developer,
       <a href="https://unikove.com/" target="_blank" rel="noopener noreferrer">unikove</a>
     </span>
-    <span class="date">[summer 2024]</span>
+    <span class="date">[summer 2023]</span>
   </li>
   <li>
     <span>
       backend engineer,
       <a href="https://www.moglix.com/" target="_blank" rel="noopener noreferrer">moglix</a>
     </span>
-    <span class="date">[summer 2023]</span>
+    <span class="date">[summer 2022]</span>
   </li>
 </ul>
 
