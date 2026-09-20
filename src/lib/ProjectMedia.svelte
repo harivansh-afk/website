@@ -26,7 +26,6 @@
   let loaded = $state(!thumb);
   let pending = $state(false); // client-only, so no-js visitors still see media
   let waiting = $state(true);
-  let downloading = $state(true);
   let play = $state(() => {});
 
   function preload(node) {
@@ -34,7 +33,7 @@
     let objectURL;
     play = () => {
       controller.abort();
-      downloading = waiting = false;
+      waiting = false;
       node.play().catch(() => (waiting = true));
     };
     // preload="auto" is only a hint; a complete blob guarantees the full clip.
@@ -47,7 +46,7 @@
         node.src = objectURL = URL.createObjectURL(blob);
         play();
       } catch {
-        downloading = false; // streaming remains available if preloading fails
+        // The play button still allows streaming if preloading fails.
       }
     })();
     return { destroy() {
@@ -106,11 +105,10 @@
   <video {src} {width} {height} class:phone preload="metadata" use:preload muted loop playsinline></video>
   {#if waiting}
     <button
-      class="video-loading"
-      class:downloading
-      aria-label={downloading ? "Loading video; play now" : "Play video"}
+      class="video-play"
+      aria-label="Play video"
       onclick={(event) => { event.stopPropagation(); play(); }}
-    ></button>
+    >▶︎</button>
   {/if}
 {:else if thumb}
   <img
@@ -129,20 +127,16 @@
 {/if}
 
 <style>
-  .video-loading {
+  .video-play {
     position: absolute;
-    width: 2rem;
-    height: 2rem;
-    padding: 0;
-    border: 2px solid color-mix(in srgb, var(--fg) 25%, transparent);
-    border-top-color: var(--fg);
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0 0 0 0.1em;
+    border: 0;
     border-radius: 50%;
-    background: none;
+    background: var(--bg);
+    color: var(--fg);
+    font-size: 1.25rem;
     cursor: pointer;
-  }
-  .video-loading.downloading { animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @media (prefers-reduced-motion: reduce) {
-    .video-loading.downloading { animation: none; }
   }
 </style>
