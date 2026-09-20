@@ -49,7 +49,7 @@ main {
 
 main.thought {
   max-width: 60rem;
-  font-size: 2em;
+  font-size: 1.25rem;
 }
 
 /* top-level pages: the sidebar nav is pinned to the left edge of the viewport
@@ -151,6 +151,9 @@ main.not-found {
   body {
     font-size: 13px;
     line-height: 1.45;
+  }
+  main.thought {
+    font-size: 1.125rem;
   }
   main {
     padding: 1.5rem 16px;
