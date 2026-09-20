@@ -105,9 +105,12 @@
 {:else if video}
   <video {src} {width} {height} class:phone preload="metadata" use:preload muted loop playsinline></video>
   {#if waiting}
-    <button class="video-loading" onclick={(event) => { event.stopPropagation(); play(); }}>
-      {downloading ? "Loading… · Play now" : "Play now"}
-    </button>
+    <button
+      class="video-loading"
+      class:downloading
+      aria-label={downloading ? "Loading video; play now" : "Play video"}
+      onclick={(event) => { event.stopPropagation(); play(); }}
+    ></button>
   {/if}
 {:else if thumb}
   <img
@@ -128,12 +131,18 @@
 <style>
   .video-loading {
     position: absolute;
-    padding: 0.6rem 1rem;
-    border: 1px solid var(--muted);
-    border-radius: 0.1875rem;
-    background: var(--bg);
-    color: var(--fg);
-    font: inherit;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 2px solid color-mix(in srgb, var(--fg) 25%, transparent);
+    border-top-color: var(--fg);
+    border-radius: 50%;
+    background: none;
     cursor: pointer;
+  }
+  .video-loading.downloading { animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    .video-loading.downloading { animation: none; }
   }
 </style>
