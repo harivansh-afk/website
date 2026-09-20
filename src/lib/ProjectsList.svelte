@@ -10,28 +10,6 @@
     </span>
     <span class="date">[fall 2026]</span>
   </li>
-  <li>
-    <span>
-      <a
-        href="https://companion.ai"
-        target="_blank"
-        rel="noopener noreferrer"
-        data-preview="companion">companion.ai</a
-      >
-    </span>
-    <span class="date">[spring 2026]</span>
-  </li>
-  <li>
-    <span>
-      <a
-        href="https://dueflow.co"
-        target="_blank"
-        rel="noopener noreferrer"
-        data-preview="dueflow">dueflow.co</a
-      >
-    </span>
-    <span class="date">[fall 2025]</span>
-  </li>
 </ul>
 
 <style>
