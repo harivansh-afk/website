@@ -127,6 +127,9 @@ nav.side a.active {
   width: auto;
   height: auto;
 }
+.lightbox video {
+  width: min(75vw, calc(75svh * var(--media-ratio)));
+}
 main.not-found {
   display: flex;
   flex-direction: column;

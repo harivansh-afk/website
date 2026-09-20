@@ -154,7 +154,7 @@
 
 {#if expanded}
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-  <div class="lightbox" data-sound-click onclick={() => (expanded = null)} aria-hidden="true">
+  <div class="lightbox" style:--media-ratio={expanded.width / expanded.height} data-sound-click onclick={() => (expanded = null)}>
     <ProjectMedia
       media={expanded.media}
       width={expanded.width}

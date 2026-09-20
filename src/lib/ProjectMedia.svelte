@@ -13,8 +13,8 @@
   // media covers it, so it only ever shows while pixels are missing (slow
   // network or a failed load) and a cached thumb never flashes it. media
   // that arrives late fades in; media that is ready at hydration renders
-  // instantly. the lightbox variant plays immediately, no skeleton (the
-  // thumb already warmed the cache).
+  // instantly. the lightbox downloads the full clip before playing, unless
+  // the viewer chooses to stream it immediately.
   // lazy thumbs (the index's mobile-only sections) defer everything to the
   // viewport: display:none on desktop means they never intersect, so the
   // hidden rows cost zero bytes there
@@ -25,6 +25,36 @@
   // svelte-ignore state_referenced_locally -- deliberate: lightbox media starts loaded
   let loaded = $state(!thumb);
   let pending = $state(false); // client-only, so no-js visitors still see media
+  let waiting = $state(true);
+  let downloading = $state(true);
+  let play = $state(() => {});
+
+  function preload(node) {
+    const controller = new AbortController();
+    let objectURL;
+    play = () => {
+      controller.abort();
+      downloading = waiting = false;
+      node.play().catch(() => (waiting = true));
+    };
+    // preload="auto" is only a hint; a complete blob guarantees the full clip.
+    (async () => {
+      try {
+        const response = await fetch(node.src, { signal: controller.signal });
+        if (!response.ok) throw new Error("Video download failed");
+        const blob = await response.blob();
+        if (controller.signal.aborted) return;
+        node.src = objectURL = URL.createObjectURL(blob);
+        play();
+      } catch {
+        downloading = false; // streaming remains available if preloading fails
+      }
+    })();
+    return { destroy() {
+      controller.abort();
+      if (objectURL) URL.revokeObjectURL(objectURL);
+    } };
+  }
 
   function watch(node) {
     const ready = video ? node.readyState >= 2 : node.complete && node.naturalWidth > 0;
@@ -73,7 +103,12 @@
     playsinline
   ></video>
 {:else if video}
-  <video {src} {width} {height} class:phone autoplay muted loop playsinline></video>
+  <video {src} {width} {height} class:phone preload="metadata" use:preload muted loop playsinline></video>
+  {#if waiting}
+    <button class="video-loading" onclick={(event) => { event.stopPropagation(); play(); }}>
+      {downloading ? "Loading… · Play now" : "Play now"}
+    </button>
+  {/if}
 {:else if thumb}
   <img
     {src}
@@ -89,3 +124,16 @@
 {:else}
   <img {src} {width} {height} class:phone alt="" />
 {/if}
+
+<style>
+  .video-loading {
+    position: absolute;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--muted);
+    border-radius: 0.1875rem;
+    background: var(--bg);
+    color: var(--fg);
+    font: inherit;
+    cursor: pointer;
+  }
+</style>
