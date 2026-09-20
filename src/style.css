@@ -49,6 +49,7 @@ main {
 
 main.thought {
   max-width: 60rem;
+  font-size: 2em;
 }
 
 /* top-level pages: the sidebar nav is pinned to the left edge of the viewport
