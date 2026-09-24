@@ -108,7 +108,11 @@
       class="video-play"
       aria-label="Play video"
       onclick={(event) => { event.stopPropagation(); play(); }}
-    >▶︎</button>
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M8 5v14l12-7z" fill="currentColor" />
+      </svg>
+    </button>
   {/if}
 {:else if thumb}
   <img
@@ -129,14 +133,19 @@
 <style>
   .video-play {
     position: absolute;
+    display: grid;
+    place-items: center;
     width: 2.5rem;
     height: 2.5rem;
-    padding: 0 0 0 0.1em;
+    padding: 0;
     border: 0;
     border-radius: 50%;
     background: var(--bg);
     color: var(--fg);
-    font-size: 1.25rem;
     cursor: pointer;
+  }
+  .video-play svg {
+    width: 1.25rem;
+    height: 1.25rem;
   }
 </style>

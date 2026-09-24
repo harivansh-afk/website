@@ -105,6 +105,9 @@ nav.side a {
 nav.side a.active {
   color: var(--fg);
 }
+nav.side .social-start {
+  margin-top: 1lh;
+}
 
 /* projects lightbox media: iphone recordings keep the screen's own rounded
    corners (radius ≈ 14% of screen width, kept circular via the slash syntax) */
@@ -175,7 +178,7 @@ main.not-found {
   .page main ul {
     padding-left: 0;
   }
-  /* mobile has no nav: the index is one scrollable page with every section */
+  /* Keep the site navigable now that the landing page has no content. */
   .page {
     display: block;
     width: auto;
@@ -183,7 +186,11 @@ main.not-found {
     padding: 1.5rem 16px;
   }
   nav.side {
-    display: none;
+    position: static;
+    translate: none;
+    font-size: inherit;
+    width: auto;
+    margin-bottom: 1.5rem;
   }
 }
 
