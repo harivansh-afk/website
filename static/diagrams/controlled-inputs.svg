@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 320" role="img" aria-labelledby="title desc">
+<title id="title">Change who supplies the messages</title>
+<desc id="desc">Either a real I/O worker or a simulator feeds messages into the same incoming queue. The same program logic processes them. The simulator chooses the messages and time so an execution can be repeated.</desc>
+<style>
+  :root { color: #1a1a1a; --evidence: #52778c; }
+  @media (prefers-color-scheme: dark) { :root { color: #f3f3ee; --evidence: #8daab9; } }
+  text { fill: currentColor; font-family: monospace; font-size: 17px; text-anchor: middle; }
+  .small { font-size: 14px; }
+  rect, path, line { stroke: currentColor; stroke-width: 1.3; fill: none; }
+  .evidence { stroke: var(--evidence); }
+  .slot { opacity: .4; }
+</style>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 9 5 1 9" /></marker>
+  <marker id="arrow-evidence" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="evidence" d="M1 1 9 5 1 9" /></marker>
+</defs>
+
+<rect x="20" y="25" width="204" height="80" />
+<text x="122" y="58">I/O worker</text>
+<text class="small" x="122" y="82">real replies</text>
+
+<text class="small" x="122" y="153">or</text>
+
+<rect class="evidence" x="20" y="197" width="204" height="80" />
+<text x="122" y="230">Simulator</text>
+<text class="small" x="122" y="254">chosen messages + time</text>
+
+<path d="M224 65H262V131H311" marker-end="url(#arrow)" />
+<path class="evidence" d="M224 237H276V173H311" marker-end="url(#arrow-evidence)" />
+
+<rect x="311" y="112" width="143" height="80" />
+<text x="382.5" y="143">Same inbox</text>
+<path class="slot" d="M311 154H454M359 154V192M406 154V192" />
+<path d="M454 152H502" marker-end="url(#arrow)" />
+
+<rect x="502" y="112" width="120" height="80" />
+<text x="562" y="143">Same</text>
+<text x="562" y="167">logic</text>
+</svg>

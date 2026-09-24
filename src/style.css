@@ -342,16 +342,16 @@ a:hover { color: var(--fg) }
 
 
 /* Article figures scroll within the prose column on narrow screens. */
-.autonomy figure { margin: 2rem 0; }
-.autonomy .diagram-scroll {
+:is(.autonomy, .sans-io) figure { margin: 2rem 0; }
+:is(.autonomy, .sans-io) .diagram-scroll {
   overflow-x: auto;
   padding: clamp(0.75rem, 2.4vw, 1.25rem);
   border: 0.0625rem solid color-mix(in srgb, var(--muted) 45%, transparent);
   border-radius: 0.375rem;
 }
-.autonomy .diagram-scroll:focus-visible { outline: 0.0625rem solid var(--fg); outline-offset: 0.25rem; }
-.autonomy figure img { display: block; width: 100%; min-width: 32rem; max-width: none; height: auto; }
-.autonomy figcaption { margin-top: 0.75rem; font-size: 0.85em; }
+:is(.autonomy, .sans-io) .diagram-scroll:focus-visible { outline: 0.0625rem solid var(--fg); outline-offset: 0.25rem; }
+:is(.autonomy, .sans-io) figure img, .sans-io svg.diagram { display: block; width: 100%; min-width: 32rem; max-width: none; height: auto; }
+:is(.autonomy, .sans-io) figcaption { margin-top: 0.75rem; font-size: 0.85em; }
 
 /* Editorial emphasis: a restrained yellow marker that wraps with the prose. */
 mark {

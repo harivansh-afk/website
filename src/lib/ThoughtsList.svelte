@@ -1,5 +1,9 @@
 <ul>
   <li>
+    <span><a href="/thoughts/sans-io/">no more async</a></span>
+    <span class="date">[September 2026]</span>
+  </li>
+  <li>
     <span><a href="/thoughts/the-autonomy-radius/">the autonomy radius</a></span>
     <span class="date">[September 2026]</span>
   </li>
