@@ -7,7 +7,7 @@
 
 <Seo
   {title}
-  description="Keeping async out of the code that makes decisions, so a failure that depends on timing can be replayed by me or by an agent."
+  description="Keeping I/O out of the code that makes decisions, so its runs can be recorded, replayed and searched, for network code and for agents."
 />
 
 <main class="thought sans-io">
@@ -19,47 +19,38 @@
     </header>
 
     <p>
-      I’ve been taking async out of the code that makes decisions. For a network
-      request, that’s the code tracking what was sent, whether a reply came back, and
-      when to retry. The sending and receiving can stay async.
+      A program can be replayed only if all its inputs are passed to it.<br />
+      Async code that makes decisions usually has two inputs that are not passed to it.<br />
+      The first is the order in which messages arrive, because the code awaits a socket.<br />
+      The second is the current time, because the code reads a clock.<br />
+      Neither can be set from outside the code.
     </p>
 
     <p>
-      When that logic awaits the network and a timer itself, the order they finish in
-      can change what it does, and I can’t choose that order when I want to reproduce
-      a failure.
+      A failure that depends on either input cannot be reproduced on demand.<br />
+      It happens on some runs and not on others.<br />
+      Rerunning the test does not show whether a change fixed it.
     </p>
 
-    <figure>
-      <!-- svelte-ignore a11y_no_noninteractive_tabindex (Keyboard users need to scroll this figure horizontally.) -->
-      <div class="diagram-scroll" tabindex="0" role="region" aria-label="The same request run twice. In run 1 the reply beats the retry deadline; in run 2 the request is sent again and two replies come back.">
-        <img src="/diagrams/reply-timing.svg?rev=c6e687b93d94" width="640" height="250" alt="The same request run twice. In run 1 the reply beats the retry deadline; in run 2 the request is sent again and two replies come back." />
-      </div>
-      <figcaption>In run 2 the reply is late, so the request goes out again and two replies come back.</figcaption>
-    </figure>
+    <h2>keep I/O out of the decision code</h2>
 
     <p>
-      So the logic only talks to the network through two queues in memory. It puts
-      <code>send 7</code> on the outgoing queue. A network worker sends it and puts
-      <code>reply 7</code> on the incoming queue.
+      A program that talks to a network does two jobs.<br />
+      It performs I/O, and it decides what to do.<br />
+      These two jobs can be separated.
     </p>
 
     <p>
-      The logic handles one message completely before it reads the next, and the
-      worker never touches its state.
+      The decision code never waits.<br />
+      It is given one event, updates its state, and returns the actions to take.<br />
+      A driver outside it does the waiting.<br />
+      The driver reads the socket and the clock, passes what it read to the decision code as events, and performs the returned actions.
     </p>
 
-    <figure>
-      <!-- svelte-ignore a11y_no_noninteractive_tabindex (Keyboard users need to scroll this figure horizontally.) -->
-      <div class="diagram-scroll" tabindex="0" role="region" aria-label="The request logic puts messages on an outgoing queue for the network worker; the worker puts replies on an incoming queue for the logic.">
-        <img src="/diagrams/message-boundary.svg?rev=401c9f05472a" width="640" height="300" alt="The request logic puts messages on an outgoing queue for the network worker; the worker puts replies on an incoming queue for the logic." />
-      </div>
-    </figure>
-
     <p>
-      This is the <a href="https://sans-io.readthedocs.io/">sans I/O</a> pattern. In
-      Rust, the retry check takes the current time as an argument instead of reading
-      a clock:
+      This is the <a href="https://sans-io.readthedocs.io/">sans I/O</a> pattern.<br />
+      Inputs such as the current time become arguments.<br />
+      In Rust, a retry check looks like this:
     </p>
 
     <div class="code-example">
@@ -67,50 +58,109 @@
     </div>
 
     <p>
-      <code>tick</code> returns an <code>Action</code> rather than sending anything, and
-      the caller puts it on the outgoing queue.
+      <code>tick</code> returns an <code>Action</code> instead of sending anything.<br />
+      Because <code>now</code> is a <code>Duration</code>, a test can pass in ten seconds and check that <code>tick</code> returns a <code>Send</code>.<br />
+      The test needs no network and does not wait ten seconds.
     </p>
 
-    <p>
-      Since <code>now</code> is just a
-      <code>Duration</code>, a test can pass ten seconds and check for a
-      <code>Send</code> without a network or a ten-second wait.
-    </p>
+    <h2>record, replay, search</h2>
 
     <p>
-      In tests I swap the network worker for a simulator. It picks which messages show
-      up and when, and skips its clock ahead to the next event instead of actually
-      waiting.
-    </p>
-
-    <p>
-      Since the logic reads one message at a time, feeding it the same messages in the
-      same order with the same times gets the same result every time.
+      Every input to the decision code arrives as an event.<br />
+      The list of events is therefore a complete record of a run.<br />
+      The same events in the same order always produce the same actions.
     </p>
 
     <figure>
       <!-- svelte-ignore a11y_no_noninteractive_tabindex (Keyboard users need to scroll this figure horizontally.) -->
-      <div class="diagram-scroll" tabindex="0" role="region" aria-label="Either the network worker or a simulator feeds the same incoming queue and the same request logic.">
-        <img src="/diagrams/controlled-inputs.svg?rev=7078c12e2773" width="640" height="320" alt="Either the network worker or a simulator feeds the same incoming queue and the same request logic." />
+      <div class="diagram-scroll" tabindex="0" role="region" aria-label="The network, the clock and the model sit outside the decision code and cross into it as recorded events; the decision code returns actions. Replaying the recording gives the same actions.">
+        <img src="/diagrams/io-boundary.svg?rev=47fe3ec0a615" width="640" height="300" alt="The network, the clock and the model sit outside the decision code and cross into it as recorded events; the decision code returns actions. Replaying the recording gives the same actions." />
       </div>
+      <figcaption>Live, events arrive whenever the network, the clock or the model produces them.<br />In replay, the same events arrive in the same order without waiting, and the same actions come out.</figcaption>
     </figure>
 
     <p>
-      So I can force run 2: the simulator just holds the reply to request 7 until after
-      the retry deadline.
+      A record can be used in three ways.<br />
+      It can be replayed, to rerun a failure exactly.<br />
+      It can be edited, to move one event and check whether the failure still happens.<br />
+      It can be generated by a simulator, which takes the place of the real network and clock.<br />
+      The simulator can drop messages, delay replies and move the clock forward.<br />
+      Because nothing waits, a simulated run takes less time than a real one.
     </p>
 
     <p>
-      A fuzzer can then throw lots of different orderings at it and check something
-      like “a request never completes twice.” When one breaks that, I save it as a test.
+      Generating records is the most useful of the three.<br />
+      A simulator can try many more orderings than anyone would write tests for.<br />
+      After each one, it checks an invariant, such as “a request never completes twice.”<br />
+      When an ordering breaks the invariant, the simulator saves it.<br />
+      The saved ordering fails the same way every time it runs.<br />
+      <a href="https://apple.github.io/foundationdb/testing.html">FoundationDB</a> and <a href="https://github.com/tigerbeetle/tigerbeetle/blob/main/docs/internals/vopr.md">TigerBeetle</a> are both tested this way.
+    </p>
+
+    <h2>agents fixing the code</h2>
+
+    <p>
+      An agent that changes code works in a loop.<br />
+      It changes something, runs a check, and reads the result.<br />
+      The loop is only as reliable as the check.<br />
+      A test that fails on some runs and passes on others gives the agent noise.<br />
+      The agent may fix something that was not broken, or accept a change because the test happened to pass.
     </p>
 
     <p>
-      That test is what I hand to an agent. It can rerun the exact failure after every
-      change, and I can move one event around to see if its explanation of the bug
-      still holds up.
+      A saved event sequence gives the same result every time it runs.<br />
+      With it, a timing bug becomes an ordinary test.<br />
+      The sequence is also short enough for the agent to read in full.
     </p>
 
+    <p>
+      The agent can also run the simulator itself.<br />
+      It can find a failing ordering, remove events until the failure stops, and save the shortest sequence that still fails.
+    </p>
+
+    <h2>agents as programs</h2>
+
+    <p>
+      An agent harness has the same structure as network code.<br />
+      It waits for model replies, tool results, user input and timeouts, and it decides what to do next.<br />
+      The same boundary applies to it.<br />
+      The core of the harness is given events: a model reply, a tool result, a user message or the current time.<br />
+      It returns actions: call the model, run a tool, or stop.
+    </p>
+
+    <p>
+      With this boundary, the model is one more input, like a socket.<br />
+      Its output cannot be made deterministic, but it can be recorded where it enters the harness.<br />
+      With that recording, a whole run can be replayed step by step without calling the model.<br />
+      A run can also be replayed up to a chosen step and changed from there.<br />
+      The harness’s handling of retries, timeouts and interruptions can be tested with scripted model replies.<br />
+      A run that went wrong in production becomes a test.
+    </p>
+
+    <p>
+      Replay reproduces only a run that already happened.<br />
+      It does not make the model deterministic.<br />
+      Trying new behavior still requires real model calls.
+    </p>
+
+    <h2>nondeterminism made explicit</h2>
+
+    <p>
+      Sans I/O does not remove nondeterminism.<br />
+      It moves it to the edge of the program.<br />
+      There it arrives as inputs, which can be recorded, replayed or generated.<br />
+      Everything inside the boundary depends only on those inputs.
+    </p>
+
+    <p>
+      This matters more for agents than for most programs.<br />
+      We want agent runs to be repeatable, and the model cannot make them repeatable.<br />
+      The structure of the program around the model can.
+    </p>
+
+    <p>
+      <a href="/thoughts/the-autonomy-radius/">The autonomy radius</a> covers the simulation side in more detail.
+    </p>
     </article>
 </main>
 
