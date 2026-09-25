@@ -22,6 +22,21 @@ export async function load() {
   );
   const code = await createCodeRenderer();
   const renderer = new Renderer();
+  const playground = new URL("https://play.rust-lang.org/");
+  playground.search = new URLSearchParams({
+    version: "stable",
+    mode: "debug",
+    edition: "2021",
+    code: request,
+  }).toString();
+
+  // Preload the same source used by the excerpts and tests, without a saved gist.
+  const renderLink = renderer.link.bind(renderer);
+  renderer.link = (token) => renderLink(
+    token.href === "https://play.rust-lang.org/"
+      ? { ...token, href: playground.href }
+      : token,
+  );
   renderer.code = ({ text, lang }) => {
     const region = /^rust region=(\w+)$/.exec(lang || "")?.[1];
     if (region) {
