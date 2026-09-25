@@ -1,31 +1,36 @@
 # no more async
 
-<!-- This file renders the article. The network-timing marker inserts the animation; the text after the colon is its caption. -->
+<!-- Editable draft. Diagram markers preserve their placement for the later Svelte update. -->
 
-I’ve been moving async out of the important parts of my code. For a network
-request, that means the code tracking what was sent, whether a reply arrived,
-and when to retry. I want it to handle one message completely before taking the
-next.
+I’ve been moving async out of the important parts of my code.
 
-<!-- network-timing: The order of events is part of the input. -->
+The parts that matter are usually owners of some kind of state.
 
-The request logic puts a message like `send request 7` in an outgoing queue.
-A network worker picks it up, sends the request, and puts `reply for request 7`
-in a queue going back. The request logic reads that message and updates the
-request’s status.
+I want to feed a message and let it finish a step without having to wait on something else.
 
-That’s a producer/consumer model. The queues hold messages in memory.
-The network worker can still use async, but it never changes the request
-logic’s state directly.
+with this model, an async call can just be some bytes on a buffer that you
+decide to pull off and interpret
 
-![Request logic sends requests through an outgoing queue to a network worker; replies return through an incoming queue.](static/diagrams/message-boundary.svg)
+<!-- Animated diagram: two runs of the same request, with the reply arriving before or after the timeout. Component: src/lib/NetworkTiming.svelte. -->
 
-[Sans I/O](https://sans-io.readthedocs.io/how-to-sans-io.html) applies this
-separation to protocol code. The state stays in a Rust struct. Its methods
-finish processing one input before the caller gives it another.
+*reponse timestamp is a mutable input here !*
 
-For example, this is the retry check for a pending request. `now` is supplied
-by the caller:
+A producer/consumer boundary gives me a different way to organize stacked async
+calls.
+
+I/O completions arrive as messages in an inbox (memory buffer).
+
+a consumer then leaves outgoing work in that outbox.
+
+a network worker can still use async and is never allowed to change the consumer’s state directly.
+
+![Program logic sends requests through a queue to an I/O worker; replies and errors return through another queue.](static/diagrams/message-boundary.svg)
+
+[Sans I/O](https://sans-io.readthedocs.io/how-to-sans-io.html) applies this separation to protocol code. The state stays in an ordinary Rust struct.
+
+the methods run until completion before the caller (consumer) is allowed to deliver the next input
+
+For example, the retry step for one pending request might look something like this:
 
 ```rust
 fn tick(&mut self, now: Duration) -> Option<Action> {
@@ -38,31 +43,26 @@ fn tick(&mut self, now: Duration) -> Option<Action> {
 }
 ```
 
-`tick` returns an instruction to send. The code that calls it puts that instruction
-in the outgoing queue. The network worker picks it up, finds the request’s bytes
-in a buffer pool, and sends them.
+`tick` updates the deadline and returns a send request for the caller
+to execute.
 
-If `retry_at` is ten seconds, a test can pass ten seconds as `now` and check for
-a `Send` action. It needs neither a live network nor a real ten-second wait.
-We control the time value the logic reads; the CPU still executes the code normally.
+The caller can resolve the request ID to bytes in a buffer pool and pass them to the I/O worker.
 
-Workers can still race to enqueue messages. To replay a failure, I need the same
-starting state, message contents and order, time inputs, and random choices.
+Now if i want to test the retry path, I can supply the deadline as `now` and inspect the returned action without opening a socket or starting a runtime.
 
-For testing, I can replace the network worker with a simulator that supplies
-messages and time.
+The queues don’t quite make the system completely deterministic.
 
-![A network worker or a simulator supplies messages to the same incoming queue and request logic.](static/diagrams/controlled-inputs.svg)
+Workers can still race to enqueue messages.
 
-The simulator can leave request 7 unanswered until the retry deadline, or deliver
-a reply just before it. Both runs use the real request logic. The simulator
-advances its clock to the next scheduled event and supplies that event and time
-to the request logic, without waiting for real time to pass.
+Replaying the core requires reading the content + delivery order. But now the same protocol can run against a simulator w/o having to depend on state such as the CPU clock. This can just be virtualized using tokio- so u can run 80-100x the tests in the same timeframe as a side benefit of this design.
 
-A fuzzer can generate different event sequences and check a rule like “never
-retry a completed request.” Any sequence that breaks the rule becomes a saved
-test case.
+![A real I/O worker or a simulator feeds the same inbox and the same program logic.](static/diagrams/controlled-inputs.svg)
 
-Writing more code with agents has made this useful to me. I can give an agent
-that test case and let it rerun the same failure after a change. I can also
-change an event or its timing to check the explanation it gives me.
+The simulator can leave this request unanswered, advance to `retry_at`,
+and call `tick`. It can also deliver a reply just before the deadline
+to test whether that prevents a retry. Neither case has to wait out the timeout.
+A fuzzer can vary these event histories and save one that breaks an invariant.
+
+Writing more code with agents has made this more useful to me. I can give an agent
+the initial state and the history that failed, then let it work against that case.
+I can also change an event or its timing to check the explanation it gives me.
