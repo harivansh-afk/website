@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
 
+  let { caption = "Reply timing is an input, too." } = $props();
   let frame;
   let started = $state(false);
   let visible = $state(false);
@@ -84,7 +85,7 @@
       </g>
     </svg>
   </div>
-  <figcaption>Reply timing is an input, too.</figcaption>
+  <figcaption>{caption}</figcaption>
 </figure>
 
 <style>
