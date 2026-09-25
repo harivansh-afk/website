@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" role="img" aria-labelledby="title desc">
+<title id="title">Who performs the I/O</title>
+<desc id="desc">The caller reads time and replies and passes them to Request methods. Request owns its state and returns actions for the caller to execute.</desc>
+<style>
+  :root { color: #1a1a1a; --secondary: #6b6b66; --accent: #42677b; }
+  @media (prefers-color-scheme: dark) {
+    :root { color: #f3f3ee; --secondary: #aaa89f; --accent: #9abccc; }
+  }
+  text { fill: currentColor; font-family: monospace; font-size: 16px; }
+  .small { font-size: 14px; }
+  .muted { fill: var(--secondary); }
+  .action { fill: var(--accent); }
+  .center { text-anchor: middle; }
+  .end { text-anchor: end; }
+  rect, path { fill: none; stroke: currentColor; stroke-width: 1.25; }
+  .flow { stroke: var(--accent); }
+</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="flow" d="M1 1 9 5 1 9" /></marker></defs>
+
+<rect x="16" y="76" width="216" height="204" />
+<text class="center" x="124" y="110">caller</text>
+<text class="small muted center" x="124" y="151">read clock</text>
+<text class="small muted center" x="124" y="179">read socket</text>
+<text class="small muted center" x="124" y="207">send bytes</text>
+<text class="small muted center" x="124" y="249">report completion</text>
+<path class="flow" d="M232 140H494" marker-end="url(#arrow)" />
+<text class="small center" x="363" y="125">tick(now), on_reply()</text>
+<path class="flow" d="M494 232H232" marker-end="url(#arrow)" />
+<text class="small center action" x="363" y="258">Send / Complete</text>
+<rect x="494" y="76" width="250" height="204" />
+<text class="center" x="619" y="110">Request</text>
+<text class="small muted" x="520" y="159">id = 7</text>
+<text class="small muted" x="520" y="191">done = false</text>
+<text class="small muted" x="520" y="223">retry_at = 10s</text>
+<text class="small muted center" x="619" y="313">owns this state</text>
+</svg>

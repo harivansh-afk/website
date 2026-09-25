@@ -1,6 +1,6 @@
 <ul>
   <li>
-    <span><a href="/thoughts/sans-io/">no more async</a></span>
+    <span><a href="/thoughts/sans-io/">deterministic state machines</a></span>
     <span class="date">[September 2026]</span>
   </li>
   <li>

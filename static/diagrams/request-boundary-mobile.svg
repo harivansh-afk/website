@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 480" role="img" aria-labelledby="title desc">
+<title id="title">Who performs the I/O</title>
+<desc id="desc">The caller passes time and replies into Request and receives send or completion actions. Only Request changes its own state.</desc>
+<style>
+  :root { color: #1a1a1a; --secondary: #6b6b66; --accent: #42677b; }
+  @media (prefers-color-scheme: dark) {
+    :root { color: #f3f3ee; --secondary: #aaa89f; --accent: #9abccc; }
+  }
+  text { fill: currentColor; font-family: monospace; font-size: 16px; }
+  .small { font-size: 14px; }
+  .muted { fill: var(--secondary); }
+  .action { fill: var(--accent); }
+  .center { text-anchor: middle; }
+  .end { text-anchor: end; }
+  rect, path { fill: none; stroke: currentColor; stroke-width: 1.25; }
+  .flow { stroke: var(--accent); }
+</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="flow" d="M1 1 9 5 1 9" /></marker></defs>
+
+<rect x="16" y="16" width="328" height="124" />
+<text class="center" x="180" y="46">caller</text>
+<text class="small muted center" x="180" y="78">read clock / read socket</text>
+<text class="small muted center" x="180" y="111">send bytes / report completion</text>
+<path class="flow" d="M64 140V278" marker-end="url(#arrow)" />
+<text class="small" x="80" y="187">tick(now)</text>
+<text class="small" x="80" y="209">on_reply()</text>
+<path class="flow" d="M302 278V140" marker-end="url(#arrow)" />
+<text class="small action end" x="283" y="246">Send / Complete</text>
+<rect x="16" y="278" width="328" height="154" />
+<text class="center" x="180" y="308">Request</text>
+<text class="small muted" x="42" y="342">id = 7</text>
+<text class="small muted" x="42" y="372">done = false</text>
+<text class="small muted" x="42" y="402">retry_at = 10s</text>
+<text class="small muted center" x="180" y="464">Request owns this state.</text>
+</svg>

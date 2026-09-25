@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 648" role="img" aria-labelledby="title desc">
+<title id="title">Two delivery orders for the same pending request</title>
+<desc id="desc">Reply followed by timeout: Complete, then no action. Timeout followed by reply: Send, then Complete. Both histories complete once.</desc>
+<style>
+  :root { color: #1a1a1a; --secondary: #6b6b66; --accent: #42677b; }
+  @media (prefers-color-scheme: dark) {
+    :root { color: #f3f3ee; --secondary: #aaa89f; --accent: #9abccc; }
+  }
+  text { fill: currentColor; font-family: monospace; font-size: 16px; }
+  .small { font-size: 14px; }
+  .muted { fill: var(--secondary); }
+  .action { fill: var(--accent); }
+  .center { text-anchor: middle; }
+  .end { text-anchor: end; }
+  rect, path { fill: none; stroke: currentColor; stroke-width: 1.25; }
+  .flow { stroke: var(--accent); }
+</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="flow" d="M1 1 9 5 1 9" /></marker></defs>
+
+<text x="16" y="30">reply handled first</text>
+<rect x="16" y="54" width="328" height="104" />
+<text x="36" y="82">on_reply()</text>
+<text class="small action" x="36" y="112">Complete</text>
+<text class="small muted" x="36" y="141">done = true</text>
+<path class="flow" d="M180 158V202" marker-end="url(#arrow)" />
+<rect x="16" y="202" width="328" height="104" />
+<text x="36" y="230">tick(10s)</text>
+<text class="small action" x="36" y="260">no action</text>
+<text class="small muted" x="36" y="289">done = true</text>
+<text x="16" y="356">timeout handled first</text>
+<rect x="16" y="380" width="328" height="104" />
+<text x="36" y="408">tick(10s)</text>
+<text class="small action" x="36" y="438">Send</text>
+<text class="small muted" x="36" y="467">retry_at = 20s</text>
+<path class="flow" d="M180 484V532" marker-end="url(#arrow)" />
+<rect x="16" y="532" width="328" height="104" />
+<text x="36" y="560">on_reply()</text>
+<text class="small action" x="36" y="590">Complete</text>
+<text class="small muted" x="36" y="619">done = true</text>
+</svg>
