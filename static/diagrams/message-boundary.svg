@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" role="img" aria-labelledby="title desc">
-<title id="title">A queue between the logic and the outside world</title>
-<desc id="desc">The program logic owns its state. Requests pass right through an outgoing queue in memory to an I/O worker. Replies and errors pass left through an incoming queue to the logic. The worker handles the network or disk and never changes the logic's state directly.</desc>
+<title id="title">Two queues between the request logic and the network</title>
+<desc id="desc">The request logic owns the state of every request. It puts messages like send 7 on an outgoing queue, which the network worker takes and sends. The worker puts messages like reply 7 on an incoming queue, which the logic reads one at a time. The worker never changes the logic's state directly.</desc>
 <style>
   :root { color: #1a1a1a; --evidence: #52778c; }
   @media (prefers-color-scheme: dark) { :root { color: #f3f3ee; --evidence: #8daab9; } }
@@ -16,25 +16,25 @@
 <text class="small" x="317" y="28">queues in memory</text>
 <rect class="memory" x="203" y="43" width="228" height="235" />
 
-<rect x="14" y="110" width="153" height="100" />
-<text x="90.5" y="149">Program logic</text>
-<text class="small" x="90.5" y="175">owns the state</text>
+<rect x="14" y="110" width="167" height="100" />
+<text x="97.5" y="149">Request logic</text>
+<text class="small" x="97.5" y="175">owns the state</text>
 
-<rect x="473" y="110" width="153" height="100" />
-<text x="549.5" y="149">I/O worker</text>
-<text class="small" x="549.5" y="175">network / disk</text>
+<rect x="459" y="110" width="167" height="100" />
+<text x="542.5" y="149">Network worker</text>
+<text class="small" x="542.5" y="175">async I/O</text>
 
-<text class="small" x="317" y="72">outgoing requests</text>
+<text class="small" x="317" y="72">outgoing queue</text>
 <rect class="message" x="218" y="86" width="198" height="44" />
 <path class="slot" d="M284 86V130M350 86V130" />
-<text x="251" y="114">send</text>
-<path class="message" d="M167 137H188V108H218" marker-end="url(#arrow)" />
-<path class="message" d="M416 108H451V137H473" marker-end="url(#arrow)" />
+<text class="small" x="251" y="113">send 7</text>
+<path class="message" d="M181 137H192V108H218" marker-end="url(#arrow)" />
+<path class="message" d="M416 108H440V137H459" marker-end="url(#arrow)" />
 
-<text class="small" x="317" y="207">incoming results</text>
+<text class="small" x="317" y="207">incoming queue</text>
 <rect class="message" x="218" y="221" width="198" height="44" />
 <path class="slot" d="M284 221V265M350 221V265" />
-<text x="251" y="249">reply</text>
-<path class="message" d="M473 184H451V243H416" marker-end="url(#arrow)" />
-<path class="message" d="M218 243H188V184H167" marker-end="url(#arrow)" />
+<text class="small" x="251" y="248">reply 7</text>
+<path class="message" d="M459 184H440V243H416" marker-end="url(#arrow)" />
+<path class="message" d="M218 243H192V184H181" marker-end="url(#arrow)" />
 </svg>

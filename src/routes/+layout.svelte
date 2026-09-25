@@ -4,6 +4,7 @@
   import { page } from "$app/state";
   import SideNav, { sections } from "$lib/SideNav.svelte";
   import LinkPreviews from "$lib/LinkPreviews.svelte";
+  import CodeDefs from "$lib/CodeDefs.svelte";
   import { mountInteractionSounds } from "$lib/interactionSounds.js";
 
   let { children } = $props();
@@ -41,3 +42,4 @@
 {/if}
 
 <LinkPreviews />
+<CodeDefs />

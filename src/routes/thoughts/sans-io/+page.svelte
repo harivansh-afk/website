@@ -1,6 +1,5 @@
 <script>
   import Seo from "$lib/Seo.svelte";
-  import NetworkTiming from "$lib/NetworkTiming.svelte";
 
   let { data } = $props();
   const title = "no more async";
@@ -8,7 +7,7 @@
 
 <Seo
   {title}
-  description="Separating request logic from network work so the same messages and time inputs can reproduce a failure."
+  description="Keeping async out of the code that makes decisions, so a failure that depends on timing can be replayed by me or by an agent."
 />
 
 <main class="thought sans-io">
@@ -19,118 +18,100 @@
       <p class="meta">September 2026</p>
     </header>
 
-    <p>I’ve been moving async out of the important parts of my code.</p>
-
     <p>
-      For a network request, that means the code tracking what was sent,
-      whether a reply arrived, and when to retry.
-    </p>
-
-    <p>I want it to handle one message completely before taking the next.</p>
-
-    <NetworkTiming caption="The order of events is part of the input." />
-
-    <p>
-      The request logic puts a message like <code>send request 7</code> in an outgoing queue.
+      I’ve been taking async out of the code that makes decisions. For a network
+      request, that’s the code tracking what was sent, whether a reply came back, and
+      when to retry. The sending and receiving can stay async.
     </p>
 
     <p>
-      A network worker picks it up, sends the request, and puts <code>reply for request 7</code>
-      in a queue going back.
-    </p>
-
-    <p>The request logic reads that message and updates the request’s status.</p>
-
-    <p>That’s a producer/consumer model.</p>
-
-    <p>The queues hold messages in memory.</p>
-
-    <p>
-      The network worker can still use async, but it never changes the request
-      logic’s state directly.
+      When that logic awaits the network and a timer itself, the order they finish in
+      can change what it does, and I can’t choose that order when I want to reproduce
+      a failure.
     </p>
 
     <figure>
       <!-- svelte-ignore a11y_no_noninteractive_tabindex (Keyboard users need to scroll this figure horizontally.) -->
-      <div class="diagram-scroll" tabindex="0" role="region" aria-label="Request logic sends requests through an outgoing queue to a network worker; replies return through an incoming queue.">
-        <img src="/diagrams/message-boundary.svg?rev=7263de0fe373" width="640" height="300" alt="Request logic sends requests through an outgoing queue to a network worker; replies return through an incoming queue." />
+      <div class="diagram-scroll" tabindex="0" role="region" aria-label="The same request run twice. In run 1 the reply beats the retry deadline; in run 2 the request is sent again and two replies come back.">
+        <img src="/diagrams/reply-timing.svg?rev=c6e687b93d94" width="640" height="250" alt="The same request run twice. In run 1 the reply beats the retry deadline; in run 2 the request is sent again and two replies come back." />
+      </div>
+      <figcaption>In run 2 the reply is late, so the request goes out again and two replies come back.</figcaption>
+    </figure>
+
+    <p>
+      So the logic only talks to the network through two queues in memory. It puts
+      <code>send 7</code> on the outgoing queue. A network worker sends it and puts
+      <code>reply 7</code> on the incoming queue.
+    </p>
+
+    <p>
+      The logic handles one message completely before it reads the next, and the
+      worker never touches its state.
+    </p>
+
+    <figure>
+      <!-- svelte-ignore a11y_no_noninteractive_tabindex (Keyboard users need to scroll this figure horizontally.) -->
+      <div class="diagram-scroll" tabindex="0" role="region" aria-label="The request logic puts messages on an outgoing queue for the network worker; the worker puts replies on an incoming queue for the logic.">
+        <img src="/diagrams/message-boundary.svg?rev=401c9f05472a" width="640" height="300" alt="The request logic puts messages on an outgoing queue for the network worker; the worker puts replies on an incoming queue for the logic." />
       </div>
     </figure>
 
     <p>
-      <a href="https://sans-io.readthedocs.io/how-to-sans-io.html">Sans I/O</a> applies
-      this separation to protocol code. The state stays in a Rust struct.
-    </p>
-
-    <p>Its methods finish processing one input before the caller gives it another.</p>
-
-    <p>
-      For example, this is the retry check for a pending request.
-      <code>now</code> is supplied by the caller:
+      This is the <a href="https://sans-io.readthedocs.io/">sans I/O</a> pattern. In
+      Rust, the retry check takes the current time as an argument instead of reading
+      a clock:
     </p>
 
     <div class="code-example">
-      {@html data.retryHtml}
+      {@html data.tickHtml}
     </div>
 
-    <p><code>tick</code> returns an instruction to send.</p>
-
-    <p>The code that calls it puts that instruction in the outgoing queue.</p>
-
     <p>
-      The network worker picks it up, finds the request’s bytes in a buffer pool,
-      and sends them.
+      <code>tick</code> returns an <code>Action</code> rather than sending anything, and
+      the caller puts it on the outgoing queue.
     </p>
 
     <p>
-      If <code>retry_at</code> is ten seconds, a test can pass ten seconds as
-      <code>now</code> and check for a <code>Send</code> action.
-    </p>
-
-    <p>It needs neither a live network nor a real ten-second wait.</p>
-
-    <p>
-      We control the time value the logic reads; the CPU still executes the code normally.
-    </p>
-
-    <p>Workers can still race to enqueue messages.</p>
-
-    <p>
-      To replay a failure, I need the same starting state, message contents and order,
-      time inputs, and random choices.
+      Since <code>now</code> is just a
+      <code>Duration</code>, a test can pass ten seconds and check for a
+      <code>Send</code> without a network or a ten-second wait.
     </p>
 
     <p>
-      For testing, I can replace the network worker with a simulator that supplies
-      messages and time.
+      In tests I swap the network worker for a simulator. It picks which messages show
+      up and when, and skips its clock ahead to the next event instead of actually
+      waiting.
+    </p>
+
+    <p>
+      Since the logic reads one message at a time, feeding it the same messages in the
+      same order with the same times gets the same result every time.
     </p>
 
     <figure>
       <!-- svelte-ignore a11y_no_noninteractive_tabindex (Keyboard users need to scroll this figure horizontally.) -->
-      <div class="diagram-scroll" tabindex="0" role="region" aria-label="A network worker or a simulator supplies messages to the same incoming queue and request logic.">
-        <img src="/diagrams/controlled-inputs.svg?rev=4a4cf3ab762c" width="640" height="320" alt="A network worker or a simulator supplies messages to the same incoming queue and request logic." />
+      <div class="diagram-scroll" tabindex="0" role="region" aria-label="Either the network worker or a simulator feeds the same incoming queue and the same request logic.">
+        <img src="/diagrams/controlled-inputs.svg?rev=7078c12e2773" width="640" height="320" alt="Either the network worker or a simulator feeds the same incoming queue and the same request logic." />
       </div>
     </figure>
 
     <p>
-      The simulator can leave request 7 unanswered until the retry deadline, or deliver
-      a reply just before it. Both runs use the real request logic. The simulator
-      advances its clock to the next scheduled event and supplies that event and time
-      to the request logic, without waiting for real time to pass.
+      So I can force run 2: the simulator just holds the reply to request 7 until after
+      the retry deadline.
     </p>
 
     <p>
-      A fuzzer can generate different event sequences and check a rule like “never
-      retry a completed request.” Any sequence that breaks the rule becomes a saved
-      test case.
+      A fuzzer can then throw lots of different orderings at it and check something
+      like “a request never completes twice.” When one breaks that, I save it as a test.
     </p>
 
     <p>
-      Writing more code with agents has made this useful to me. I can give an agent
-      that test case and let it rerun the same failure after a change. I can also
-      change an event or its timing to check the explanation it gives me.
+      That test is what I hand to an agent. It can rerun the exact failure after every
+      change, and I can move one event around to see if its explanation of the bug
+      still holds up.
     </p>
-  </article>
+
+    </article>
 </main>
 
 <style>

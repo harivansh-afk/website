@@ -1,18 +1,9 @@
-import { createHighlighter } from "shiki";
-import retry from "./retry.rs?raw";
-
-const highlighter = createHighlighter({
-  themes: ["github-light", "github-dark"],
-  langs: ["rust"],
-});
+import { createCodeRenderer } from "$lib/highlight.server.js";
+import request from "./request.rs?raw";
 
 export async function load() {
-  const syntax = await highlighter;
+  const code = await createCodeRenderer();
   return {
-    retryHtml: syntax.codeToHtml(retry.trimEnd(), {
-      lang: "rust",
-      themes: { light: "github-light", dark: "github-dark" },
-      defaultColor: false,
-    }),
+    tickHtml: code(request, { region: "tick" }),
   };
 }
