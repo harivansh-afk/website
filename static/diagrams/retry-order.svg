@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" role="img" aria-labelledby="title desc">
 <title id="title">Two delivery orders for the same pending request</title>
-<desc id="desc">When the reply is processed first, the request completes and the timeout does nothing. When the timeout is processed first, it sends a retry and the reply then completes the request.</desc>
+<desc id="desc">When the reply is processed first, the request completes and the timeout does nothing. When the timeout is processed first, the request returns a Send action and the reply then completes the request.</desc>
 <style>
   :root { color: #1a1a1a; --secondary: #6b6b66; --accent: #42677b; }
   @media (prefers-color-scheme: dark) {
@@ -41,6 +41,6 @@
 <text class="action small" x="306" y="308">Complete</text>
 <text class="muted small" x="306" y="337">done = true</text>
 <path class="flow" d="M510 302H558" marker-end="url(#arrow)" />
-<text x="580" y="295">one retry</text>
+<text x="580" y="295">retry requested</text>
 <text class="small muted" x="580" y="323">completed once</text>
 </svg>
