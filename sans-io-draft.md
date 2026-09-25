@@ -1,24 +1,26 @@
 # deterministic state machines
 
-I’ve been moving more of my code into deterministic state machines. I want to be able to take a component’s initial state and the inputs it received, then run it again and reproduce the same state changes. The difficulty is that a function’s arguments often aren’t all of its inputs. It might also read the clock, receive data from a socket, or fetch some state through an RPC.
+I’ve been moving more of my code into deterministic state machines. I want to be able to take a component’s initial state and the inputs it received, then run it again and reproduce the same state changes. The difficulty is that <mark>a function’s arguments often aren’t all of its inputs.</mark> It might also read the clock, receive data from a socket, or fetch some state through an RPC.
 
 Consider a request that should be retried if no reply arrives before a deadline. Whether it needs another attempt depends on the current time and whether a reply has already been processed. If the request code manages the socket and timer itself, reproducing that decision means controlling both operations. A reply that arrived after the timeout on one run might arrive before it on the next.
 
-I separate the retry logic from those operations by having the caller supply the time and any replies. The request keeps its deadline and completion status in a struct. A `tick(now)` method checks whether another attempt is due and, if so, returns a send action for the caller to perform. When a reply arrives, the caller passes it back to the request, which marks itself complete. The caller can still use async to handle the socket; the methods updating the request’s state don’t need to wait for anything.
+I separate the retry logic from those operations by having the caller supply the time and any replies. The request updates its state and returns actions, such as sending another attempt or reporting completion. <mark>The caller performs the I/O; the request owns its state.</mark> The socket code can still use async, while each method on the request finishes before the next input is delivered.
 
 <figure>
-  <picture>
-    <source media="(max-width: 640px)" srcset="/diagrams/request-boundary-mobile.svg" width="360" height="480" />
-    <img src="/diagrams/request-boundary.svg" width="760" height="330" alt="The caller reads the clock and socket, then calls tick(now) or on_reply(). Request owns its state and returns Send or Complete actions for the caller to perform." />
-  </picture>
-  <figcaption>The caller performs I/O and passes its results to the request. Only the request’s methods change its state.</figcaption>
+  <div class="diagram-scroll" tabindex="0" role="region" aria-label="I/O and request state">
+    <picture>
+      <source media="(max-width: 640px)" srcset="/diagrams/request-boundary-mobile.svg" width="360" height="480" />
+      <img src="/diagrams/request-boundary.svg" width="760" height="330" alt="The caller reads the clock and socket, then calls tick(now) or on_reply(). Request owns its state and returns Send or Complete actions for the caller to perform." />
+    </picture>
+  </div>
+  <figcaption>Time and replies enter through method calls. Returned actions tell the caller what work to perform.</figcaption>
 </figure>
 
-This separation is the [Sans I/O](https://sans-io.readthedocs.io/how-to-sans-io.html) pattern used in protocol libraries. A parser, for example, can consume a buffer of bytes without knowing whether they came from a TCP socket, a file, or a test. The same idea applies to the rest of the protocol’s state, including outstanding requests and their deadlines.
+This is the [Sans I/O](https://sans-io.readthedocs.io/how-to-sans-io.html) pattern used in protocol libraries. The implementation works with data passed to it, so the same code can run against a real connection or a test supplying those inputs.
 
-## a retry in Rust
+## State transitions
 
-For this example, assume request 7 has already been sent at time zero and should be retried after ten seconds. Its `Request` struct holds the request ID, a `done` flag, the next deadline in `retry_at`, and a `retry_interval`. Time is represented as a `Duration` from a fixed origin, so a test can supply it as an ordinary value.
+Assume request 7 has already been sent at time zero. Its `Request` struct holds the ID, a `done` flag, a `retry_at` deadline, and a ten-second `retry_interval`. Time is a `Duration` from a fixed origin.
 
 ```rust region=handlers
 impl Request {
@@ -46,25 +48,25 @@ impl Request {
 }
 ```
 
-`tick` does nothing until the deadline is reached. When a retry is due, it advances the deadline and returns `Send`; constructing that value doesn’t send any bytes. The caller resolves the request ID to the bytes it needs to send and performs the write. It also matches incoming replies to their requests before calling `on_reply`.
+When the deadline is reached, `tick` schedules the next retry and returns `Send`. The caller resolves the request ID to its bytes and sends them. It also routes incoming replies to `on_reply`, where the first reply completes the request and later replies return no action. This prevents duplicate completion locally; avoiding duplicate execution on the server requires deduplication or an idempotent operation.
 
-The `done` check in `on_reply` handles an important case: both the original attempt and a retry can receive replies. The first reply completes the request, and subsequent replies return no action. This prevents duplicate completion locally; preventing the remote server from performing an operation twice requires its own deduplication or an idempotent operation.
+Payloads, send failures, and cancellation are omitted here. Where they affect a state transition, they need to be supplied as inputs too.
 
-I’ve left payloads, send failures, and cancellation out of the example. If one of those affects a state transition, the caller must supply it as an input too. Moving the socket elsewhere would accomplish little if another task could still mutate the request’s state behind its methods.
+## Event ordering
 
-## choosing the order
-
-A test can now create a pending request, advance time past the deadline, and check that `tick` asks for another send. Or it can deliver the reply first and check that crossing the deadline no longer causes a retry. Both tests use the same request implementation, without opening a socket or waiting for a timeout.
+A test can deliver the reply before checking the deadline, or let the deadline expire first. Both cases exercise the same implementation without opening a socket or waiting for a timeout.
 
 <figure>
-  <picture>
-    <source media="(max-width: 640px)" srcset="/diagrams/retry-order-mobile.svg" width="360" height="648" />
-    <img src="/diagrams/retry-order.svg" width="760" height="380" alt="Both histories start with request 7 pending. Reply then tick at ten seconds produces Complete then no action. Tick at ten seconds then reply produces Send then Complete. Both complete once, but only the second ordering retries." />
-  </picture>
-  <figcaption>Both histories start with the same pending request. The order in which it handles the inputs determines whether it sends a retry.</figcaption>
+  <div class="diagram-scroll" tabindex="0" role="region" aria-label="Reply and timeout delivery orders">
+    <picture>
+      <source media="(max-width: 640px)" srcset="/diagrams/retry-order-mobile.svg" width="360" height="648" />
+      <img src="/diagrams/retry-order.svg" width="760" height="380" alt="Both histories start with request 7 pending. Reply then tick at ten seconds produces Complete then no action. Tick at ten seconds then reply produces Send then Complete. Both complete once, but only the second ordering retries." />
+    </picture>
+  </div>
+  <figcaption>The same initial state, with two input orders. Only the second ordering sends a retry.</figcaption>
 </figure>
 
-Here are those two cases as tests. `pending_request()` constructs the initial state described above, with a ten-second retry interval.
+Here, `pending_request()` constructs that initial state, with the first retry due at ten seconds.
 
 ```rust region=orderings
 #[test]
@@ -87,13 +89,11 @@ fn timeout_before_reply() {
 }
 ```
 
-The relevant order is the order in which the request handles the inputs. A reply might already be sitting in a socket buffer when the caller delivers the timeout. In that case, the request still asks for a retry because it hasn’t processed the reply yet. The test makes that choice visible instead of depending on which operation happens to finish first during a run.
+What matters is <mark>the order in which the request handles the inputs.</mark> A reply might already be in the socket buffer when the caller delivers the timeout. The request still asks for a retry because it hasn’t processed that reply yet. The tests let us examine both outcomes explicitly.
 
-The caller also decides when to call `tick`. If it supplies twelve seconds rather than ten, this implementation sends one retry and schedules the next for twenty-two seconds. It doesn’t try to catch up by sending every attempt that might have occurred while it was idle. That is a policy we can inspect in the function and check with another test.
+## Replay
 
-## keeping a failing history
-
-Suppose we had forgotten the `done` check in `on_reply`. The two ordering tests would still pass, since each delivers only one reply. A timeout followed by two replies would expose the mistake: the request would return `Complete` twice.
+The tests above each deliver one reply. If we forgot the `done` check in `on_reply`, both would still pass. A timeout followed by two replies exposes the mistake: the request returns `Complete` twice.
 
 ```rust region=duplicate
 #[test]
@@ -106,26 +106,18 @@ fn duplicate_reply_does_not_complete_twice() {
 }
 ```
 
-With the check removed, the last assertion fails every time. We don’t need to arrange for two real responses to arrive at the right moment; the test supplies the sequence directly. With the check restored, the same sequence becomes a regression test.
+Without the guard, the last assertion fails every time. Restoring it turns this sequence into a regression test, without having to arrange for two real responses to arrive at the right moment.
 
-A larger component can record its inputs as events, such as `Tick(10s)` and `Reply { request_id: 7, body: ... }`. Replaying them requires the initial state, the input values, their delivery order, and the version of the code that handled them. Any other source of variation, such as random choices or reads from shared state, has to be controlled as well. The useful record is what the component actually received, not just a log saying that an RPC was made.
+For a larger component, we can record inputs as events and replay them. The record needs the <mark>initial state, input values, delivery order, and code version.</mark> Random choices and reads from shared state must also be controlled. Logging that an RPC happened is insufficient; we need the result the component received.
 
-For a fixed implementation, that record lets us reproduce the state after each event and inspect the first transition that violates a requirement. After changing the implementation, we can feed it the same history and check that the requirement now holds. Replaying the request code does not require executing the returned sends against the real server again.
+With those inputs fixed, we can reproduce the state after each event and find the first transition that violates a requirement. After changing the code, we can replay the same history to check the fix. The returned send actions can be inspected without executing them against the real server.
 
-## searching for other failures
+## Simulation testing
 
-Once tests can supply event histories, a simulator can generate them. For the request example, it can advance time without delivering a reply, deliver a late reply after several retries, or deliver the same reply more than once. After each step it checks a property such as “a request completes at most once.” If the property fails, it saves the history so we can investigate it.
+A simulator can generate histories we haven’t observed: a reply after several retries, repeated replies, or no reply at all. After each event it checks a property such as “a request completes at most once,” saving any history that breaks it. It reaches a deadline by <mark>advancing a value instead of waiting for time to pass.</mark>
 
-Time advances in the simulation by changing a value. To test a retry after ten seconds, the simulator supplies ten seconds; it doesn’t sleep for that long. This removes the wait from tests whose execution would otherwise be dominated by timeouts. There is still work involved in processing each event, so the benefit depends on the workload.
+The histories must respect the system being modeled: a monotonic clock cannot move backwards, and a reply needs a request that could have produced it. [FoundationDB](https://apple.github.io/foundationdb/testing.html) and [TigerBeetle](https://github.com/tigerbeetle/tigerbeetle/blob/main/docs/internals/vopr.md) use deterministic simulation to explore failures across networks, clocks, and storage. The [complete Rust example](/thoughts/sans-io/example.rs) includes a much smaller search over histories up to six events long. Neither covers failures outside its model; the real I/O code still needs testing.
 
-The generated histories need to respect the system being modeled. A simulated monotonic clock should not move backwards, and a reply needs a request that could have produced it. Within those constraints, we can explore many more cases than we would want to write out by hand. [FoundationDB’s testing documentation](https://apple.github.io/foundationdb/testing.html) and [TigerBeetle’s VOPR](https://github.com/tigerbeetle/tigerbeetle/blob/main/docs/internals/vopr.md) describe this approach at a much larger scale, with controlled networks, clocks, and storage.
+Writing more code with agents has made me more interested in this structure. I can give an agent a failing history and a requirement, then have it inspect the transitions and check its changes against that case. Generating other histories helps test whether the fix also handles cases beyond the original failure.
 
-The [complete Rust example](/thoughts/sans-io/example.rs) includes a small search over histories up to six events long, as well as the tests shown here. It checks for duplicate completion and actions emitted after completion. That bound makes the scope of the check explicit: passing it says nothing about histories outside the search or failures the model cannot represent. The socket code, operating system integration, and real server behavior still need their own tests.
-
-## working on the code
-
-Writing more code with agents has made me more interested in this structure. When an agent changes a retry path, I want it to have a failing case it can run and a requirement it can check. An initial state and a saved history give it a way to inspect what happened, test an explanation, and rerun the case after a change. Generating other histories helps check whether it has fixed the problem or only handled the one sequence it was shown.
-
-The requirements still need judgment. “Completes at most once” would also be satisfied by a request that never completes, so it cannot be our only check. We also need to describe when progress is expected and test it under those conditions. For software where a mistake can lose data or repeat an operation, deciding which properties to check is part of the engineering work; a deterministic test only makes the result reproducible.
-
-That is why I want more of the code to have this shape. I can examine a state transition on its own, reproduce the sequence that led to it, and change an input to test my understanding. Those are useful tools for an agent working on the code, and they are the same tools I want when I have to debug it myself.
+Choosing the requirements is still engineering work. A request that never completes also satisfies “completes at most once,” so we need to check when progress is expected as well. Deterministic execution gives us a way to investigate those properties, whether an agent is making the change or we are debugging it ourselves.
