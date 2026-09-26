@@ -87,7 +87,7 @@ fn timeout_before_reply() {
 }
 ```
 
-The first reply might already be in the socket buffer when the caller runs `tick`. Because `on_reply` hasn’t processed it, `done` is still false and a call at the deadline returns `Send`. <mark>Calling <code>on_reply</code> first would set <code>done</code> and prevent that retry.</mark>
+If the reply is sitting unread in the socket buffer, `tick` can still trigger a retry at the deadline.
 
 ## Replay
 
