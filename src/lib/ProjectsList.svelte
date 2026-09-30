@@ -1,4 +1,26 @@
 <ul>
+<li>
+    <span>
+      <a
+        href="https://boundaryml.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-preview="baml">BAML</a
+      >
+    </span>
+    <span class="date">[fall 2026]</span>
+  </li>
+<li>
+    <span>
+      <a
+        href="https://dueflow.co"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-preview="dueflow">dueflow</a
+      >
+    </span>
+    <span class="date">[fall 2026]</span>
+  </li>
   <li>
     <span>
       <a
@@ -10,6 +32,18 @@
     </span>
     <span class="date">[fall 2026]</span>
   </li>
+<li>
+    <span>
+      <a
+        href="https://companion.ai"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-preview="companion">companion</a
+      >
+    </span>
+    <span class="date">[spring 2026]</span>
+  </li>
+
 </ul>
 
 <style>
