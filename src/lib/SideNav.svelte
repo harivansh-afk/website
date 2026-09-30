@@ -2,10 +2,10 @@
   // the top-level pages that share the sidebar shell, in nav order
   export const sections = [
     ["work", "/work/"],
-    ["software", "/software/"],
     ["projects", "/projects/"],
     ["thoughts", "/thoughts/"],
     ["research", "/research/"],
+    ["software", "/software/"],
   ];
 </script>
 
