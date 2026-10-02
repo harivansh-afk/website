@@ -1,18 +1,9 @@
-import { marked, Renderer } from 'marked';
-import { createCodeRenderer } from '#lib/highlight.server.js';
-import draft from '../../../../autonomy-radius-draft.md?raw';
+import { createCodeRenderer } from "#lib/highlight.server.js";
 
 export async function load() {
-  const tokens = marked.lexer(draft);
-  const heading = tokens.shift();
-  if (heading?.type !== 'heading' || heading.depth !== 1) {
-    throw new Error('The autonomy radius draft must start with its title as an H1.');
-  }
-
   const code = await createCodeRenderer();
-  const renderer = new Renderer();
-  renderer.code = ({ text, lang }) => code(text, { lang: lang || 'text' });
-
-  // This is trusted, repo-owned prose. Its figures intentionally contain HTML.
-  return { title: heading.text, html: marked.parser(tokens, { renderer }) };
+  return {
+    unwrap: code("let port = u16::try_from(cfg.port).unwrap_or_default();"),
+    instrument: code("let future = receive_body().instrument(span);\nfuture.await?;"),
+  };
 }

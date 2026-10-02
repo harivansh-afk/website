@@ -7,11 +7,9 @@
 // CodeDefs.svelte clones on hover. With JS off the block renders as plain
 // highlighted code.
 //
-// A source can show only part of itself; the rest is hidden context whose
-// definitions still feed hovers:
-//   `// #region name` ... `// #endregion`  show one named region
-//   `// ---cut---`                          show everything below the line
-// Marker lines are never shown and the shown lines are dedented.
+// A source can show only one `// #region name` ... `// #endregion` of itself;
+// the rest is hidden context whose definitions still feed hovers. Marker lines
+// are never shown and the shown lines are dedented.
 import { createHighlighter } from "shiki";
 import { glossary } from "./code-glossary.js";
 
@@ -402,12 +400,10 @@ function resolve(src) {
 // ---------------------------------------------------------------- display
 
 const REGION = /^\s*\/\/\s*#(region|endregion)\b\s*(\S*)/;
-const CUT = /^\s*\/\/\s*---cut---\s*$/;
 
 // Which source lines are shown: indices into src.split("\n").
 function shownLines(lines, region) {
   let picked;
-  const cut = lines.findIndex((l) => CUT.test(l));
   if (region) {
     const open = lines.findIndex((l) => REGION.exec(l)?.[1] === "region" && REGION.exec(l)[2] === region);
     if (open < 0) throw new Error(`code region "${region}" not found`);
@@ -419,9 +415,9 @@ function shownLines(lines, region) {
       picked.push(k);
     }
   } else {
-    picked = lines.map((_, k) => k).filter((k) => k > cut);
+    picked = lines.map((_, k) => k);
   }
-  picked = picked.filter((k) => !REGION.test(lines[k]) && !CUT.test(lines[k]));
+  picked = picked.filter((k) => !REGION.test(lines[k]));
   while (picked.length && !lines[picked[0]].trim()) picked.shift();
   while (picked.length && !lines[picked[picked.length - 1]].trim()) picked.pop();
   return picked;
@@ -466,7 +462,7 @@ export async function createCodeRenderer() {
 
   /**
    * Render a code block. `region` shows one `// #region` of the source;
-   * without it, a source shows whole, or below its `// ---cut---` line.
+   * without it, the source shows whole.
    */
   return function render(source, { lang = "rust", region } = {}) {
     const src = source.replace(/\r\n/g, "\n");
