@@ -15,7 +15,7 @@
       <h1>{title}</h1>
       <p class="meta">September 2026</p>
     </header>
-    <p><em>Adapted from my talk at the YC AI unconference, August 2026.</em></p>
+    <p>Adapted from my talk at the <a href="https://x.com/dexhorthy/status/2084319444361503157">YC AI unconference</a>, August 2026.</p>
     <p>At <a href="https://ix.dev/">Indexable</a>, we're a team of three maintaining a monorepo with over 1.5 million lines of <a href="https://www.rust-lang.org/">Rust</a>.</p>
     <p>We build VM infrastructure: our own hypervisor, a <a href="https://pubs.opengroup.org/onlinepubs/9799919799/">POSIX</a> file system, and the replicated storage underneath it- evrything was built from scratch</p>
     <p>Agents write code throughout this stack.</p>
