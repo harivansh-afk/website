@@ -90,7 +90,7 @@
 
     <p>
       i'm a 20 y/o fourth year at the University Of Virginia<br />
-      i enjoy building performant distributed systems and designing beautiful consumer experiences
+      i enjoy computer programming, distributed systems and good design
     </p>
 
     <p>
