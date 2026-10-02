@@ -1,7 +1,7 @@
 <script>
   // code definitions: hover (or focus) a name in a code block, get its
   // definition the way an editor shows it. The markup is built at prerender by
-  // $lib/highlight.server.js: names are `[data-def=key]` spans and each block
+  // #lib/highlight.server.js: names are `[data-def=key]` spans and each block
   // carries `<template data-def-key=key>` popover content. On touch screens a
   // tap toggles the popover and a tap elsewhere closes it. `#def=<key>` pins
   // one open for screenshots. Hover vs tap is decided per pointer event, so

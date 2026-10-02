@@ -1,4 +1,4 @@
-import clickSound from "$lib/sounds/click.mp3";
+import clickSound from "#lib/sounds/click.mp3";
 
 export function mountInteractionSounds() {
   // react-sounds' ui/button_soft, bundled locally (see sounds/LICENSE).
@@ -16,7 +16,7 @@ export function mountInteractionSounds() {
     .then((decoded) => { if (!disposed) buffer = decoded; })
     .catch(() => {});
 
-  const interactive = 'a[href], button, input:not([type="hidden"]), select, textarea, summary, [role="button"], [data-sound-click]';
+  const interactive = 'a[href], button, input:not([type="hidden"]), select, textarea, summary, [role="button"]';
   const targetFor = (target) => target instanceof Element ? target.closest(interactive) : null;
 
   function play(hover) {

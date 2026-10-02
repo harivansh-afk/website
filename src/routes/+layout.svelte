@@ -1,20 +1,13 @@
 <script>
   import "../style.css";
   import { onMount } from "svelte";
-  import { page } from "$app/state";
-  import SideNav, { sections } from "$lib/SideNav.svelte";
-  import LinkPreviews from "$lib/LinkPreviews.svelte";
-  import CodeDefs from "$lib/CodeDefs.svelte";
-  import { mountInteractionSounds } from "$lib/interactionSounds.js";
+  import LinkPreviews from "#lib/LinkPreviews.svelte";
+  import CodeDefs from "#lib/CodeDefs.svelte";
+  import { mountInteractionSounds } from "#lib/interactionSounds.js";
 
   let { children } = $props();
 
   onMount(mountInteractionSounds);
-
-  // top-level pages share the sidebar shell; thought pages and 404 render bare
-  const shell = $derived(
-    page.url.pathname === "/" || sections.some(([, href]) => href === page.url.pathname),
-  );
 
   // page-load beacon: the layout mounts once per page entry, so this counts
   // entries only, never client-side navigations
@@ -32,14 +25,7 @@
   });
 </script>
 
-{#if shell}
-  <div class="page">
-    <SideNav />
-    {@render children()}
-  </div>
-{:else}
-  {@render children()}
-{/if}
+{@render children()}
 
 <LinkPreviews />
 <CodeDefs />

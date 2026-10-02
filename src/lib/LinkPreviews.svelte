@@ -1,15 +1,21 @@
 <script module>
-  // bump when regenerating shots: static/ assets are CDN-cached immutably
+  // bump when regenerating shots or clips: static/ assets are CDN-cached immutably
   const IMG_V = "14";
-  const imgSrc = (name) => `/previews/${name}.webp?v=${IMG_V}`;
+  const VIDEO_V = "17";
+  // a preview is a baked webp shot; a name ending in .mp4 is a clip instead
+  const isVideo = (name) => name.endsWith(".mp4");
+  const src = (name) =>
+    isVideo(name) ? `/previews/${name}?v=${VIDEO_V}` : `/previews/${name}.webp?v=${IMG_V}`;
 </script>
 
 <script>
-  // link previews: hover a curated a[data-preview] link, get an instant
-  // popover. desktop only; degrades to plain links everywhere else.
+  // link previews: hover a curated a[data-preview] link, get a popover - an
+  // instant shot, or a clip that streams and loops while hovered. desktop
+  // only; degrades to plain links everywhere else.
   import { onMount, tick } from "svelte";
 
   const LINGER_MS = 100;
+  const FADE_MS = 150; // just past the popover's opacity transition
 
   let pop = $state(); // the popover element
   let anchor = null; // the link the popover belongs to
@@ -72,6 +78,8 @@
     clearTimeout(lingerTimer);
     anchor = null;
     visible = false;
+    // a hidden clip would keep playing and downloading: drop it once faded
+    if (current && isVideo(current)) setTimeout(() => !visible && (current = null), FADE_MS);
   }
 
   // Fixed positioning and DOM rectangles both use viewport coordinates.
@@ -114,7 +122,7 @@
   }
 
   onMount(() => {
-    const pin = location.hash.match(/^#preview=([\w-]+)$/);
+    const pin = location.hash.match(/^#preview=([\w.-]+)$/);
     pinned = !!pin;
     if (!pin && !matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     enabled = true;
@@ -122,8 +130,10 @@
     // warm every preview after load so the first hover is instant
     const warm = () => {
       for (const a of document.querySelectorAll("a[data-preview]")) {
-        if (a.dataset.preview === "heatmap") loadHeatmap();
-        else new Image().src = imgSrc(a.dataset.preview);
+        const name = a.dataset.preview;
+        if (name === "heatmap") loadHeatmap();
+        // clips load on hover only: warming them would fetch ~75MB up front
+        else if (!isVideo(name)) new Image().src = src(name);
       }
     };
     if (document.readyState === "complete") warm();
@@ -186,9 +196,19 @@
             </div>
           </div>
         {/if}
+      {:else if current && isVideo(current)}
+        <video
+          src={src(current)}
+          autoplay
+          muted
+          loop
+          playsinline
+          onloadedmetadata={() => anchor && place(anchor)}
+          onerror={hide}
+        ></video>
       {:else if current}
         <img
-          src={imgSrc(current)}
+          src={src(current)}
           alt=""
           decoding="sync"
           onload={() => anchor && place(anchor)}

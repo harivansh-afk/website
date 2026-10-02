@@ -1,5 +1,5 @@
 <script>
-  import Seo from "$lib/Seo.svelte";
+  import Seo from "#lib/Seo.svelte";
 
   let { data } = $props();
 </script>
@@ -10,7 +10,7 @@
 />
 
 <main class="thought sans-io">
-  <nav><a href="/thoughts/" class="back-link" aria-label="Back to thoughts">..</a></nav>
+  <nav><a href="/" class="back-link" aria-label="Back home">..</a></nav>
   <article>
     <header>
       <h1>{data.title}</h1>

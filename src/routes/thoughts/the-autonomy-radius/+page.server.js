@@ -1,5 +1,5 @@
 import { marked, Renderer } from 'marked';
-import { createCodeRenderer } from '$lib/highlight.server.js';
+import { createCodeRenderer } from '#lib/highlight.server.js';
 import draft from '../../../../autonomy-radius-draft.md?raw';
 
 export async function load() {

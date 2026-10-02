@@ -1,5 +1,5 @@
 import { marked, Renderer } from "marked";
-import { createCodeRenderer } from "$lib/highlight.server.js";
+import { createCodeRenderer } from "#lib/highlight.server.js";
 import request from "./request.rs?raw";
 import draft from "../../../../sans-io-draft.md?raw";
 

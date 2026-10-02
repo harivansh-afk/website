@@ -1,5 +1,5 @@
 <script>
-  import Seo from "$lib/Seo.svelte";
+  import Seo from "#lib/Seo.svelte";
 
   const title = "core principles";
 </script>
