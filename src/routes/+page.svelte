@@ -240,8 +240,10 @@
     gap: 2.6em;
   }
   .index h2 {
-    margin: 0 0 1em;
-    font-size: 0.85em;
+    margin: 0 0 0.85em;
+    font-size: 1em;
+    font-style: italic;
+    font-synthesis: style;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--muted);
