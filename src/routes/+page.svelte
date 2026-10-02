@@ -86,7 +86,7 @@
 
 <main>
   <section class="about">
-    <h1>Hey, i'm Hari</h1>
+    <h1>Hey, i'm <span>Hari</span></h1>
 
     <p>
       i'm a 20 y/o fourth year at the University Of Virginia<br />
@@ -220,6 +220,9 @@
   h1 {
     font-size: 1em;
     color: inherit;
+  }
+  h1 span {
+    color: var(--fg);
   }
 
   /* linked names carry the foreground colour; the underline is the global
