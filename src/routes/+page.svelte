@@ -40,7 +40,7 @@
       name: "thoughts",
       col: 0,
       items: [
-        { name: "on ai psychosis", href: "https://x.com/HarivanshRathi/status/2105361997776794095", note: "September, 2026"},
+        { name: "ai psychosis", href: "https://x.com/HarivanshRathi/status/2105361997776794095", note: "September, 2026"},
         { name: "deterministic state", href: "/thoughts/sans-io/", note: "September 2026" },
         { name: "the autonomy radius", href: "/thoughts/the-autonomy-radius/", note: "September 2026" },
         { name: "core principles", href: "/thoughts/my-core-principles/", note: "May 2025" },
