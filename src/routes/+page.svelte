@@ -216,8 +216,10 @@
   .about :is(h1, p) {
     margin: 0;
   }
+  /* the greeting reads as the first line of the prose, not a title */
   h1 {
     font-size: 1em;
+    color: inherit;
   }
 
   /* linked names carry the foreground colour; the underline is the global
