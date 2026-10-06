@@ -66,10 +66,6 @@
         { name: "Mux", href: "https://git.harivan.sh/harivansh-afk/mux", preview: "mux.mp4" },
         { name: "Pierrejo", href: "https://git.harivan.sh/harivansh-afk/pierrejo", preview: "pierrejo.mp4" },
         { name: "Draw", href: "https://git.harivan.sh/harivansh-afk/draw", preview: "draw.mp4" },
-        { name: "Roomcast", href: "https://git.harivan.sh/harivansh-afk/roomcast", preview: "roomcast.mp4" },
-        { name: "Not Airplay™", href: "https://git.harivan.sh/harivansh-afk/nap", preview: "nap.mp4" },
-        { name: "Deskctl", href: "https://deskctl.dev", preview: "deskctl.mp4", note: "no longer maintained" },
-        { name: "BetterNAS", href: "https://betternas.com", preview: "betternas.mp4", note: "no longer maintained" },
         { name: "AgentComputer", href: "https://github.com/AgentComputerAI", preview: "agentcomputer.mp4", note: "no longer maintained" },
       ],
     },
@@ -89,7 +85,7 @@
     <h1>Hey, i'm <span>Hari</span></h1>
 
     <p>
-      i'm a 20 y/o fourth year at the University Of Virginia<br />
+      i'm a 20 y/o fourth year at the <a href="https://www.virginia.edu">University Of Virginia</a><br />
       i enjoy computer programming, distributed systems and good design
     </p>
 
