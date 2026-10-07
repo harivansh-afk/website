@@ -85,10 +85,9 @@
     <h1>Hey, i'm <span>Hari</span></h1>
 
     <p>
-      i'm a 20 y/o fourth year at the <a href="https://www.virginia.edu">University Of Virginia</a><br />
+      i'm a 20 y/o 4th year at <a href="https://www.virginia.edu">UVA</a><br />
       i enjoy computer programming, distributed systems and good design
     </p>
-
     <p>
       i'm a Founding Engineer at
       <a href="https://ix.dev" target="_blank" rel="noopener noreferrer" data-preview="ix"
