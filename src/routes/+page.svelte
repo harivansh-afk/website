@@ -73,10 +73,8 @@
       <a
         href="https://www.facebook.com/roboclubonline/posts/roboclub-team-supercalifragilisticexpialidocious-at-the-first-lego-league-nation/1565656036804624/"
         {...ext}>FIRST world championship</a
-      >, where my team placed ninth. a few years earlier, at nine, i was
-      <a href="https://www.worldcubeassociation.org/persons/2015RATH01" {...ext}>competing in speedcubing</a>. i believe
-      in open source, and i <a href="https://git.harivan.sh/harivansh-afk/nix" {...ext}>self-host</a> most of the
-      software i use on my own hardware.
+      >, where my team placed 9th. a few years later, at age 9 i became a
+      <a href="https://www.worldcubeassociation.org/persons/2015RATH01" {...ext}>competitive speedcuber</a>.
     </p>
   </section>
 </main>
@@ -94,10 +92,12 @@
 {/snippet}
 
 <style>
+  /* one size for everything read on this page; only labels and figures
+     (the pixel face) are smaller */
   .lede {
     max-width: 66ch;
-    font-size: 1.0625rem;
-    line-height: 1.55;
+    font-size: 0.9375rem;
+    line-height: 1.65;
     color: var(--fg);
     text-wrap: pretty;
   }
@@ -117,6 +117,9 @@
     font-size: 0.9375rem;
     line-height: 1.65;
   }
+  .rows {
+    font-size: 0.9375rem;
+  }
   .attached {
     margin-top: 2.25rem;
     max-width: calc(52ch * 15 / 14 + 1rem);
@@ -135,7 +138,7 @@
     display: grid;
     gap: 0.9rem;
     max-width: 42ch;
-    font-size: 0.8125rem;
-    line-height: 1.75;
+    font-size: 0.9375rem;
+    line-height: 1.65;
   }
 </style>

@@ -91,7 +91,7 @@
         <a href="https://linkedin.com/in/harivansh-rathi" target="_blank" rel="noopener noreferrer">linkedin</a>
         <a href="https://x.com/HarivanshRathi" target="_blank" rel="noopener noreferrer">x</a>
       </nav>
-      <p class="colophon">© 2026 harivansh rathi</p>
+      <p class="colophon">© 2026 hari</p>
     </footer>
   </div>
 {/if}
