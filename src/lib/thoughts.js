@@ -11,8 +11,8 @@ export const thoughts = [
     x: "2105361997776794095",
   },
   // also posted as an x article
-  { title: "deterministic state machines", href: "/thoughts/sans-io/", year: 2026, x: "2103582703027163455", seed: 9300 },
-  { title: "the autonomy radius", href: "/thoughts/the-autonomy-radius/", year: 2026, seed: 20000 },
+  { title: "deterministic state machines", href: "/thoughts/sans-io/", year: 2026, x: "2103582703027163455", seed: 6800 },
+  { title: "the autonomy radius", href: "/thoughts/the-autonomy-radius/", year: 2026, seed: 21738 },
   {
     title: "the self-cleaning codebase",
     href: "https://x.com/HarivanshRathi/status/2069088950241907089",
