@@ -84,12 +84,12 @@
     </div>
     <div class="quiet" aria-label="more about me">
       <p>
-        i grew up building robots. in 2019 i represented my country at the
+        i grew up building robots. <br> in 2019 i represented my country at the
         <a
           href="https://www.facebook.com/roboclubonline/posts/roboclub-team-supercalifragilisticexpialidocious-at-the-first-lego-league-nation/1565656036804624/"
           {...ext}>FIRST world championship</a
-        >, where my team placed 9th. a few years later, at age 9 i became a
-        <a href="https://www.worldcubeassociation.org/persons/2015RATH01" {...ext}>competitive speedcuber</a>.
+        > where my team placed 9th. a few years later, at age 9 i became a
+        <a href="https://www.worldcubeassociation.org/persons/2015RATH01" {...ext}>competitive cuber</a>.
       </p>
     </div>
   </section>
