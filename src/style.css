@@ -110,7 +110,7 @@ img { max-width: 100% }
 /* the current section's brackets take its colour */
 .top nav a[aria-current] > .dots { color: var(--c, currentColor) }
 /* inside a thought, a dotted ‹ before writing: the way back */
-.top nav a .back { margin-right: 0.4rem }
+.top nav a .back { margin-right: 0.25rem }
 .top nav a .back .dots.dots { position: static; opacity: 1; transform: none; translate: none }
 
 /* crossing between hari.cafe and harivan.sh, like a crt: the page you leave
@@ -329,12 +329,24 @@ main.thought article > :not(header, figure, pre, .code, .callout) { max-width: 6
   }
   /* the list rides a dotted rail; writing's blue marker slides along it to
      the section being read */
-  .toc ol { position: relative; margin: 0; padding: 0 0 0 1.1rem; list-style: none }
+  .toc-list { position: relative; padding-left: 1.1rem }
+  .toc ol { margin: 0; padding: 0; list-style: none }
+  /* the rail: a dotted line, with a wider strip around it to press or drag */
   .toc-rail {
     position: absolute;
-    left: calc(7.5px / 2 - 0.5px);
+    left: -4px;
     top: 0.75rem;
     bottom: 0.75rem;
+    width: calc(7.5px + 8px);
+    cursor: pointer;
+    touch-action: none;
+  }
+  .toc-rail::before {
+    content: "";
+    position: absolute;
+    left: calc(4px + 7.5px / 2 - 0.5px);
+    top: 0;
+    bottom: 0;
     width: 1px;
     background: linear-gradient(var(--faint) 50%, transparent 0) 0 0 / 1px 4px repeat-y;
     opacity: 0.6;
@@ -346,9 +358,18 @@ main.thought article > :not(header, figure, pre, .code, .callout) { max-width: 6
     height: 7.5px;
     background: var(--blue);
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'%3E%3Cpath d='M0 0h4v4H0zM5 0h4v4H5zM0 5h4v4H0zM5 5h4v4H5z'/%3E%3C/svg%3E") 0 0 / 100% 100%;
-    transition: top 0.25s var(--ease);
+    cursor: grab;
+    touch-action: none;
   }
-  @media (prefers-reduced-motion: reduce) { .toc-mark { transition: none } }
+  /* a little larger under the pointer, so it reads as something to hold */
+  .toc-mark::after { content: ""; position: absolute; inset: -6px }
+  .toc-list.dragging, .toc-list.dragging .toc-mark { cursor: grabbing }
+  .toc-list.dragging { user-select: none }
+  /* the share read starts the label, standing right over the rail */
+  .toc-label { display: flex; align-items: center; gap: 0.5rem }
+  .toc-read { color: var(--muted); font-variant-numeric: tabular-nums }
+  .toc-read .dots { margin-inline: 0.3rem }
+  .toc-read .dots:first-child { margin-left: 0 }
   .toc li a {
     display: block;
     padding-block: 0.3rem;

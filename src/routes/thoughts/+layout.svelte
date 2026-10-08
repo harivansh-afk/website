@@ -1,12 +1,14 @@
 <script>
   // every thought sits in this grid, after benja.dev's articles: the page's
   // own <main> (date and views in its gutter, prose beside them) takes nine
-  // twelfths, and "on this page" takes the last three, sticky, marking the
-  // section being read. it also wires what the prerendered markup can't do
+  // twelfths, and "on this page" takes the last three, sticky: a rail whose
+  // marker follows the reading and can be dragged to scrub the article, and
+  // the share read beside its label. it also wires what the prerendered markup can't do
   // alone: the copy buttons on code blocks, and figures that zoom to fill
   // the window when clicked
   import { afterNavigate } from "$app/navigation";
   import { onMount } from "svelte";
+  import Dots from "#lib/Dots.svelte";
 
   let { children } = $props();
 
@@ -15,30 +17,77 @@
   let toc = $state([]);
   let active = $state(null);
   let markTop = $state(null);
-
-  // the marker sits level with the current section's link
-  $effect(() => {
-    const a = active && list?.querySelector(`a[href="#${CSS.escape(active)}"]`);
-    markTop = a ? a.offsetTop + a.offsetHeight / 2 - 3.75 : null;
-  });
+  let read = $state(0);
+  let dragging = $state(false);
   let headings = [];
 
-  // a section is current once its heading passes a quarter of the way down
-  function spy() {
-    let at = headings[0]?.id ?? null;
-    for (const h of headings) if (h.getBoundingClientRect().top <= innerHeight * 0.25) at = h.id;
-    active = at;
+  // the reading line sits a quarter of the way down the window. window px
+  // throughout: rects and scrollY agree, whatever the page's css zoom
+  const LINE = 0.25;
+  const docTop = (el) => el.getBoundingClientRect().top + scrollY;
+
+  // where each section's link sits on the rail: its first line, in the
+  // list's own px
+  function stops() {
+    return [...list.querySelectorAll("ol a")].map((a) => {
+      const cs = getComputedStyle(a);
+      return a.offsetTop + parseFloat(cs.paddingTop) + parseFloat(cs.lineHeight) / 2;
+    });
   }
+
+  // the marker moves continuously: between two headings it sits the same
+  // share of the way between their links. the share read is the whole
+  // article's
+  function spy() {
+    if (!headings.length || !list) return;
+    const line = scrollY + innerHeight * LINE;
+    const tops = headings.map(docTop);
+    const ys = stops();
+    let i = 0;
+    while (i + 1 < tops.length && tops[i + 1] <= line) i++;
+    const t = i + 1 < tops.length ? Math.min(1, Math.max(0, (line - tops[i]) / (tops[i + 1] - tops[i]))) : 0;
+    active = line < tops[0] ? headings[0].id : headings[i].id;
+    markTop = (line < tops[0] ? ys[0] : ys[i] + t * ((ys[i + 1] ?? ys[i]) - ys[i])) - 3.75;
+    const article = grid.querySelector("article");
+    const start = docTop(article), span = Math.max(1, article.offsetHeight * (document.documentElement.currentCSSZoom ?? 1) - innerHeight * 0.75);
+    read = Math.min(1, Math.max(0, (scrollY - start + innerHeight * LINE) / span));
+  }
+
+  // dragging the marker (or pressing the rail) scrubs the article: the
+  // inverse of spy, scrolling instantly so the page follows the pointer
+  function scrub(e) {
+    const zoom = document.documentElement.currentCSSZoom ?? 1;
+    const y = (e.clientY - list.getBoundingClientRect().top) / zoom;
+    const tops = headings.map(docTop);
+    const ys = stops();
+    let i = 0;
+    while (i + 1 < ys.length && ys[i + 1] <= y) i++;
+    const t = i + 1 < ys.length ? Math.min(1, Math.max(0, (y - ys[i]) / (ys[i + 1] - ys[i]))) : 0;
+    const line = y < ys[0] ? tops[0] : tops[i] + t * ((tops[i + 1] ?? tops[i]) - tops[i]);
+    scrollTo({ top: line - innerHeight * LINE, behavior: "instant" });
+  }
+  function grab(e) {
+    e.preventDefault();
+    dragging = true;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    scrub(e);
+  }
+  const drag = (e) => dragging && scrub(e);
+  const drop = () => (dragging = false);
 
   afterNavigate(() => {
     headings = [...grid.querySelectorAll("article h2[id]")];
     toc = headings.map((h) => ({ id: h.id, text: h.textContent.trim() }));
-    spy();
+    requestAnimationFrame(spy);
   });
 
   onMount(() => {
     addEventListener("scroll", spy, { passive: true });
-    return () => removeEventListener("scroll", spy);
+    addEventListener("resize", spy);
+    return () => {
+      removeEventListener("scroll", spy);
+      removeEventListener("resize", spy);
+    };
   });
 
   async function copy(button) {
@@ -134,18 +183,30 @@
   {#if toc.length}
     <nav class="toc" aria-label="on this page">
       <div class="toc-in">
-        <p class="toc-label">on this page</p>
-        <ol bind:this={list}>
-          <span class="toc-rail" aria-hidden="true"></span>
-          {#if markTop !== null}<span class="toc-mark" style:top="{markTop}px" aria-hidden="true"></span>{/if}
-          {#each toc as h}
-            <li>
-              <a class="bare" class:on={active === h.id} aria-current={active === h.id ? "location" : undefined} href="#{h.id}"
-                >{h.text}</a
-              >
-            </li>
-          {/each}
-        </ol>
+        <p class="toc-label"><span class="toc-read"><Dots glyph="lb" />{Math.round(read * 100)}%<Dots glyph="rb" /></span>on this page</p>
+        <div class="toc-list" class:dragging bind:this={list}>
+          <!-- svelte-ignore a11y_no_static_element_interactions -->
+          <span class="toc-rail" aria-hidden="true" onpointerdown={grab} onpointermove={drag} onpointerup={drop} onpointercancel={drop}
+          ></span>
+          {#if markTop !== null}<!-- svelte-ignore a11y_no_static_element_interactions --><span
+              class="toc-mark"
+              style:top="{markTop}px"
+              aria-hidden="true"
+              onpointerdown={grab}
+              onpointermove={drag}
+              onpointerup={drop}
+              onpointercancel={drop}
+            ></span>{/if}
+          <ol>
+            {#each toc as h}
+              <li>
+                <a class="bare" class:on={active === h.id} aria-current={active === h.id ? "location" : undefined} href="#{h.id}"
+                  >{h.text}</a
+                >
+              </li>
+            {/each}
+          </ol>
+        </div>
       </div>
     </nav>
   {/if}

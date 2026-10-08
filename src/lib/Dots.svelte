@@ -6,7 +6,7 @@
     lb: { rows: ["###", "#..", "#..", "#..", "#..", "#..", "#..", "###"], lift: -0.12 },
     rb: { rows: ["###", "..#", "..#", "..#", "..#", "..#", "..#", "###"], lift: -0.12 },
     // a dotted ‹, before "writing" when inside a thought
-    back: { rows: ["..#", ".#.", "#..", ".#.", "..#"], lift: -0.29 },
+    back: { rows: ["..#", ".#.", "#..", ".#.", "..#"], lift: -0.19 },
     lq: { rows: [".#..#", "#..#.", "##.##", "##.##"], lift: 0.36 },
     rq: { rows: ["##.##", "##.##", ".#..#", "#..#."], lift: 0.36 },
     // the open end of a date range: four dotted slashes
