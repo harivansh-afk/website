@@ -96,6 +96,17 @@
       lines.push({ text: "" });
       for (const [label, value] of row.facts) lines.push({ text: fit(value, w - 11), label: pad(label, 10), cls: "fg" });
     }
+    // a machine report: every meter the same width, so they read as a column,
+    // the reading after it; a narrow pane drops the meters. drawn in ━ and ─,
+    // which the cell font carries (its subset has no block shades)
+    if (row.report?.length) {
+      lines.push({ text: "" });
+      for (const [label, share, reading] of row.report) {
+        const cells = share === null || w < 34 ? 0 : 10;
+        const on = Math.round(share * cells);
+        lines.push({ label: pad(label, 10), on, off: cells - on, text: fit(reading, Math.max(0, w - 11 - (cells ? cells + 1 : 0))) });
+      }
+    }
     if (row.href) {
       lines.push({ text: "" });
       lines.push({ text: fit(bareUrl(row.href), w - 4), href: row.href });
@@ -190,14 +201,6 @@
     };
   });
 
-  // a string cut around the first case-insensitive match of the search, so
-  // matches light up as you type, like fzf
-  function hits(text, q) {
-    const at = q ? text.toLowerCase().indexOf(q.toLowerCase()) : -1;
-    if (at < 0) return [{ t: text }];
-    return [{ t: text.slice(0, at) }, { t: text.slice(at, at + q.length), hit: true }, { t: text.slice(at + q.length) }];
-  }
-
   const place = (x, y, w) => `left:${x * cw}px;top:${y * LINE}px;width:${w * cw}px`;
   const statusPath = $derived(
     ui.query === null ? `${sections[ui.s].name}${row ? " › " + row.key : ""}` : `search › ${list.length} found`,
@@ -224,7 +227,7 @@
 
     <!-- title bar -->
     <div class="line" style={place(0, 0, cols)}>
-      <span class="icon">{icon("terminal")}</span><span class="fg">HARIVAN.SH</span>{#if !ui.typing}<span class="cursor">{" "}</span>{/if}
+      <span class="icon">{icon("terminal")}</span><span class="fg">HARIVAN.SH</span>
     </div>
     <a class="line link home" href="{CAFE}/" tabindex="-1" onclick={(e) => crossClick(e, `${CAFE}/`)} style={place(cols - 11, 0, 11)}><b>-</b>{" "}<span class="dest">hari.cafe</span></a>
 
@@ -235,10 +238,6 @@
 
     <!-- sections -->
     <div class="pane" onwheel={(e) => onwheel(e, "sections")} style={place(at.sections.x, at.sections.y, at.sections.w) + `;height:${at.sections.h * LINE}px`}>
-      <!-- the selection: one bar that slides from row to row -->
-      {#if ui.query === null && ui.s >= offset.sections && ui.s < offset.sections + at.sections.h - 2}
-        <div class="bar" class:focus={ui.pane === "sections" && !ui.typing} style={place(1, ui.s - offset.sections + 1, at.sections.w - 2)}></div>
-      {/if}
       {#each sections.slice(offset.sections, offset.sections + at.sections.h - 2) as x, k}
         {@const i = offset.sections + k}
         {@const w = inner(at.sections)}
@@ -256,9 +255,6 @@
 
     <!-- rows -->
     <div class="pane" onwheel={(e) => onwheel(e, "rows")} style={place(at.rows.x, at.rows.y, at.rows.w) + `;height:${at.rows.h * LINE}px`}>
-      {#if list.length && ui.r >= offset.rows && ui.r < offset.rows + at.rows.h - 2}
-        <div class="bar" class:focus={ui.pane === "rows"} style={place(1, ui.r - offset.rows + 1, at.rows.w - 2)}></div>
-      {/if}
       {#each list.slice(offset.rows, offset.rows + at.rows.h - 2) as x, k (x.section + x.key)}
         {@const i = offset.rows + k}
         {@const w = inner(at.rows)}
@@ -273,7 +269,7 @@
           style={place(1, k + 1, at.rows.w - 2)}
           onclick={(e) => tapRow(e, i)}
           onpointerenter={(e) => e.pointerType === "mouse" && !ui.typing && (ui = { ...ui, r: i, pane: "rows" })}
-          >{" "}<span class="icon">{icon(x.icon)}</span>{@render marked(pad(fit(x.key, keyWidth - 2), keyWidth))}<span class="muted">{@render marked(fit(valueOf(x), w - keyWidth - 3))}</span></a
+          >{" "}<span class="icon">{icon(x.icon)}</span>{pad(fit(x.key, keyWidth - 2), keyWidth)}<span class="muted">{fit(valueOf(x), w - keyWidth - 3)}</span></a
         >
       {:else}
         <div class="line muted" style={place(2, 1, at.rows.w - 4)}>nothing matches “{ui.query}”</div>
@@ -295,7 +291,7 @@
         >
       {:else}
         <div class="line {line.cls ?? ''}" style={place(at.detail.x + 2, at.detail.y + 1 + k, inner(at.detail))}>
-          {#if line.label}<span class="muted">{line.label}</span>{" "}{/if}{line.text}
+          {#if line.label}<span class="muted">{line.label}</span>{" "}{/if}{#if line.on || line.off}{"━".repeat(line.on)}<span class="dim">{"─".repeat(line.off)}</span>{" "}<span class="muted">{line.text}</span>{:else}{line.text}{/if}
         </div>
       {/if}
     {/each}
@@ -335,9 +331,6 @@
     {/each}
   </nav>
 </div>
-
-
-{#snippet marked(text)}{#each hits(text, ui.query) as p}{#if p.hit}<span class="hit">{p.t}</span>{:else}{p.t}{/if}{/each}{/snippet}
 
 <style>
   /* unicodekit's palette, exactly: one navy, one white at three strengths */
@@ -446,6 +439,9 @@
   .muted {
     color: var(--uk-muted);
   }
+  .dim {
+    color: var(--uk-line);
+  }
   /* an icon is a glyph wider than a cell, so it gets three: itself, its
      overhang and a space, like a file tree in the editor */
   .icon {
@@ -455,45 +451,11 @@
     font-size: 13px;
     vertical-align: top;
   }
-  /* the selection: one bar per pane that slides to the selected row,
-     inverted where the focus is and a tint where it isn't. the row's text
-     turns as the bar arrives */
-  .bar {
-    position: absolute;
-    height: 20px;
+  /* the selection: inverted where the focus is, a tint where it isn't */
+  .item.sel {
     background: var(--uk-line);
-    transition:
-      top 90ms cubic-bezier(0.2, 0.8, 0.2, 1),
-      background-color 120ms;
   }
-  .bar.focus {
-    background: var(--uk-fg);
-  }
-  .item,
-  .item .muted {
-    transition: color 90ms;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .bar,
-    .item,
-    .item .muted {
-      transition: none;
-    }
-  }
-  .item.sel.focus {
-    color: var(--uk-bg);
-    text-shadow: none;
-  }
-  /* what the search matched, as you type it */
-  .hit {
-    color: var(--uk-fg);
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 4px;
-  }
-  .item.sel.focus .hit {
-    color: var(--uk-bg);
-  }
+  .item.sel.focus,
   .inv {
     background: var(--uk-fg);
     color: var(--uk-bg);

@@ -440,15 +440,22 @@ const FOLD_AT = 24;
 const FOLD_SHOW = 16;
 const NUMBER_FROM = 3;
 
+// the language's glyph in nonicons, the icon font from my editor (see
+// #lib/tui/icons.js for the codepoints the subset carries)
+const LANG_ICON = { rust: 61881, rs: 61881 };
+const CODE_ICON = 61734;
+
 // the frame around every block: a bar with its name and a copy button, the
 // code, and for long blocks a fold. the fold is a checkbox and its label, so
 // it opens without scripts; copy is wired by the thoughts layout
-function frame(html, { name, lines, id }) {
+function frame(html, { name, lang, lines, id }) {
   const fold = lines > FOLD_AT;
   const cls = ["code", fold && "fold", lines >= NUMBER_FROM && "numbered"].filter(Boolean).join(" ");
   return (
     `<div class="${cls}" style="--shown:${FOLD_SHOW}">` +
-    `<div class="code-bar"><span class="code-name">${escapeHtml(name)}</span>` +
+    `<div class="code-bar"><span class="code-name">` +
+    `<span class="code-icon" aria-hidden="true">${String.fromCodePoint(LANG_ICON[lang] ?? CODE_ICON)}</span>` +
+    `${escapeHtml(name)}</span>` +
     `<button type="button" class="code-copy" data-copy>copy</button></div>` +
     (fold ? `<input type="checkbox" class="code-more" id="${id}" aria-label="show all ${lines} lines" />` : "") +
     `<div class="code-body">${html}</div>` +
@@ -501,7 +508,7 @@ export async function createCodeRenderer() {
 
     const rust = lang === "rust" || lang === "rs";
     const framed = (html) =>
-      frame(html, { name: name ?? lang, lines: shown.split("\n").length, id: `code-${hash(src)}-${blocks++}` });
+      frame(html, { name: name ?? lang, lang, lines: shown.split("\n").length, id: `code-${hash(src)}-${blocks++}` });
     if (!rust) return framed(highlight(shown, lang));
 
     // map resolved source offsets onto the shown text

@@ -4,7 +4,8 @@
 // a row: `key` and `value` (its two columns), `icon` (a nonicons name),
 // `href` when it opens something, and `facts` (label, value pairs) plus
 // `text` for the detail pane. `views` names a thought whose count replaces
-// the value once views.json answers
+// the value once views.json answers. `report` is a machine report for the
+// detail pane: [label, share filled (0-1) or null for no meter, reading]
 import { software, groups } from "#lib/software.js";
 import { thoughts } from "#lib/thoughts.js";
 import { bareUrl } from "#lib/tui/text.js";
@@ -69,9 +70,16 @@ export const sections = [
         text: "always on. it serves this site, my git forge and a few other services, and runs local models on its gpu.",
         facts: [
           ["arch", "aarch64"],
-          ["memory", "128 gb unified"],
           ["os", "nixos"],
           ["boot", "secure boot, tpm2"],
+        ],
+        // placeholder readings until spark reports its own
+        report: [
+          ["cpu", 0.18, "20 cores"],
+          ["gpu", 0.34, "gb10"],
+          ["memory", 0.62, "79/128 gb"],
+          ["disk", 0.48, "1.9/4 tb"],
+          ["uptime", null, "41 days"],
         ],
       },
       {
@@ -84,6 +92,12 @@ export const sections = [
           ["os", "macos, nix-darwin"],
           ["windows", "aerospace"],
           ["bar", "sketchybar"],
+        ],
+        report: [
+          ["cpu", 0.12, "12 cores"],
+          ["memory", 0.55, "20/36 gb"],
+          ["disk", 0.41, "0.4/1 tb"],
+          ["battery", 0.86, "86%"],
         ],
       },
     ],

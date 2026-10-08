@@ -6,7 +6,7 @@
   import CodeDefs from "#lib/CodeDefs.svelte";
   import Dots from "#lib/Dots.svelte";
   import { mountInteractionSounds } from "#lib/interactionSounds.js";
-  import { DEV, CAFE, crossTo } from "#lib/site.js";
+  import { DEV, CAFE } from "#lib/site.js";
 
   let { children } = $props();
 
@@ -32,8 +32,6 @@
   const sections = [
     { name: "writing", href: "/writing/", match: /^\/(writing|thoughts)\// },
     { name: "software", href: "/software/", match: /^\/software\// },
-    // the developer screen, on its own domain
-    { name: "harivan.sh", href: `${DEV}/`, cross: true },
   ];
 
   // the developer screen is its own world (palette, chrome, domain), so the
@@ -68,14 +66,7 @@
           <a
             class="bare"
             href={section.href}
-            aria-current={section.match?.test(page.url.pathname) ? "page" : undefined}
-            onclick={section.cross
-              ? (e) => {
-                  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
-                  e.preventDefault();
-                  crossTo(section.href);
-                }
-              : undefined}
+            aria-current={section.match.test(page.url.pathname) ? "page" : undefined}
             ><Dots glyph="lb" />{section.name}<Dots glyph="rb" /></a
           >
         {/each}

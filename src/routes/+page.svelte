@@ -1,5 +1,14 @@
 <script>
   import Seo from "#lib/Seo.svelte";
+  import { DEV, crossTo } from "#lib/site.js";
+
+  // the developer screen is on its own domain; a plain click crosses to it
+  // like a crt switching over (site.js)
+  function cross(e) {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+    e.preventDefault();
+    crossTo(`${DEV}/`);
+  }
 
   // index rows read `name ........ when`
   const work = [
@@ -31,17 +40,17 @@
   description="performant distributed systems and beautiful consumer experiences"
 />
 
-<!-- each block hangs off its own twelfth of the page (--off, --w), after
-     benja.dev; under 1152px (960 zoomed) every offset drops and the page is one
+<!-- each block hangs off its own place on the page (--off, --w), after
+     benja.dev, nudged off the twelfths and spaced unevenly on purpose; under 1152px (960 zoomed) every offset drops and the page is one
      left-aligned column -->
 <main class="home">
-  <section class="blk first" style:--off="16.667%" style:--w="75%" style:--gap="9rem">
+  <section class="blk first" style:--off="16.667%" style:--w="75%" style:--gap="6.5rem">
     <p class="lede">i enjoy computer programming,<br />distributed systems and good design, roughly in that order.</p>
     <p class="aside">i'm a 20 y/o fourth year at <a href="https://www.virginia.edu" {...ext}>UVA</a>.</p>
   </section>
 
   <!-- previously: where i've worked, with the rows attached under it -->
-  <section class="blk" style:--off="27%" style:--w="50%">
+  <section class="blk" style:--off="29%" style:--w="50%" style:--gap="8rem">
     <h2 class="label red">previously</h2>
     <p class="say">
       i was a founding engineer at <a href="https://ix.dev" {...ext}>indexable</a> (YC S26), where we tackled the
@@ -55,27 +64,34 @@
   </section>
 
 
-  <section class="blk" style:--off="8.333%" style:--w="58.333%">
+  <section class="blk" style:--off="5%" style:--w="58.333%" style:--gap="5.5rem">
     <h2 class="label amber">about</h2>
     <p class="say">i enjoy solving difficult problems.</p>
     <p class="aside">lately, compilers and storage systems have been how i scratch that itch.</p>
   </section>
 
-  <section class="blk" style:--off="41.667%" style:--w="50%" style:--gap="4.5rem">
+  <section class="blk" style:--off="45%" style:--w="47%" style:--gap="9.5rem">
     <h2 class="label blue">projects</h2>
     {@render rows(projects)}
   </section>
 
-  <!-- the rest, greyed out: no label, said quietly -->
-  <section class="blk quiet" style:--off="58.333%" style:--w="33.333%" style:--gap="8rem" aria-label="more about me">
-    <p>
-      i grew up building robots. in 2019 i represented my country at the
-      <a
-        href="https://www.facebook.com/roboclubonline/posts/roboclub-team-supercalifragilisticexpialidocious-at-the-first-lego-league-nation/1565656036804624/"
-        {...ext}>FIRST world championship</a
-      >, where my team placed 9th. a few years later, at age 9 i became a
-      <a href="https://www.worldcubeassociation.org/persons/2015RATH01" {...ext}>competitive speedcuber</a>.
-    </p>
+  <!-- the last row: the way to the developer screen on the left, set a
+       little off the grey paragraph beside it, which says the rest quietly -->
+  <section class="blk last" style:--off="8.333%" style:--w="83.333%" style:--gap="8rem">
+    <div class="dev-link">
+      <h2 class="label navy">developer</h2>
+      <p class="say"><a href="{DEV}/" onclick={cross}>harivan.sh</a></p>
+    </div>
+    <div class="quiet" aria-label="more about me">
+      <p>
+        i grew up building robots. in 2019 i represented my country at the
+        <a
+          href="https://www.facebook.com/roboclubonline/posts/roboclub-team-supercalifragilisticexpialidocious-at-the-first-lego-league-nation/1565656036804624/"
+          {...ext}>FIRST world championship</a
+        >, where my team placed 9th. a few years later, at age 9 i became a
+        <a href="https://www.worldcubeassociation.org/persons/2015RATH01" {...ext}>competitive speedcuber</a>.
+      </p>
+    </div>
   </section>
 </main>
 
@@ -133,6 +149,22 @@
     text-transform: uppercase;
     letter-spacing: 0.03em;
     color: var(--faint);
+  }
+  /* the last row: developer stuff in the empty quarter at 2/12 to 5/12,
+     dropped a few lines below the grey paragraph's top so the two don't
+     line up exactly; the paragraph starts at 7/12 (60% of this block) */
+  .last {
+    display: grid;
+    gap: 3rem;
+  }
+  @media (min-width: 1152px) {
+    .last {
+      grid-template-columns: 60% minmax(0, 1fr);
+      gap: 0;
+    }
+    .dev-link {
+      margin: -2.5rem 0 0 10%;
+    }
   }
   .quiet {
     display: grid;
