@@ -99,18 +99,21 @@ img { max-width: 100% }
 .top nav a:is(:hover, :focus-visible, [aria-current]) .dots:first-child { transform: translateX(-0.3rem) }
 .top nav a:is(:hover, :focus-visible, [aria-current]) .dots:last-child { transform: translateX(0.3rem) }
 
-/* crossing into /developer: the new page opens out from a line across the
-   middle, the way a crt powers on */
-::view-transition-old(root) { animation: 160ms ease-in both crt-out }
-::view-transition-new(root) { animation: 360ms cubic-bezier(0.2, 0.8, 0.2, 1) 60ms both crt-on }
-@keyframes crt-out { to { opacity: 0 } }
+/* crossing between hari.cafe and harivan.sh, like a crt: the page you leave
+   collapses to a bright line (site.js crossTo), the developer screen opens
+   out from one as it first paints */
+html.crt-off body { animation: 170ms cubic-bezier(0.6, 0, 0.9, 0.4) both crt-off }
+@keyframes crt-off {
+  60% { clip-path: inset(49.5% 0 49.5% 0); filter: brightness(2) }
+  to { clip-path: inset(50% 50% 50% 50%); filter: brightness(3) }
+}
 @keyframes crt-on {
   from { clip-path: inset(49.5% 0 49.5% 0); filter: brightness(2) }
   45% { clip-path: inset(49.5% 0 49.5% 0) }
   to { clip-path: inset(0 0 0 0); filter: none }
 }
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root), ::view-transition-new(root) { animation: none }
+  html.crt-off body { animation: none }
 }
 
 /* the stagger, after benja.dev: each block hangs off its own twelfth of the

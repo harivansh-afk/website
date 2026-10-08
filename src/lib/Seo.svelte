@@ -1,16 +1,20 @@
 <script>
   import { page } from "$app/state";
+  import { CAFE } from "#lib/site.js";
 
-  let { title, description, ogTitle = title } = $props();
+  // `url` overrides the canonical address (the developer screen's is
+  // harivan.sh); every other page's is its path on hari.cafe
+  let { title, description, ogTitle = title, url: canonical } = $props();
 
-  const url = $derived(`https://harivan.sh${page.url.pathname}`);
-  const image = "https://harivan.sh/og.png?rev=fd30ac8b";
+  const url = $derived(canonical ?? `${CAFE}${page.url.pathname}`);
+  const image = `${CAFE}/og.png?rev=fd30ac8b`;
   const imageAlt = "hari";
 </script>
 
 <svelte:head>
   <title>{title}</title>
   <meta name="description" content={description} />
+  <link rel="canonical" href={url} />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Harivansh Rathi" />
   <meta property="og:title" content={ogTitle} />

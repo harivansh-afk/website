@@ -7,7 +7,6 @@
   // the outline under it carries the same content for screen readers and
   // for browsers without scripts
   import { onMount } from "svelte";
-  import { goto } from "$app/navigation";
   import Seo from "#lib/Seo.svelte";
   import { viewsOf, formatCount } from "#lib/views.svelte.js";
   import { icon } from "#lib/tui/icons.js";
@@ -15,6 +14,7 @@
   import { blank, box, paint, titleSpan } from "#lib/tui/frame.js";
   import { step, keyName, initial } from "#lib/tui/keys.js";
   import { layout } from "./layout.js";
+  import { CAFE, DEV, crossTo } from "#lib/site.js";
   import { sections, everything } from "./content.js";
 
   const FONT = '16px "Iosevka Charon Mono"';
@@ -97,18 +97,27 @@
     }
     if (row.href) {
       lines.push({ text: "" });
-      lines.push({ text: fit(row.href.startsWith("/") ? "hari.cafe" + row.href : bareUrl(row.href), w - 2), href: row.href });
+      lines.push({ text: fit(bareUrl(row.href), w - 2), href: row.href });
     }
     return lines.slice(0, at.detail.h - 2);
   });
 
-  const external = (href) => href.startsWith("http");
+  // the personal site opens in place, with the crt switching off; anything
+  // else is someone else's site and gets a new tab
+  const external = (href) => !href.startsWith(CAFE);
+  function follow(href) {
+    if (external(href)) window.open(href, "_blank", "noopener");
+    else crossTo(href);
+  }
   function perform(effect) {
-    if (effect === "home") goto("/");
-    if (effect === "open" && row?.href) {
-      if (external(row.href)) window.open(row.href, "_blank", "noopener");
-      else goto(row.href);
-    }
+    if (effect === "home") crossTo(`${CAFE}/`);
+    if (effect === "open" && row?.href) follow(row.href);
+  }
+  // a plain click on a link to hari.cafe crosses like the keyboard does
+  function crossClick(e, href) {
+    if (external(href) || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+    e.preventDefault();
+    crossTo(href);
   }
 
   function onkeydown(e) {
@@ -139,6 +148,7 @@
     const first = ui.r !== i || ui.pane !== "rows";
     ui = { ...ui, r: i, pane: "rows", typing: false };
     if (first && e.pointerType !== "mouse") e.preventDefault();
+    else if (list[i]?.href) crossClick(e, list[i].href);
   }
 
   // the section is deep-linkable as #<id>
@@ -180,6 +190,7 @@
 <svelte:window {onkeydown} />
 
 <Seo
+  url="{DEV}/"
   title="hari, developer"
   description="software, tools, experiments, machines and setup: the developer side of harivansh rathi."
 />
@@ -198,7 +209,7 @@
     <div class="line" style={place(0, 0, cols)}>
       <span class="icon">{icon("terminal")}</span><span class="fg">HARIVAN.SH</span>{"  "}<span class="muted">DEVELOPER</span>
     </div>
-    <a class="line link home" href="/" tabindex="-1" style={place(cols - 13, 0, 13)}>hari.cafe{" "}<span class="muted">-</span></a>
+    <a class="line link home" href="{CAFE}/" tabindex="-1" onclick={(e) => crossClick(e, `${CAFE}/`)} style={place(cols - 13, 0, 13)}>hari.cafe{" "}<span class="muted">-</span></a>
 
     <pre class="chrome">{chrome}</pre>
 
@@ -254,6 +265,7 @@
           target={external(line.href) ? "_blank" : null}
           rel={external(line.href) ? "noopener noreferrer" : null}
           tabindex="-1"
+          onclick={(e) => crossClick(e, line.href)}
           style={place(at.detail.x + 2, at.detail.y + 1 + k, line.text.length + 2)}
           ><span class="icon">{icon("link-external")}</span>{line.text}</a
         >
@@ -283,7 +295,7 @@
        instead of the screen when scripts don't run -->
   <nav class="outline" aria-label="developer">
     <h1>harivan.sh, developer</h1>
-    <p><a href="/">hari.cafe</a></p>
+    <p><a href="{CAFE}/">hari.cafe</a></p>
     {#each sections as x}
       <section>
         <h2>{x.name}</h2>
@@ -342,8 +354,15 @@
     inset: 8px 6px;
     visibility: hidden;
   }
+  /* it switches on like a crt the moment it can be drawn (style.css) */
   .screen.ready {
     visibility: visible;
+    animation: 360ms cubic-bezier(0.2, 0.8, 0.2, 1) both crt-on;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .screen.ready {
+      animation: none;
+    }
   }
   .probe {
     position: absolute;

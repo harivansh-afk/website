@@ -1,11 +1,12 @@
 <script>
   import "../style.css";
   import { onMount } from "svelte";
-  import { afterNavigate, onNavigate } from "$app/navigation";
+  import { afterNavigate } from "$app/navigation";
   import { page } from "$app/state";
   import CodeDefs from "#lib/CodeDefs.svelte";
   import Dots from "#lib/Dots.svelte";
   import { mountInteractionSounds } from "#lib/interactionSounds.js";
+  import { DEV, CAFE, crossTo } from "#lib/site.js";
 
   let { children } = $props();
 
@@ -31,25 +32,30 @@
   const sections = [
     { name: "writing", href: "/writing/", match: /^\/(writing|thoughts)\// },
     { name: "software", href: "/software/", match: /^\/software\// },
-    { name: "harivan.sh", href: "/developer/", match: /^\/developer\// },
+    // the developer screen, on its own domain
+    { name: "harivan.sh", href: `${DEV}/`, cross: true },
   ];
 
-  // /developer is its own world (its own palette and chrome), so the layout
-  // steps aside for it, and crossing into or out of it powers the screen on
-  // like a crt, via a view transition
-  const developer = $derived(page.url.pathname.startsWith("/developer"));
-  onNavigate((navigation) => {
-    if (!document.startViewTransition) return;
-    const crossing = [navigation.from, navigation.to].filter((end) => end?.url.pathname.startsWith("/developer"));
-    if (crossing.length !== 1) return;
-    return new Promise((resolve) => {
-      document.startViewTransition(async () => {
-        resolve();
-        await navigation.complete;
-      });
-    });
+  // the developer screen is its own world (palette, chrome, domain), so the
+  // layout steps aside for it. matched by route, not path: on harivan.sh it
+  // is the root
+  const developer = $derived(page.route.id === "/developer");
+
+  // hovering a link to the other domain prefetches its page, so the jump
+  // lands on a document the browser already has (chrome; others just go)
+  const speculation = `<script type="speculationrules">${JSON.stringify({
+    prefetch: [{ where: { href_matches: [`${DEV}/*`, `${CAFE}/*`] }, eagerness: "moderate" }],
+  })}</` + "script>";
+
+  // back from the other domain via bfcache: the page is still switched off
+  onMount(() => {
+    const on = () => document.documentElement.classList.remove("crt-off");
+    addEventListener("pageshow", on);
+    return () => removeEventListener("pageshow", on);
   });
 </script>
+
+<svelte:head>{@html speculation}</svelte:head>
 
 {#if developer}
   {@render children()}
@@ -62,7 +68,14 @@
           <a
             class="bare"
             href={section.href}
-            aria-current={section.match.test(page.url.pathname) ? "page" : undefined}
+            aria-current={section.match?.test(page.url.pathname) ? "page" : undefined}
+            onclick={section.cross
+              ? (e) => {
+                  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+                  e.preventDefault();
+                  crossTo(section.href);
+                }
+              : undefined}
             ><Dots glyph="lb" />{section.name}<Dots glyph="rb" /></a
           >
         {/each}

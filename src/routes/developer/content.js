@@ -8,6 +8,7 @@
 import { software, groups } from "#lib/software.js";
 import { thoughts } from "#lib/thoughts.js";
 import { bareUrl } from "#lib/tui/text.js";
+import { CAFE } from "#lib/site.js";
 
 const NIX = "https://git.harivan.sh/harivansh-afk/nix/src/branch/main";
 
@@ -46,7 +47,8 @@ export const sections = [
       key: t.title,
       value: String(t.year),
       icon: "note",
-      href: t.href,
+      // the screen lives on harivan.sh, so the site's own pages are absolute
+      href: t.href.startsWith("/") ? CAFE + t.href : t.href,
       views: t.href,
       text: t.href.startsWith("http") ? "posted on x." : "on hari.cafe.",
       facts: [["year", String(t.year)]],
@@ -164,7 +166,7 @@ export const sections = [
         key: "hari.cafe",
         value: "the rest of the site",
         icon: "globe",
-        href: "/",
+        href: `${CAFE}/`,
         text: "prose, writing and the software canvas.",
         facts: [],
       },
