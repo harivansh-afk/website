@@ -58,7 +58,7 @@
     </p>
     <p class="say">
       just before that, i was an early employee at <a href="https://www.phia.com" {...ext}>phia</a>, where i led
-      the development of automation system.<br />in my 9 months there, we went from 0 &rarr; 1M users and raised $40M.
+      the development of automation systems.<br />in my 9 months there, we went from 0 &rarr; 1M users and raised ~$40M.
     </p>
     <div class="attached">{@render rows(work)}</div>
   </section>
