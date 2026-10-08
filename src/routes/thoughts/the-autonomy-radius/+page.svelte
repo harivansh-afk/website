@@ -7,7 +7,7 @@
   const title = "the autonomy radius";
 </script>
 
-<Seo {title} description="How we build the feedback that lets a team of three hand more of the software development lifecycle to agents." />
+<Seo {title} type="article" description="how long can i extend an agent's leash before it needs me to provide feedback?" />
 
 <main class="thought autonomy">
   <article>

@@ -9,7 +9,8 @@
 
 <Seo
   {title}
-  description="Moving I/O out of state machines, with a Rust retry example, controlled event orderings, and reproducible failures."
+  type="article"
+  description="I've been moving more of my code into deterministic state machines."
 />
 
 <main class="thought sans-io">
@@ -77,7 +78,7 @@
   }
 
   @media (max-width: 640px) {
-    main.sans-io { font-size: 1rem; padding-inline: 1rem; }
+    main.sans-io { font-size: 1rem; }
     article :global(pre) { font-size: 0.82em; padding: 0.75rem; }
   }
 </style>

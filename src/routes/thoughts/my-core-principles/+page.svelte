@@ -5,7 +5,11 @@
   const title = "core principles";
 </script>
 
-<Seo {title} description="As someone in persuit of an extraordinary life, I live by some core principles adapted from the behavior of my grandparents" />
+<Seo
+  {title}
+  type="article"
+  description="As someone in pursuit of an extraordinary life, I live by some core principles adapted from the behavior of my grandparents."
+/>
 
 <main class="thought">
   <article>

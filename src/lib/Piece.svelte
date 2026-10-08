@@ -70,14 +70,27 @@
     margin: 0;
     min-width: 0;
   }
+  /* every piece is the same kind of window: one corner radius (phones get
+     an iphone's), and a hairline inside the edge so dark posters keep their
+     frame on the page */
   .frame {
     position: relative;
     display: block;
     overflow: hidden;
-    border-radius: 0.25rem;
+    border-radius: 0.375rem;
     background: var(--fill);
   }
-  /* a phone recording gets the phone's own corners */
+  .frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fg) 12%, transparent);
+    pointer-events: none;
+  }
+  /* a phone recording is narrower and gets an iphone's corners: the screen's
+     radius as a share of its width and height */
   .phone .frame {
     width: 62%;
     border-radius: 14% / 6.45%;

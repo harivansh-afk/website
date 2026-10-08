@@ -11,7 +11,7 @@
 
 <main>
   <header class="blk first" style:--off="16.667%" style:--w="41.667%" style:--gap="6rem">
-    <h1 class="label title">software</h1>
+    <h1 class="label amber title">software</h1>
     <p class="intro">creations of the past.</p>
   </header>
 

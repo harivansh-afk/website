@@ -10,12 +10,12 @@
   }));
 </script>
 
-<Seo title="writing" description="on agents, on systems that stay correct, and a few rules i live by." />
+<Seo title="writing" description="on systems, agents and life." />
 
 <main>
   <header class="blk first" style:--off="16.667%" style:--w="41.667%" style:--gap="6rem">
     <h1 class="label blue title">writing</h1>
-    <p class="intro">on agents, on systems that stay correct, and a few rules i live by.</p>
+    <p class="intro">on systems, agents and life.</p>
   </header>
 
   <section class="blk" style:--off="8.333%" style:--w="75%" aria-label="index">

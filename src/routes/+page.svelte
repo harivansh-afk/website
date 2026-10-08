@@ -37,7 +37,7 @@
 <Seo
   title="hari"
   ogTitle="Harivansh Rathi"
-  description="performant distributed systems and beautiful consumer experiences"
+  description="i enjoy computer programming, distributed systems and good design, roughly in that order."
 />
 
 <!-- each block hangs off its own place on the page (--off, --w), after
@@ -65,13 +65,13 @@
 
 
   <section class="blk" style:--off="5%" style:--w="58.333%" style:--gap="5.5rem">
-    <h2 class="label amber">about</h2>
+    <h2 class="label">about</h2>
     <p class="say">i enjoy solving difficult problems.</p>
     <p class="aside">lately, compilers and storage systems have been how i scratch that itch.</p>
   </section>
 
   <section class="blk" style:--off="45%" style:--w="47%" style:--gap="9.5rem">
-    <h2 class="label blue">projects</h2>
+    <h2 class="label amber">projects</h2>
     {@render rows(projects)}
   </section>
 

@@ -107,6 +107,11 @@ img { max-width: 100% }
 .top nav a:is(:hover, :focus-visible, [aria-current]) .dots { opacity: 1 }
 .top nav a:is(:hover, :focus-visible, [aria-current]) .dots:first-child { transform: translateX(-0.3rem) }
 .top nav a:is(:hover, :focus-visible, [aria-current]) .dots:last-child { transform: translateX(0.3rem) }
+/* the current section's brackets take its colour */
+.top nav a[aria-current] > .dots { color: var(--c, currentColor) }
+/* inside a thought, a dotted ‹ before writing: the way back */
+.top nav a .back { margin-right: 0.4rem }
+.top nav a .back .dots.dots { position: static; opacity: 1; transform: none; translate: none }
 
 /* crossing between hari.cafe and harivan.sh, like a crt: the page you leave
    collapses to a bright line (site.js crossTo), the developer screen opens
@@ -248,7 +253,8 @@ main.not-found {
 /* mobile: tighter canvas, the colophon joins the left edge */
 @media (max-width: 640px) {
   body { font-size: 0.8125rem; line-height: 1.5 }
-  .site { padding: 1.5rem 16px 2rem }
+  /* 24px sides, so a label marker hanging in the margin stays on screen */
+  .site { padding: 1.5rem 24px 2rem }
   .blk { padding-bottom: 3.5rem }
   .blk.first { padding-top: 3.5rem }
   .colophon { text-align: left }
@@ -321,7 +327,28 @@ main.thought article > :not(header, figure, pre, .code, .callout) { max-width: 6
     letter-spacing: 0.03em;
     color: var(--faint);
   }
-  .toc ol { margin: 0; padding: 0; list-style: none }
+  /* the list rides a dotted rail; writing's blue marker slides along it to
+     the section being read */
+  .toc ol { position: relative; margin: 0; padding: 0 0 0 1.1rem; list-style: none }
+  .toc-rail {
+    position: absolute;
+    left: calc(7.5px / 2 - 0.5px);
+    top: 0.75rem;
+    bottom: 0.75rem;
+    width: 1px;
+    background: linear-gradient(var(--faint) 50%, transparent 0) 0 0 / 1px 4px repeat-y;
+    opacity: 0.6;
+  }
+  .toc-mark {
+    position: absolute;
+    left: 0;
+    width: 7.5px;
+    height: 7.5px;
+    background: var(--blue);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'%3E%3Cpath d='M0 0h4v4H0zM5 0h4v4H5zM0 5h4v4H0zM5 5h4v4H5z'/%3E%3C/svg%3E") 0 0 / 100% 100%;
+    transition: top 0.25s var(--ease);
+  }
+  @media (prefers-reduced-motion: reduce) { .toc-mark { transition: none } }
   .toc li a {
     display: block;
     padding-block: 0.3rem;
@@ -442,10 +469,11 @@ pre code {
   line-height: 1.4;
   color: var(--muted);
 }
-.code-name { display: inline-flex; align-items: center; gap: 0.55em }
+/* the language glyph at the label's own height, a full cell of air after it */
+.code-name { display: inline-flex; align-items: center; gap: 0.7rem }
 .code-icon {
   font-family: "Nonicons";
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   line-height: 1;
   color: var(--muted);
 }

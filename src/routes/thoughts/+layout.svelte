@@ -11,8 +11,16 @@
   let { children } = $props();
 
   let grid;
+  let list = $state();
   let toc = $state([]);
   let active = $state(null);
+  let markTop = $state(null);
+
+  // the marker sits level with the current section's link
+  $effect(() => {
+    const a = active && list?.querySelector(`a[href="#${CSS.escape(active)}"]`);
+    markTop = a ? a.offsetTop + a.offsetHeight / 2 - 3.75 : null;
+  });
   let headings = [];
 
   // a section is current once its heading passes a quarter of the way down
@@ -127,7 +135,9 @@
     <nav class="toc" aria-label="on this page">
       <div class="toc-in">
         <p class="toc-label">on this page</p>
-        <ol>
+        <ol bind:this={list}>
+          <span class="toc-rail" aria-hidden="true"></span>
+          {#if markTop !== null}<span class="toc-mark" style:top="{markTop}px" aria-hidden="true"></span>{/if}
           {#each toc as h}
             <li>
               <a class="bare" class:on={active === h.id} aria-current={active === h.id ? "location" : undefined} href="#{h.id}"

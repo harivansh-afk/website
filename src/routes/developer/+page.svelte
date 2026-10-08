@@ -211,8 +211,8 @@
 
 <Seo
   url="{DEV}/"
-  title="hari, developer"
-  description="software, tools, experiments, machines and setup: the developer side of harivansh rathi."
+  title="harivan.sh"
+  description="software, tools, experiments and the machines they run on."
 />
 <svelte:head>
   <meta name="theme-color" content="#1e2139" />
