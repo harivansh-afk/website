@@ -3,17 +3,23 @@
 
   // index rows read `name ........ when`
   const work = [
-    { name: "indexable", href: "https://ix.dev", when: "summer 2026" },
-    { name: "phia", href: "https://www.phia.com", when: "summer & fall 2025" },
-    { name: "unikove", href: "https://unikove.com/", when: "summer 2023" },
-    { name: "moglix", href: "https://www.moglix.com/", when: "summer 2022" },
+    { name: "indexable", href: "https://ix.dev", when: "2026" },
+    { name: "phia", href: "https://www.phia.com", when: "2025" },
+    { name: "unikove", href: "https://unikove.com/", when: "2023" },
+    { name: "moglix", href: "https://www.moglix.com/", when: "2022" },
   ];
 
   const projects = [
-    { name: "BAML", href: "https://boundaryml.com", when: "fall 2026" },
-    { name: "dueflow", href: "https://dueflow.co", when: "fall 2026" },
-    { name: "uva.builders", href: "https://uva.builders", when: "fall 2026" },
-    { name: "companion", href: "https://companion.ai", when: "spring 2026" },
+    { name: "BAML", href: "https://boundaryml.com", when: "2026" },
+    { name: "dueflow", href: "https://dueflow.co", when: "2026" },
+    { name: "uva.builders", href: "https://uva.builders", when: "2026" },
+    { name: "companion", href: "https://companion.ai", when: "2026" },
+    {
+      name: "content addressable storage",
+      href: "https://cas-playbook.vercel.app/",
+      tag: "research",
+      when: "2026",
+    },
   ];
 
   const ext = { target: "_blank", rel: "noopener noreferrer" };
@@ -34,17 +40,16 @@
     <p class="aside">i'm a 20 y/o fourth year at <a href="https://www.virginia.edu" {...ext}>UVA</a>.</p>
   </section>
 
-  <!-- work: what i do, with everywhere i've worked attached under it -->
+  <!-- previously: where i've worked, with the rows attached under it -->
   <section class="blk" style:--off="27%" style:--w="50%">
-    <h2 class="label red">work</h2>
+    <h2 class="label red">previously</h2>
     <p class="say">
-      i'm a Founding Engineer at <a href="https://ix.dev" {...ext}>indexable</a> (YC S26). We build powerful,
-      persistent virtual machine infrastructure, tackling the problem of compute overscheduling and filesystem
-      inefficiency.
+      i was a founding engineer at <a href="https://ix.dev" {...ext}>indexable</a> (YC S26), where we tackled the
+      problems of compute overscheduling and VM inefficiency.
     </p>
     <p class="say">
       just before that, i was an early employee at <a href="https://www.phia.com" {...ext}>phia</a>, where i led
-      automation system development. in my 9 months there, we went from 0 &rarr; 1M users and raised $40M.
+      automation system development.<br />in my 9 months there, we went from 0 &rarr; 1M users and raised $40M.
     </p>
     <div class="attached">{@render rows(work)}</div>
   </section>
@@ -81,7 +86,7 @@
     {#each items as item}
       <li>
         <a class="row bare" href={item.href} target="_blank" rel="noopener noreferrer"
-          ><span class="name">{item.name}</span>{#if item.when}<span class="fig">{item.when}</span>{/if}</a
+          ><span class="name">{item.name}{#if item.tag}<span class="tag">{item.tag}</span>{/if}</span>{#if item.when}<span class="fig">{item.when}</span>{/if}</a
         >
       </li>
     {/each}
@@ -117,6 +122,15 @@
     max-width: calc(52ch * 15 / 14 + 1rem);
   }
 
+  /* a small word after a row's name, in the label voice */
+  .tag {
+    margin-left: 0.75rem;
+    font-family: var(--pixel);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--faint);
+  }
   .quiet {
     display: grid;
     gap: 0.9rem;

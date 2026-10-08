@@ -11,13 +11,13 @@ export const thoughts = [
     x: "2105361997776794095",
   },
   // also posted as an x article
-  { title: "deterministic state machines", href: "/thoughts/sans-io/", year: 2026, x: "2103582703027163455" },
-  { title: "the autonomy radius", href: "/thoughts/the-autonomy-radius/", year: 2026, seed: 4812 },
+  { title: "deterministic state machines", href: "/thoughts/sans-io/", year: 2026, x: "2103582703027163455", seed: 15000 },
+  { title: "the autonomy radius", href: "/thoughts/the-autonomy-radius/", year: 2026, seed: 7812 },
   {
     title: "the self-cleaning codebase",
     href: "https://x.com/HarivanshRathi/status/2069088950241907089",
     year: 2026,
     x: "2069088950241907089",
   },
-  { title: "core principles", href: "/thoughts/my-core-principles/", year: 2025, seed: 1936 },
+  { title: "core principles", href: "/thoughts/my-core-principles/", year: 2025, seed: 3336 },
 ];

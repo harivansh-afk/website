@@ -98,7 +98,7 @@
     }
     if (row.href) {
       lines.push({ text: "" });
-      lines.push({ text: fit(bareUrl(row.href), w - 2), href: row.href });
+      lines.push({ text: fit(bareUrl(row.href), w - 4), href: row.href });
     }
     return lines.slice(0, at.detail.h - 2);
   });
@@ -206,7 +206,7 @@
 <svelte:head>
   <meta name="theme-color" content="#1e2139" />
   <link rel="preload" href="/fonts/IosevkaCharonMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
-  <link rel="preload" href="/fonts/nonicons.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="preload" href="/fonts/nonicons.woff2?v=2" as="font" type="font/woff2" crossorigin="anonymous" />
   <noscript><style>.screen { display: none } .outline { position: static !important; clip-path: none !important; width: auto !important; height: auto !important; }</style></noscript>
 </svelte:head>
 
@@ -218,7 +218,7 @@
     <div class="line" style={place(0, 0, cols)}>
       <span class="icon">{icon("terminal")}</span><span class="fg">HARIVAN.SH</span>
     </div>
-    <a class="line link home" href="{CAFE}/" tabindex="-1" onclick={(e) => crossClick(e, `${CAFE}/`)} style={place(cols - 13, 0, 13)}>hari.cafe{" "}<span class="muted">-</span></a>
+    <a class="line link home" href="{CAFE}/" tabindex="-1" onclick={(e) => crossClick(e, `${CAFE}/`)} style={place(cols - 11, 0, 11)}><b>-</b>{" "}<span class="dest">hari.cafe</span></a>
 
     <pre class="chrome">{chrome}</pre>
 
@@ -237,7 +237,7 @@
           tabindex="-1"
           style={place(1, k + 1, at.sections.w - 2)}
           onclick={() => (ui = { ...ui, s: i, r: 0, pane: "rows", query: null, typing: false })}
-          >{" "}<span class="icon">{icon(x.icon)}</span>{pad(x.name, w - 6)}<span class="muted">{String(x.rows.length).padStart(3)}</span></button
+          >{" "}<span class="icon">{icon(x.icon)}</span>{pad(x.name, w - 7)}<span class="muted">{String(x.rows.length).padStart(3)}</span></button
         >
       {/each}
     </div>
@@ -258,7 +258,7 @@
           style={place(1, k + 1, at.rows.w - 2)}
           onclick={(e) => tapRow(e, i)}
           onpointerenter={(e) => e.pointerType === "mouse" && !ui.typing && (ui = { ...ui, r: i, pane: "rows" })}
-          >{" "}<span class="icon">{icon(x.icon)}</span>{pad(x.key, keyWidth)}<span class="muted">{fit(valueOf(x), w - keyWidth - 2)}</span></a
+          >{" "}<span class="icon">{icon(x.icon)}</span>{pad(fit(x.key, keyWidth - 2), keyWidth)}<span class="muted">{fit(valueOf(x), w - keyWidth - 3)}</span></a
         >
       {:else}
         <div class="line muted" style={place(2, 1, at.rows.w - 4)}>nothing matches “{ui.query}”</div>
@@ -275,7 +275,7 @@
           rel={external(line.href) ? "noopener noreferrer" : null}
           tabindex="-1"
           onclick={(e) => crossClick(e, line.href)}
-          style={place(at.detail.x + 2, at.detail.y + 1 + k, line.text.length + 2)}
+          style={place(at.detail.x + 2, at.detail.y + 1 + k, line.text.length + 4)}
           ><span class="icon">{icon("link-external")}</span>{line.text}</a
         >
       {:else}
@@ -428,13 +428,13 @@
   .muted {
     color: var(--uk-muted);
   }
-  /* an icon is a glyph wider than a cell, so it gets two: itself and the
-     space after it */
+  /* an icon is a glyph wider than a cell, so it gets three: itself, its
+     overhang and a space, like a file tree in the editor */
   .icon {
     display: inline-block;
-    width: calc(2 * var(--cw));
+    width: calc(3 * var(--cw));
     font-family: "Nonicons";
-    font-size: 14px;
+    font-size: 13px;
     vertical-align: top;
   }
   /* the selection: inverted where the focus is, a tint where it isn't */
@@ -464,6 +464,25 @@
   .home {
     text-align: right;
     text-decoration: none;
+  }
+  .home b {
+    font-weight: 400;
+  }
+  .home .dest {
+    color: var(--uk-muted);
+    text-decoration: underline dotted var(--uk-muted);
+    text-underline-offset: 4px;
+    transition: color 0.12s;
+  }
+  .home:hover .dest {
+    color: var(--uk-fg);
+    text-decoration-style: solid;
+  }
+  /* a row under the pointer that isn't selected yet gets a breath of tint */
+  @media (hover: hover) {
+    .item:not(.sel):hover {
+      background: color-mix(in srgb, var(--uk-fg) 7%, transparent);
+    }
   }
   .hints {
     text-align: right;

@@ -46,7 +46,8 @@ export const sections = [
     rows: thoughts.map((t) => ({
       key: t.title,
       value: String(t.year),
-      icon: "note",
+      // an x post reads as one: the @, not the page
+      icon: t.href.startsWith("http") ? "mention" : "note",
       // the screen lives on harivan.sh, so the site's own pages are absolute
       href: t.href.startsWith("/") ? CAFE + t.href : t.href,
       views: t.href,
@@ -69,7 +70,8 @@ export const sections = [
         facts: [
           ["arch", "aarch64"],
           ["memory", "128 gb unified"],
-          ["os", "nixos, verified boot"],
+          ["os", "nixos"],
+          ["boot", "secure boot, tpm2"],
         ],
       },
       {
@@ -102,9 +104,10 @@ export const sections = [
       },
       {
         key: "terminal",
-        value: "ghostty and mux",
-        icon: "terminal",
-        text: "one theme switch flips ghostty, neovim, fzf, lazygit and the wallpaper together.",
+        value: "mux",
+        icon: "tmux",
+        href: "https://git.harivan.sh/harivansh-afk/mux",
+        text: "my own terminal multiplexer: a native mac app, with sessions held by muxd.",
         facts: [],
       },
       {
@@ -114,12 +117,18 @@ export const sections = [
         text: "prompt colours re-apply on every prompt, so a theme switch lands live.",
         facts: [],
       },
-      { key: "vcs", value: "jj", icon: "git-branch", text: "jujutsu, with a patched store backend.", facts: [] },
+      {
+        key: "vcs",
+        value: "jj and git",
+        icon: "git-branch",
+        text: "jujutsu day to day, git underneath; every commit signed over ssh.",
+        facts: [],
+      },
       {
         key: "agents",
-        value: "omp",
-        icon: "hubot",
-        text: "stock upstream, no extensions or hooks, with a profile that runs on local qwen.",
+        value: "codex cli",
+        icon: "agent",
+        text: "codex cli day to day. its instructions are written once in nix and rendered for every agent i use.",
         facts: [],
       },
     ],
@@ -133,7 +142,7 @@ export const sections = [
       {
         key: "forgejo",
         value: "git.harivan.sh",
-        icon: "git-branch",
+        icon: "server",
         href: "https://git.harivan.sh/harivansh-afk",
         text: "the source of truth for my code.",
         facts: [],
@@ -149,7 +158,7 @@ export const sections = [
       {
         key: "x",
         value: "@HarivanshRathi",
-        icon: "x",
+        icon: "mention",
         href: "https://x.com/HarivanshRathi",
         text: "thinking out loud.",
         facts: [],
@@ -157,7 +166,7 @@ export const sections = [
       {
         key: "linkedin",
         value: "harivansh-rathi",
-        icon: "person",
+        icon: "briefcase",
         href: "https://linkedin.com/in/harivansh-rathi",
         text: "the formal version.",
         facts: [],
@@ -165,7 +174,7 @@ export const sections = [
       {
         key: "hari.cafe",
         value: "the rest of the site",
-        icon: "globe",
+        icon: "home",
         href: `${CAFE}/`,
         text: "prose, writing and the software canvas.",
         facts: [],

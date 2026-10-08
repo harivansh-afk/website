@@ -146,7 +146,7 @@ html.crt-off body { animation: 170ms cubic-bezier(0.6, 0, 0.9, 0.4) both crt-off
 }
 @font-face {
   font-family: "Nonicons";
-  src: url("/fonts/nonicons.woff2") format("woff2");
+  src: url("/fonts/nonicons.woff2?v=2") format("woff2");
   font-display: block;
 }
 
@@ -214,9 +214,10 @@ html.crt-off body { animation: 170ms cubic-bezier(0.6, 0, 0.9, 0.4) both crt-off
   padding-bottom: 0;
 }
 .elsewhere { display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; font-size: 0.8125rem }
-/* berkeley, not the pixel face: departure's © is a smudge at this size */
+/* the pixel face at its own 11px, after benja.dev: departure's © is the mark */
 .colophon {
-  font-size: 0.75rem;
+  font-family: var(--pixel);
+  font-size: 0.6875rem;
   line-height: 1.8;
   color: var(--faint);
   text-align: right;
@@ -476,22 +477,20 @@ pre code {
 }
 .code-expand:hover, .code-more:focus-visible + .code-body + .code-expand { color: var(--fg) }
 .code:has(.code-more:checked) .code-expand { display: none }
-/* links, after stallboerger.com: the words rest in a faint tint that floods
-   from the left on hover, and wrap with the text. `.bare` opts out (nav,
-   index rows, the canvas) */
+/* links, after stallboerger.com: the words rest in a faint tint and invert
+   on hover, and wrap with the text. `.bare` opts out (nav, index rows, the
+   canvas) */
 a {
   color: var(--fg);
   text-decoration: none;
   padding: 0 0.18em;
   margin: 0 -0.06em;
-  background:
-    linear-gradient(var(--fill-hi), var(--fill-hi)) no-repeat 0 0 / 0% 100%,
-    var(--fill);
-  transition: background-size 0.35s var(--ease);
+  background: var(--fill);
+  transition: background-color 0.15s, color 0.15s;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
-a:is(:hover, :focus-visible) { background-size: 100% 100% }
+a:not(.bare):is(:hover, :focus-visible) { background: var(--fg); color: var(--bg) }
 a.bare { padding: 0; margin: 0; background: none }
 a:focus-visible { outline: 1px solid var(--fg); outline-offset: 2px }
 a code { color: inherit }
