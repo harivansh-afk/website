@@ -1,5 +1,6 @@
 <script>
   import Seo from "#lib/Seo.svelte";
+  import Views from "#lib/Views.svelte";
 
   let { data } = $props();
 
@@ -12,11 +13,10 @@
 />
 
 <main class="thought sans-io">
-  <nav><a href="/" class="back-link" aria-label="Back home">..</a></nav>
   <article>
     <header>
       <h1>{title}</h1>
-      <p class="meta">September 2026</p>
+      <p class="meta"><span>September 2026</span><Views /></p>
     </header>
     <p>I’ve been moving more of my code into deterministic state machines. I want to reproduce a component’s state changes from its initial state and the inputs it received. The difficulty is that <mark>a function’s arguments often aren’t all of its inputs.</mark> It might also read the clock, receive data from a socket, or fetch some state through an RPC.</p>
     <p>Consider a request we want to retry after ten seconds if we’re still waiting for a reply. Whether it needs another attempt depends on the current time and whether a reply has already been processed. If the request code manages the socket and timer itself, reproducing that decision means controlling both operations. A reply that arrived after the timeout on one run might arrive before it on the next.</p>

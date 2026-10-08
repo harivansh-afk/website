@@ -1,5 +1,6 @@
 <script>
   import Seo from "#lib/Seo.svelte";
+  import Views from "#lib/Views.svelte";
 
   const title = "core principles";
 </script>
@@ -7,11 +8,10 @@
 <Seo {title} description="As someone in persuit of an extraordinary life, I live by some core principles adapted from the behavior of my grandparents" />
 
 <main class="thought">
-  <nav><a href="/" class="back-link">..</a></nav>
   <article>
     <header>
       <h1>{title}</h1>
-      <p class="meta">May 2025</p>
+      <p class="meta"><span>May 2025</span><Views /></p>
     </header>
     <ol>
       <li>

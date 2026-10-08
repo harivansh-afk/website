@@ -12,10 +12,11 @@
 // are never shown and the shown lines are dedented.
 import { createHighlighter } from "shiki";
 import { glossary } from "./code-glossary.js";
+import { cozyboxDark, cozyboxLight, cozyboxTransformer } from "./code-theme.js";
 
-const THEMES = { light: "github-light", dark: "github-dark" };
+const THEMES = { light: cozyboxLight.name, dark: cozyboxDark.name };
 const LANGS = ["rust"];
-const highlighter = createHighlighter({ themes: Object.values(THEMES), langs: LANGS });
+const highlighter = createHighlighter({ themes: [cozyboxLight, cozyboxDark], langs: LANGS });
 
 const KEYWORDS = new Set(
   (
@@ -441,7 +442,7 @@ export async function createCodeRenderer() {
       lang: LANGS.includes(lang) ? lang : "text",
       themes: THEMES,
       defaultColor: false,
-      transformers,
+      transformers: [cozyboxTransformer(), ...transformers],
     });
 
   function template(domKey, key, def, lang) {

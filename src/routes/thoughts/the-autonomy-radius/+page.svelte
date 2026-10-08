@@ -1,5 +1,6 @@
 <script>
   import Seo from "#lib/Seo.svelte";
+  import Views from "#lib/Views.svelte";
 
   let { data } = $props();
 
@@ -9,11 +10,10 @@
 <Seo {title} description="How we build the feedback that lets a team of three hand more of the software development lifecycle to agents." />
 
 <main class="thought autonomy">
-  <nav><a href="/" class="back-link">..</a></nav>
   <article>
     <header>
       <h1>{title}</h1>
-      <p class="meta">September 2026</p>
+      <p class="meta"><span>September 2026</span><Views /></p>
     </header>
     <p>Adapted from my talk at the <a href="https://x.com/dexhorthy/status/2084319444361503157">YC AI unconference</a>, August 2026.</p>
     <p>At <a href="https://ix.dev/">Indexable</a>, we're a team of three maintaining a monorepo with over 1.5 million lines of <a href="https://www.rust-lang.org/">Rust</a>.</p>

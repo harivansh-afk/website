@@ -3,16 +3,28 @@
   src: url("/fonts/BerkeleyMono-Regular.otf") format("opentype");
   font-display: swap;
 }
+/* the second voice, for labels and figures (MIT, see DepartureMono-LICENSE.txt) */
+@font-face {
+  font-family: "Departure Mono";
+  src: url("/fonts/DepartureMono-Regular.woff2") format("woff2");
+  font-display: swap;
+}
 
 :root {
   --bg: #0d0d0b;
   --fg: #f3f3ee;
   --muted: hsl(45 5% 65%);
-  --underline-thickness: 0.078125rem;
-  --underline-dash: 0.15625rem;
-  --underline-inset: 0.125rem;
-  --underline-padding: 0.1875rem;
-  --underline-duration: 0.25s;
+  --faint: hsl(45 4% 46%);
+  --fill: color-mix(in srgb, var(--fg) 7%, transparent);
+  --fill-hi: color-mix(in srgb, var(--fg) 15%, transparent);
+  --line: color-mix(in srgb, var(--muted) 30%, transparent);
+  /* the label squares: the muted diagram set */
+  --red: #cf8078;
+  --blue: #8daab9;
+  --amber: #c5ae6a;
+  --mono: "Berkeley Mono", ui-monospace, monospace;
+  --pixel: "Departure Mono", "Berkeley Mono", ui-monospace, monospace;
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
   color-scheme: dark;
 }
 
@@ -21,13 +33,15 @@
     --bg: #fdfdfc;
     --fg: #1a1a1a;
     --muted: #6b6b66;
+    --faint: #a3a39c;
+    --red: #b34d48;
+    --blue: #42677b;
+    --amber: #947322;
     color-scheme: light;
   }
 }
 
 html {
-  /* Scale typography and rem-based layout directly, without CSS zoom. */
-  font-size: 120%;
   /* no rubber-band overscroll at the top/bottom of a page */
   overscroll-behavior: none;
 }
@@ -37,57 +51,233 @@ body {
   overscroll-behavior: none;
   background: var(--bg);
   color: var(--muted);
-  font-family: "Berkeley Mono", ui-monospace, monospace;
+  font-family: var(--mono);
+  font-size: 0.875rem;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-main {
-  max-width: 42rem;
+h1, h2, h3 { margin: 0; color: var(--fg); font-weight: 400; font-size: inherit }
+p, figure { margin: 0 }
+img { max-width: 100% }
+
+/* the page: one 80rem canvas. header and footer come from the layout */
+.site {
+  box-sizing: border-box;
+  max-width: 80rem;
   margin-inline: auto;
-  padding: clamp(3rem, 9.6vw, 5rem) 1.5rem;
+  padding: 2.5rem 2rem 3rem;
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+.top .who { color: var(--fg) }
+.top nav {
+  display: flex;
+  gap: 1.25rem;
+  font-family: var(--pixel);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+/* dotted brackets slide in around the hovered or current section */
+.top nav a { position: relative; color: var(--muted); transition: color 0.2s }
+.top nav a .dots {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.3s var(--ease);
+}
+.top nav a .dots:first-child { right: 100%; transform: translateX(-0.125rem) }
+.top nav a .dots:last-child { left: 100%; transform: translateX(0.125rem) }
+.top nav a:is(:hover, :focus-visible, [aria-current]) { color: var(--fg) }
+.top nav a:is(:hover, :focus-visible, [aria-current]) .dots { opacity: 1 }
+.top nav a:is(:hover, :focus-visible, [aria-current]) .dots:first-child { transform: translateX(-0.3rem) }
+.top nav a:is(:hover, :focus-visible, [aria-current]) .dots:last-child { transform: translateX(0.3rem) }
+
+/* crossing into /developer: the new page opens out from a line across the
+   middle, the way a crt powers on */
+::view-transition-old(root) { animation: 160ms ease-in both crt-out }
+::view-transition-new(root) { animation: 360ms cubic-bezier(0.2, 0.8, 0.2, 1) 60ms both crt-on }
+@keyframes crt-out { to { opacity: 0 } }
+@keyframes crt-on {
+  from { clip-path: inset(49.5% 0 49.5% 0); filter: brightness(2) }
+  45% { clip-path: inset(49.5% 0 49.5% 0) }
+  to { clip-path: inset(0 0 0 0); filter: none }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none }
 }
 
-main.thought {
-  max-width: 60rem;
-  font-size: 1.375rem;
+/* the stagger, after benja.dev: each block hangs off its own twelfth of the
+   canvas (--off) at its own width (--w), with a lot of air below (--gap).
+   under 960px every offset drops and the page is one left-aligned column */
+.blk { padding-bottom: 4.5rem }
+.blk.first { padding-top: 6rem }
+@media (min-width: 960px) {
+  .blk {
+    margin-left: var(--off, 0%);
+    width: var(--w, 100%);
+    padding-bottom: var(--gap, 7.5rem);
+  }
+  .blk.first { padding-top: 8.5rem }
+}
+
+/* /developer's faces: iosevka for the cells (OFL), nonicons for the icons
+   my editor uses (MIT); both subset, both only fetched there */
+@font-face {
+  font-family: "Iosevka Charon Mono";
+  src: url("/fonts/IosevkaCharonMono-Regular.woff2") format("woff2");
+  font-display: block;
+}
+@font-face {
+  font-family: "Nonicons";
+  src: url("/fonts/nonicons.woff2") format("woff2");
+  font-display: block;
+}
+
+/* section labels: a word in the pixel face, flush with the text below, and
+   a small square hanging in the margin before it */
+.label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 0 0 1rem;
+  font-family: var(--pixel);
+  font-size: 0.6875rem;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+.label::before {
+  content: "";
+  position: absolute;
+  right: calc(100% + 0.5rem);
+  width: 0.3125rem;
+  height: 0.3125rem;
+  background: var(--dot, var(--faint));
+}
+.label.red { --dot: var(--red) }
+.label.blue { --dot: var(--blue) }
+.label.amber { --dot: var(--amber) }
+
+/* figures: dates, counts, statuses. scanned, not read */
+.fig {
+  font-family: var(--pixel);
+  font-size: 0.6875rem;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.fig .dots { color: var(--muted) }
+
+/* index rows: name left, figure right; the whole row is the hover target */
+.rows { display: grid; gap: 0.125rem; margin: 0 -0.5rem; padding: 0; list-style: none }
+.rows .row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 1.25rem;
+  padding: 0.6rem 0.5rem;
+  border-radius: 0.1875rem;
+  transition: background-color 0.15s;
+}
+.rows .row .name { color: var(--fg) }
+@media (hover: hover) { .rows .row:hover { background: var(--fill) } }
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1.25rem 2.5rem;
+  padding-bottom: 0;
+}
+.elsewhere { display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; font-size: 0.8125rem }
+/* berkeley, not the pixel face: departure's © is a smudge at this size */
+.colophon {
+  font-size: 0.75rem;
+  line-height: 1.8;
+  color: var(--faint);
+  text-align: right;
 }
 
 main.not-found {
-  display: flex;
-  flex-direction: column;
-}
-
-.not-found-content {
-  min-height: min(67.2vh, 24rem);
+  min-height: min(60vh, 24rem);
   display: grid;
   place-items: center;
   text-align: center;
 }
 
-/* mobile: restore the base rem size and tighten the typography. */
+/* mobile: tighter canvas, the colophon joins the left edge */
 @media (max-width: 640px) {
-  html {
-    font-size: 100%;
-  }
-  body {
-    font-size: 13px;
-    line-height: 1.45;
-  }
-  main.thought {
-    font-size: 1.1875rem;
-  }
-  main {
-    padding: 1.5rem 16px;
-  }
-  main:not(.thought) h1 {
-    margin-block: 0 0.75em;
-  }
+  body { font-size: 0.8125rem; line-height: 1.5 }
+  .site { padding: 1.5rem 16px 2rem }
+  .blk { padding-bottom: 3.5rem }
+  .blk.first { padding-top: 3.5rem }
+  .colophon { text-align: left }
 }
 
-h1, h2 { color: var(--fg); font-weight: 400 }
-main.thought h2 { margin-block: 2.5rem 1rem }
+/* thoughts: the date and views in the gutter, the prose at 7/12 beside it.
+   under 960px the meta folds into one line under the title */
+main.thought {
+  padding-block: 5rem 4.5rem;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+main.thought h1 {
+  font-size: 1.375rem;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+main.thought .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.25rem;
+  margin-top: 0.75rem;
+  margin-bottom: 1.5rem;
+  font-family: var(--pixel);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--faint);
+}
+main.thought .meta > :first-child { color: var(--muted) }
+main.thought article > :not(header, figure, pre, .callout) { max-width: 62ch }
+@media (min-width: 960px) {
+  main.thought { padding-top: 8.5rem }
+  main.thought article {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 1.25rem;
+  }
+  main.thought article > * { grid-column: 4 / span 7; min-width: 0 }
+  main.thought article > header { display: contents }
+  main.thought article > header .meta {
+    grid-column: 1 / span 3;
+    grid-row: 1 / span 2;
+    flex-direction: column;
+    align-self: start;
+    margin: 0;
+    padding-top: 0.45rem;
+  }
+  main.thought article > header h1 { grid-column: 4 / span 7; margin-bottom: 1.25rem }
+}
+main.thought h2 { margin-block: 2.5rem 0.75rem; font-size: 1em }
+main.thought article p { margin-block: 1em }
+main.thought article > header p.meta { margin-block: 0.75rem 1.5rem }
+@media (max-width: 640px) {
+  main.thought { padding-top: 3.5rem; font-size: 1rem; line-height: 1.65 }
+  main.thought h1 { font-size: 1.25rem }
+}
+
 figure { margin-inline: 0 }
-img { max-width: 100% }
 .filetree {
   margin-block: 1.5rem;
   padding: 1rem;
@@ -130,82 +320,26 @@ pre code {
   padding: 0;
   background: transparent;
 }
-/* Paint inside the inline text box, leaving room below the stroke so fractional
-   pixel snapping cannot clip its bottom edge. Both layers have the same
-   thickness; the right-anchored dashes slide as they shrink and the solid
-   grows from the left. The stroke stays muted whatever the link's colour. */
+/* links, after stallboerger.com: the words rest in a faint tint that floods
+   from the left on hover, and wrap with the text. `.bare` opts out (nav,
+   index rows, the canvas) */
 a {
-  color: inherit;
+  color: var(--fg);
   text-decoration: none;
-  padding-bottom: var(--underline-padding);
-  background-image:
-    linear-gradient(var(--muted), var(--muted)),
-    repeating-linear-gradient(to right,
-      var(--muted) 0 var(--underline-dash),
-      transparent var(--underline-dash) calc(2 * var(--underline-dash)));
-  background-repeat: no-repeat;
-  background-position:
-    0 calc(100% - var(--underline-inset)),
-    100% calc(100% - var(--underline-inset));
-  background-size: 0 var(--underline-thickness), 100% var(--underline-thickness);
-  transition: background-size var(--underline-duration) ease;
+  padding: 0 0.18em;
+  margin: 0 -0.06em;
+  background:
+    linear-gradient(var(--fill-hi), var(--fill-hi)) no-repeat 0 0 / 0% 100%,
+    var(--fill);
+  transition: background-size 0.35s var(--ease);
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
-a:is(:hover, :focus-visible) {
-  background-size: 100% var(--underline-thickness), 0 var(--underline-thickness);
-}
-
-/* Keep the same three-pixel dash on mobile. */
-@media (max-width: 640px) {
-  :root { --underline-dash: 3px; }
-}
-
-/* link previews: hover popover, desktop only. images are bare (no chrome);
-   the text heatmap keeps a quiet box so it stays legible over the page */
-.preview-pop {
-  position: fixed;
-  z-index: 10;
-  max-width: 26rem;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.12s ease; /* symmetric: same fade in and out */
-}
-.preview-pop.on { opacity: 1 }
-.preview-pop img,
-.preview-pop video {
-  display: block;
-  max-width: 20rem;
-  max-height: min(21rem, 60vh);
-  width: auto;
-  height: auto;
-  border-radius: 0px;
-}
-.preview-pop.heatmap {
-  max-width: none;
-  padding: 0.75rem;
-  background: var(--bg);
-}
-/* the contribution calendar: github's green scale, both schemes */
-.preview-hm { display: block }
-.preview-hm .hm-label { fill: var(--muted); font-size: 9px; font-family: inherit }
-.preview-hm .hm-0 { fill: #161b22 }
-.preview-hm .hm-1 { fill: #0e4429 }
-.preview-hm .hm-2 { fill: #006d32 }
-.preview-hm .hm-3 { fill: #26a641 }
-.preview-hm .hm-4 { fill: #39d353 }
-@media (prefers-color-scheme: light) {
-  .preview-hm .hm-0 { fill: #ebedf0 }
-  .preview-hm .hm-1 { fill: #9be9a8 }
-  .preview-hm .hm-2 { fill: #40c463 }
-  .preview-hm .hm-3 { fill: #30a14e }
-  .preview-hm .hm-4 { fill: #216e39 }
-}
-.hm-total {
-  margin-top: 0.5rem;
-  font-size: 0.7rem;
-  color: var(--muted);
-}
+a:is(:hover, :focus-visible) { background-size: 100% 100% }
+a.bare { padding: 0; margin: 0; background: none }
+a:focus-visible { outline: 1px solid var(--fg); outline-offset: 2px }
+a code { color: inherit }
+p > a > code { padding: 0; background: none }
 
 .callout {
   margin-block: 1.5rem;
@@ -222,9 +356,6 @@ a:is(:hover, :focus-visible) {
 .callout > :last-child { margin-bottom: 0 }
 .callout > p { margin-block: 0.25rem 0 }
 
-.back-link { background-image: none }
-.meta { text-transform: uppercase; letter-spacing: 0.1em; color: var(--fg) }
-a:hover { color: var(--fg) }
 
 
 /* Article figures scroll within the prose column on narrow screens. */
@@ -242,19 +373,23 @@ a:hover { color: var(--fg) }
 /* Editorial emphasis: a restrained yellow marker that wraps with the prose. */
 mark {
   color: var(--fg);
-  background: rgb(230 194 55 / 23%);
+  background: rgb(230 194 55 / 14%);
   padding: 0.08em 0.12em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
 @media (prefers-color-scheme: light) {
-  mark { background: rgb(250 220 75 / 42%); }
+  mark { background: rgb(250 220 75 / 26%); }
 }
 
-/* Syntax tokens follow the page theme; code blocks keep the shared background. */
+/* Syntax tokens: cozybox (src/lib/code-theme.js) in the page's theme; code
+   blocks keep the shared background. */
 .shiki, .shiki span { color: var(--shiki-dark); }
+/* cozybox, as in the editor: functions bold, comments and strings italic */
+.shiki span { font-style: var(--shiki-dark-font-style); font-weight: var(--shiki-dark-font-weight); font-synthesis: style weight; }
 @media (prefers-color-scheme: light) {
   .shiki, .shiki span { color: var(--shiki-light); }
+  .shiki span { font-style: var(--shiki-light-font-style); font-weight: var(--shiki-light-font-weight); }
 }
 
 /* Code definitions (CodeDefs.svelte): names in code blocks show their

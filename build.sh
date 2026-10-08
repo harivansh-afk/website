@@ -8,12 +8,9 @@ else
   npm run build
 fi
 
-# the commit heatmap regenerates every build so the hover chart stays current
-mkdir -p dist/previews
-node tools/heatmap.mjs > dist/previews/heatmap.json || {
-  echo "heatmap generation failed, shipping without it" >&2
-  rm -f dist/previews/heatmap.json
-}
+# view counts: the caddy hit log + x views, baked to dist/views.json. a timer
+# on spark re-runs this every few minutes between builds
+node tools/views.mjs || echo "views generation failed, shipping without counts" >&2
 
 # Caddy serves this dir (bind-mounted at /srv/harivan.sh) as user caddy;
 # normalize perms so a restrictive umask cannot 403 the site.
