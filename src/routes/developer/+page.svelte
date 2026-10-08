@@ -19,7 +19,7 @@
 
   const FONT = '16px "Iosevka Charon Mono"';
   const LINE = 20; // px per row; a cell is (measured advance) x LINE
-  const PAD = { x: 6, y: 8 }; // px around the grid
+  const PAD = { x: 16, y: 12 }; // least px around the grid; the rest centres it
   const SCROLLOFF = 2;
 
   let screen;
@@ -27,6 +27,7 @@
   let cols = $state(140);
   let rows = $state(44);
   let ready = $state(false);
+  let margin = $state({ x: PAD.x, y: PAD.y });
   let mounted = $state(false);
 
   let ui = $state({ ...initial });
@@ -161,16 +162,24 @@
     const at = sections.findIndex((x) => x.id === location.hash.slice(1));
     if (at >= 0) ui = { ...ui, s: at };
 
+    // the screen is css-zoomed above phone width (the style below), so the
+    // viewport in its own px is the window divided by the zoom
+    const zoom = () => screen.currentCSSZoom ?? 1;
     const measure = () => {
-      cols = Math.max(20, Math.floor((innerWidth - 2 * PAD.x) / cw));
-      rows = Math.max(12, Math.floor((innerHeight - 2 * PAD.y) / LINE));
+      const w = innerWidth / zoom();
+      const h = innerHeight / zoom();
+      cols = Math.max(20, Math.floor((w - 2 * PAD.x) / cw));
+      rows = Math.max(12, Math.floor((h - 2 * PAD.y) / LINE));
+      // the cells never fill the viewport exactly: split what's left evenly,
+      // so the margins match on both sides
+      margin = { x: Math.round((w - cols * cw) / 2), y: Math.round((h - rows * LINE) / 2) };
     };
     let gone = false;
     Promise.all([document.fonts.load(FONT), document.fonts.load('16px "Nonicons"')])
       .catch(() => {})
       .then(() => {
         if (gone) return;
-        cw = screen.querySelector(".probe").getBoundingClientRect().width / 100;
+        cw = screen.querySelector(".probe").getBoundingClientRect().width / 100 / zoom();
         measure();
         ready = true;
       });
@@ -202,12 +211,12 @@
 </svelte:head>
 
 <div class="dev">
-  <div class="screen" class:ready bind:this={screen} style:--cw="{cw}px" aria-hidden="true">
+  <div class="screen" class:ready bind:this={screen} style:--cw="{cw}px" style:inset="{margin.y}px {margin.x}px" aria-hidden="true">
     <span class="probe">{"0".repeat(100)}</span>
 
     <!-- title bar -->
     <div class="line" style={place(0, 0, cols)}>
-      <span class="icon">{icon("terminal")}</span><span class="fg">HARIVAN.SH</span>{"  "}<span class="muted">DEVELOPER</span>
+      <span class="icon">{icon("terminal")}</span><span class="fg">HARIVAN.SH</span>
     </div>
     <a class="line link home" href="{CAFE}/" tabindex="-1" onclick={(e) => crossClick(e, `${CAFE}/`)} style={place(cols - 13, 0, 13)}>hari.cafe{" "}<span class="muted">-</span></a>
 
@@ -333,6 +342,12 @@
       0.5px 0 0 #ff46461f,
       -0.5px 0 0 #4696ff1f;
   }
+  /* read at 150% above phone width, as if the browser were zoomed */
+  @media (min-width: 641px) {
+    .dev {
+      zoom: 1.5;
+    }
+  }
   :global(html:has(.dev)),
   :global(body:has(.dev)) {
     background: #1e2139;
@@ -351,7 +366,7 @@
 
   .screen {
     position: absolute;
-    inset: 8px 6px;
+    inset: 12px 16px;
     visibility: hidden;
   }
   /* it switches on like a crt the moment it can be drawn (style.css) */

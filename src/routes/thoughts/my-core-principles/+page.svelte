@@ -11,7 +11,7 @@
   <article>
     <header>
       <h1>{title}</h1>
-      <p class="meta"><span>May 2025</span><Views /></p>
+      <p class="meta"><span>May 2025</span><span>~1 min read</span><Views /></p>
     </header>
     <ol>
       <li>

@@ -46,8 +46,10 @@
     let top = r.bottom + GAP;
     if (top + p.height > innerHeight - EDGE && r.top - GAP - p.height >= EDGE) top = r.top - GAP - p.height;
     top = Math.max(EDGE, Math.min(top, innerHeight - p.height - EDGE));
-    pop.style.left = left + "px";
-    pop.style.top = top + "px";
+    // rects are in screen px; the page is zoomed (style.css), so its own px are larger
+    const zoom = pop.currentCSSZoom ?? 1;
+    pop.style.left = left / zoom + "px";
+    pop.style.top = top / zoom + "px";
   }
 
   function show(el) {

@@ -132,7 +132,7 @@
       width: 70%;
     }
   }
-  @media (min-width: 960px) {
+  @media (min-width: 1152px) {
     .piece {
       grid-column: var(--col);
       margin-top: var(--drop);

@@ -49,7 +49,7 @@
       column-gap: 1.5rem;
     }
   }
-  @media (min-width: 960px) {
+  @media (min-width: 1152px) {
     .canvas {
       grid-template-columns: repeat(12, minmax(0, 1fr));
       column-gap: 1.25rem;

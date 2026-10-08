@@ -14,9 +14,9 @@ export async function load() {
 
   // Each block is one `// #region` of request.rs, the file the tests run.
   return {
-    handlers: code(request, { region: "handlers" }),
-    orderings: code(request, { region: "orderings" }),
-    duplicate: code(request, { region: "duplicate" }),
+    handlers: code(request, { region: "handlers", name: "request.rs" }),
+    orderings: code(request, { region: "orderings", name: "request.rs" }),
+    duplicate: code(request, { region: "duplicate", name: "request.rs" }),
     playground: playground.href,
   };
 }

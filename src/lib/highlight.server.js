@@ -434,9 +434,33 @@ function markdownDoc(doc) {
 
 // A page's code renderer. Templates are emitted once per page, so create one
 // renderer per `load` and render every block of the page through it.
+// a block longer than this folds to its first FOLD_SHOW lines behind an
+// "expand" label; past NUMBER_FROM lines it gets line numbers
+const FOLD_AT = 24;
+const FOLD_SHOW = 16;
+const NUMBER_FROM = 3;
+
+// the frame around every block: a bar with its name and a copy button, the
+// code, and for long blocks a fold. the fold is a checkbox and its label, so
+// it opens without scripts; copy is wired by the thoughts layout
+function frame(html, { name, lines, id }) {
+  const fold = lines > FOLD_AT;
+  const cls = ["code", fold && "fold", lines >= NUMBER_FROM && "numbered"].filter(Boolean).join(" ");
+  return (
+    `<div class="${cls}" style="--shown:${FOLD_SHOW}">` +
+    `<div class="code-bar"><span class="code-name">${escapeHtml(name)}</span>` +
+    `<button type="button" class="code-copy" data-copy>copy</button></div>` +
+    (fold ? `<input type="checkbox" class="code-more" id="${id}" aria-label="show all ${lines} lines" />` : "") +
+    `<div class="code-body">${html}</div>` +
+    (fold ? `<label class="code-expand" for="${id}">expand ${lines - FOLD_SHOW} more lines</label>` : "") +
+    `</div>`
+  );
+}
+
 export async function createCodeRenderer() {
   const syntax = await highlighter;
   const emitted = new Set();
+  let blocks = 0;
   const highlight = (code, lang, transformers = []) =>
     syntax.codeToHtml(code, {
       lang: LANGS.includes(lang) ? lang : "text",
@@ -463,9 +487,10 @@ export async function createCodeRenderer() {
 
   /**
    * Render a code block. `region` shows one `// #region` of the source;
-   * without it, the source shows whole.
+   * without it, the source shows whole. `name` labels the block's bar (a
+   * file name); it defaults to the language.
    */
-  return function render(source, { lang = "rust", region } = {}) {
+  return function render(source, { lang = "rust", region, name } = {}) {
     const src = source.replace(/\r\n/g, "\n");
     const lines = src.split("\n");
     const picked = shownLines(lines, region);
@@ -475,7 +500,9 @@ export async function createCodeRenderer() {
     const shown = picked.map((k) => lines[k].slice(dedent)).join("\n");
 
     const rust = lang === "rust" || lang === "rs";
-    if (!rust) return highlight(shown, lang);
+    const framed = (html) =>
+      frame(html, { name: name ?? lang, lines: shown.split("\n").length, id: `code-${hash(src)}-${blocks++}` });
+    if (!rust) return framed(highlight(shown, lang));
 
     // map resolved source offsets onto the shown text
     const { defs, refs } = resolve(src);
@@ -535,6 +562,6 @@ export async function createCodeRenderer() {
       emitted.add(key);
       templates += template(key, ref, defs.get(ref), "rust");
     }
-    return html + templates;
+    return framed(html) + templates;
   };
 }

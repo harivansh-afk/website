@@ -13,7 +13,7 @@
   <article>
     <header>
       <h1>{title}</h1>
-      <p class="meta"><span>September 2026</span><Views /></p>
+      <p class="meta"><span>September 2026</span><span>~8 min read</span><Views /></p>
     </header>
     <p>Adapted from my talk at the <a href="https://x.com/dexhorthy/status/2084319444361503157">YC AI unconference</a>, August 2026.</p>
     <p>At <a href="https://ix.dev/">Indexable</a>, we're a team of three maintaining a monorepo with over 1.5 million lines of <a href="https://www.rust-lang.org/">Rust</a>.</p>
@@ -34,7 +34,7 @@
     When a feature has a difficult correctness question, we build something the agent can run to answer it.
     That work lets us hand over more of the development lifecycle without personally conducting every iteration.</p>
     <p>I call that the autonomy radius- <mark>how long can i extend an agent's leash before it needs me to provide feedback</mark>.</p>
-    <h2>the circle is made of feedback</h2>
+    <h2 id="the-circle-is-made-of-feedback"><a class="bare" href="#the-circle-is-made-of-feedback">the circle is made of feedback</a></h2>
     <p>The compiler gives an agent a useful place to start.
     Write code, compile it, inspect the error, try again.
     The agent can complete loop against this pretty comfortably.</p>
@@ -55,7 +55,7 @@
     <img src="/diagrams/autonomy-radius.svg?rev=20778fd9a7d3" width="780" height="400" alt="Feedback expands the work an agent can evaluate independently." />
     </div>
     <figcaption>Figure 1. A conceptual boundary, not a measurement. Each added check makes another kind of decision available to the agent.</figcaption>
-    </figure><h2>stop writing the same review comment</h2>
+    </figure><h2 id="stop-writing-the-same-review-comment"><a class="bare" href="#stop-writing-the-same-review-comment">stop writing the same review comment</a></h2>
     <p>Take this for example:</p>
     {@html data.unwrap}
     <p>If the conversion fails, the program gets zero. An invalid configuration has become an apparently successful result. We wanted the error propagated while it still explained what went wrong.</p>
@@ -66,7 +66,7 @@
     <p>The detector gave it somewhere to look. Choosing the abstraction was still implementation work, and the resulting change still needed validation. But the whole task could run against requirements we had already established.</p>
     <p>These rules need maintenance too. In one case, a rule banning <a href="https://nixos.org/manual/nixos/stable/#sec-option-definitions-setting-priorities"><code>mkForce</code></a> was followed by a rule catching its numeric <a href="https://nixos.org/manual/nixos/stable/#sec-option-definitions-setting-priorities"><code>mkOverride</code></a> workaround. We had to close the hole in what we'd asked the checker to enforce. Each lint also gets examples it should accept and reject; a check that never fires is easy to mistake for a healthy one.</p>
     <p>A review comment helps with the change in front of you. <mark>Encoding the correction gives the next agent the same feedback.</mark></p>
-    <h2>make the code explain itself later</h2>
+    <h2 id="make-the-code-explain-itself-later"><a class="bare" href="#make-the-code-explain-itself-later">make the code explain itself later</a></h2>
     <p>Some decisions need more than syntax. We carry a <a href="https://github.com/indexable-inc/index/tree/main/views/clippy">Clippy fork</a> for checks that need the compiler's understanding of types.</p>
     <p>One of those checks is <a href="https://github.com/indexable-inc/index/blob/main/views/clippy/clippy_lints/src/uninstrumented_await.rs"><code>uninstrumented_await</code></a>. Suppose a function instruments some of its asynchronous operations but leaves another one bare. The trace accounts for part of the work. Time spent waiting on the bare operation appears as an unexplained gap.</p>
     <p>The lint catches that partial instrumentation. If you've decided that individual awaits need <a href="https://docs.rs/tracing/latest/tracing/span/index.html">spans</a> in a function, it asks you to finish the job. It doesn't require every function in the program to have them.</p>
@@ -80,7 +80,7 @@
     {@html data.instrument}
     <p>Looking only for an instrumentation call next to <code>.await</code> would miss this. The compiler can follow the future's type through the binding.</p>
     <p>This is one reason I think about the whole lifecycle together. <mark>A check while writing code improves the evidence available when production misbehaves.</mark> By the time someone opens the trace, it's too late to record the operation we left out.</p>
-    <h2>a harness per problem</h2>
+    <h2 id="a-harness-per-problem"><a class="bare" href="#a-harness-per-problem">a harness per problem</a></h2>
     <p>Our hardest questions belong to the systems we're building. What may garbage collection reclaim while references are changing? Which writes must survive a crash? A generic linter has no knowledge of those contracts.</p>
     <p>So implementing the feature also means building an instrument for it.</p>
     <p>Our restore drill snapshots a machine running a database workload, restores it, and checks the restored machine. The agent can exercise the behavior we care about instead of stopping at code that looks like it should restore correctly.</p>
@@ -94,7 +94,7 @@
     </div>
     <figcaption>Figure 3. The agent can iterate against an existing contract. Humans define the requirements and revise checks that fail to capture them.</figcaption>
     </figure><p>We use the same loop for delegated work. Workers get their own snapshot-forked VMs, where they can run the relevant checks without sending every failed attempt back to the coordinating agent. They return the candidate and its validation results. The combined change still needs validation.</p>
-    <h2>find the failures you didn't think to test</h2>
+    <h2 id="find-the-failures-you-didnt-think-to-test"><a class="bare" href="#find-the-failures-you-didnt-think-to-test">find the failures you didn't think to test</a></h2>
     <p>A focused harness can check a known scenario. Production combines operations in orders we didn't write down. A process dies during recovery. A journal reopens between a change to memory and a change to disk.</p>
     <p>We use <a href="https://antithesis.com/docs/resources/deterministic_simulation_testing/">deterministic simulation</a> to explore those executions under faults. A failing execution can be replayed, giving an investigation a particular sequence of events to explain.</p>
     <p>One example from the talk involved our block-volume journal. In a simplified version, each write receives a sequence number. Once the journal has made records through sequence 4 durable, reopening that history must not issue sequence 0 again.</p>
@@ -108,11 +108,11 @@
     </figure><p>A successful append wouldn't tell you this was wrong. <mark>The checker needed to remember history across the crash.</mark> We had to encode what the sequence numbers meant and what reopening was required to preserve.</p>
     <p>The counterexample gives us a starting point for debugging. Replay helps establish whether the mistake is in the implementation or in the workload and assertion. We also check that the workload actually reached the hazards it was meant to exercise. A fault test that never reaches its fault can give you a very reassuring result.</p>
     <p>These longer searches have a different job from the checks on an individual change. The scheduled runs described here feed discoveries back into development; they aren't the candidate's merge gate. Where possible, a discovered failure becomes a focused regression test the next agent can run earlier.</p>
-    <h2>give agents the running system too</h2>
+    <h2 id="give-agents-the-running-system-too"><a class="bare" href="#give-agents-the-running-system-too">give agents the running system too</a></h2>
     <p>When a VM operation stalls, the explanation may cross the control plane, the hypervisor, and storage. Source access lets an agent read how those components are supposed to work. It also needs evidence from the operation that stalled.</p>
     <p>Our fleet IDE puts hosts, VMs, journal output, CI runs, and agents in one place. <mark>Agents query the same operational data underneath the interface.</mark> They can investigate without waiting for us to copy logs into a conversation.</p>
     <p>This connects back to the tracing lint. We need to record useful evidence in the first place, then make it accessible during an investigation. Missing either end puts a person back in the loop to reconstruct what happened.</p>
-    <h2>what we still do</h2>
+    <h2 id="what-we-still-do"><a class="bare" href="#what-we-still-do">what we still do</a></h2>
     <p>We choose what to build and what the system must guarantee. We decide which structural opinions are worth enforcing. When a checker accepts something it shouldn't, or rejects something reasonable, we have to improve it.</p>
     <p><mark>We also decide when the existing evidence is insufficient.</mark> A passing harness can establish a particular behavior while leaving an architectural question unanswered. That question still needs attention; running the same check again won't settle it.</p>
     <p>That is how I think about maintaining this codebase with three people. The feedback we build for one task remains available to the next agent. We can spend more of our time on the questions those checks don't yet answer.</p>

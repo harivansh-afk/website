@@ -45,6 +45,13 @@ html {
   /* no rubber-band overscroll at the top/bottom of a page */
   overscroll-behavior: none;
 }
+/* above phone width the whole page reads at 120%, as if the browser were
+   zoomed: sizes stay as written, every px is just bigger. media queries see
+   the real viewport, so the desktop breakpoint sits at 1152px (960 x 1.2).
+   /developer counts its own cells and stays at 100% */
+@media (min-width: 641px) {
+  html:not(:has(.dev)) { zoom: 1.2 }
+}
 
 body {
   margin: 0;
@@ -118,10 +125,10 @@ html.crt-off body { animation: 170ms cubic-bezier(0.6, 0, 0.9, 0.4) both crt-off
 
 /* the stagger, after benja.dev: each block hangs off its own twelfth of the
    canvas (--off) at its own width (--w), with a lot of air below (--gap).
-   under 960px every offset drops and the page is one left-aligned column */
+   under 1152px (960 zoomed) every offset drops and the page is one left-aligned column */
 .blk { padding-bottom: 4.5rem }
 .blk.first { padding-top: 6rem }
-@media (min-width: 960px) {
+@media (min-width: 1152px) {
   .blk {
     margin-left: var(--off, 0%);
     width: var(--w, 100%);
@@ -144,7 +151,7 @@ html.crt-off body { animation: 170ms cubic-bezier(0.6, 0, 0.9, 0.4) both crt-off
 }
 
 /* section labels: a word in the pixel face, flush with the text below, and
-   a small square hanging in the margin before it */
+   four dots in a square hanging in the margin before it */
 .label {
   position: relative;
   display: flex;
@@ -158,12 +165,17 @@ html.crt-off body { animation: 170ms cubic-bezier(0.6, 0, 0.9, 0.4) both crt-off
   color: var(--muted);
 }
 .label::before {
+  --d: var(--dot, var(--faint));
   content: "";
   position: absolute;
   right: calc(100% + 0.5rem);
-  width: 0.3125rem;
-  height: 0.3125rem;
-  background: var(--dot, var(--faint));
+  top: calc(50% - 3.75px);
+  /* one shape, not four boxes, so it can't round lopsided; 7.5px is a whole
+     9px at the page's 120% zoom (18 on retina), so it stays crisp too */
+  width: 7.5px;
+  height: 7.5px;
+  background: var(--d);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'%3E%3Cpath d='M0 0h4v4H0zM5 0h4v4H5zM0 5h4v4H0zM5 5h4v4H5z'/%3E%3C/svg%3E") 0 0 / 100% 100%;
 }
 .label.red { --dot: var(--red) }
 .label.blue { --dot: var(--blue) }
@@ -226,8 +238,10 @@ main.not-found {
   .colophon { text-align: left }
 }
 
-/* thoughts: the date and views in the gutter, the prose at 7/12 beside it.
-   under 960px the meta folds into one line under the title */
+/* thoughts, after benja.dev's articles: the date, read time and views in the
+   gutter (2/12), the prose at 7/12 beside it, "on this page" in the last 3/12
+   (thoughts/+layout.svelte). under 1152px the meta folds into one line under
+   the title and the contents step aside */
 main.thought {
   padding-block: 5rem 4.5rem;
   font-size: 1.0625rem;
@@ -252,27 +266,94 @@ main.thought .meta {
   color: var(--faint);
 }
 main.thought .meta > :first-child { color: var(--muted) }
-main.thought article > :not(header, figure, pre, .callout) { max-width: 62ch }
-@media (min-width: 960px) {
-  main.thought { padding-top: 8.5rem }
-  main.thought article {
+main.thought article > :not(header, figure, pre, .code, .callout) { max-width: 62ch }
+.toc { display: none }
+@media (min-width: 1152px) {
+  .thought-grid {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: 1.25rem;
   }
-  main.thought article > * { grid-column: 4 / span 7; min-width: 0 }
+  .thought-grid > main.thought { grid-column: 1 / span 9; min-width: 0 }
+  main.thought { padding-top: 8.5rem }
+  main.thought article {
+    display: grid;
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    column-gap: 1.25rem;
+  }
+  main.thought article > * { grid-column: 3 / span 7; min-width: 0 }
   main.thought article > header { display: contents }
   main.thought article > header .meta {
-    grid-column: 1 / span 3;
+    grid-column: 1 / span 2;
     grid-row: 1 / span 2;
     flex-direction: column;
     align-self: start;
     margin: 0;
     padding-top: 0.45rem;
   }
-  main.thought article > header h1 { grid-column: 4 / span 7; margin-bottom: 1.25rem }
+  main.thought article > header h1 { grid-column: 3 / span 7; margin-bottom: 1.25rem }
+
+  /* the contents: level with the first paragraph, then pinned while the
+     article scrolls past */
+  .toc { display: block; grid-column: 10 / span 3; padding-top: 12.5rem }
+  .toc-in { position: sticky; top: 2.5rem }
+  .toc-label {
+    margin-bottom: 0.6rem;
+    font-family: var(--pixel);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--faint);
+  }
+  .toc ol { margin: 0; padding: 0; list-style: none }
+  .toc li a {
+    display: block;
+    padding-block: 0.3rem;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--muted);
+    transition: color 0.15s;
+  }
+  .toc li a:is(:hover, .on) { color: var(--fg) }
 }
-main.thought h2 { margin-block: 2.5rem 0.75rem; font-size: 1em }
+main.thought h2 { margin-block: 2.5rem 0.75rem; font-size: 1em; scroll-margin-top: 2rem }
+/* each heading links to itself; a # surfaces in the gutter on hover */
+main.thought h2 a { position: relative; color: inherit }
+main.thought h2 a::before {
+  content: "#";
+  position: absolute;
+  right: 100%;
+  margin-right: 0.5em;
+  font-family: var(--pixel);
+  font-size: 0.8em;
+  color: var(--faint);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+main.thought h2 a:is(:hover, :focus-visible)::before { opacity: 1 }
+html { scroll-behavior: smooth }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } }
+
+/* figures zoom to fill the window on click (thoughts/+layout.svelte) */
+main.thought figure img { cursor: zoom-in }
+.zoom-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  cursor: zoom-out;
+  background: color-mix(in srgb, var(--bg) 0%, transparent);
+  transition: background-color 0.3s var(--ease);
+}
+.zoom-veil.on { background: color-mix(in srgb, var(--bg) 94%, transparent) }
+.zoom-img {
+  position: fixed;
+  max-width: none;
+  transform-origin: 0 0;
+  transition: transform 0.35s var(--ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  .zoom-veil, .zoom-img { transition: none }
+}
 main.thought article p { margin-block: 1em }
 main.thought article > header p.meta { margin-block: 0.75rem 1.5rem }
 @media (max-width: 640px) {
@@ -323,6 +404,78 @@ pre code {
   padding: 0;
   background: transparent;
 }
+
+/* code blocks (highlight.server.js frame): a bar with the name and copy, the
+   code, line numbers past a couple of lines, and long blocks folded until
+   their label is clicked */
+.code {
+  margin-block: 1.5rem;
+  border-radius: 0.375rem;
+  background: color-mix(in srgb, var(--fg) 7%, transparent);
+  overflow: hidden;
+}
+.code-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--pixel);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+.code-copy {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--faint);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.code-copy:is(:hover, :focus-visible) { color: var(--fg) }
+.code pre {
+  width: auto;
+  max-width: none;
+  margin: 0;
+  border-radius: 0;
+  background: none;
+}
+.code.numbered pre code { counter-reset: ln }
+.code.numbered .line::before {
+  counter-increment: ln;
+  content: counter(ln);
+  display: inline-block;
+  width: 2ch;
+  margin-right: 1.5ch;
+  text-align: right;
+  color: var(--faint);
+}
+.code-more {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.code.fold:not(:has(.code-more:checked)) pre {
+  max-height: calc(var(--shown) * 1lh + 1rem);
+  overflow: hidden;
+  mask-image: linear-gradient(#000 calc(100% - 3rem), transparent);
+}
+.code-expand {
+  display: block;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid var(--line);
+  font-family: var(--pixel);
+  font-size: 0.6875rem;
+  text-align: center;
+  color: var(--faint);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.code-expand:hover, .code-more:focus-visible + .code-body + .code-expand { color: var(--fg) }
+.code:has(.code-more:checked) .code-expand { display: none }
 /* links, after stallboerger.com: the words rest in a faint tint that floods
    from the left on hover, and wrap with the text. `.bare` opts out (nav,
    index rows, the canvas) */
