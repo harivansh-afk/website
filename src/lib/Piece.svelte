@@ -27,6 +27,7 @@
   class:phone={at.phone}
   style:--col={at.col}
   style:--drop="{at.drop}rem"
+  style:--x="{at.x ?? 0}rem"
   onpointerenter={(e) => e.pointerType === "mouse" && start()}
   onpointerleave={stop}
   onfocusin={start}
@@ -149,6 +150,7 @@
     .piece {
       grid-column: var(--col);
       margin-top: var(--drop);
+      translate: var(--x) 0;
     }
     .piece.phone {
       grid-row: auto;

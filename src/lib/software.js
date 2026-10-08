@@ -5,7 +5,8 @@
 // an entry: `name`, `href`, a one-line `note`, `status` (null while it still
 // runs, else how it ended) and `lang`, its main language. `repo` is the source when `href` is a
 // product page. `canvas` places it on the 12-column canvas: `col` (grid
-// columns), `drop` (rem from the row above), and the poster's `w` x `h`
+// columns), `drop` (rem from the row above), `x` (an optional sideways
+// nudge in rem, for less than a column), and the poster's `w` x `h`
 // (static/software/<name>.webp). `clip` plays static/previews/<name>.mp4 on
 // hover; `phone` gives a phone recording a narrower frame with an iphone's corners
 const GIT = "https://git.harivan.sh/harivansh-afk";
@@ -43,7 +44,7 @@ export const software = [
     href: "https://www.cnet.com/tech/services-and-software/companion-einstein-ai-tool/",
     note: "ai agent that does your homework autonomously",
     status: "cease and desisted :(",
-    canvas: { col: "11 / span 2", drop: 1, w: 640, h: 400 },
+    canvas: { col: "11 / span 2", drop: 7.5, w: 640, h: 400 },
     alt: "einstein's portrait on yellow",
   },
   {
@@ -73,7 +74,7 @@ export const software = [
     href: `${GIT}/mux`,
     note: "a stateless, host-agnostic, macos-native terminal multiplexing client for libghostty",
     status: null,
-    canvas: { col: "3 / span 4", drop: 2.5, w: 1184, h: 780, clip: true },
+    canvas: { col: "3 / span 4", drop: -3.5, x: -1.5, w: 1184, h: 780, clip: true },
     alt: "mux running a nix build across panes",
   },
   {
@@ -94,7 +95,7 @@ export const software = [
     href: `${GIT}/nap`,
     note: "extend your mac's display to a linux machine (realtime)",
     status: null,
-    canvas: { col: "2 / span 2", drop: 0, w: 360, h: 640, phone: true, clip: true },
+    canvas: { col: "2 / span 2", drop: 0, x: 3, w: 360, h: 640, phone: true, clip: true },
     alt: "nap casting a mac display to a wall monitor",
   },
   {
@@ -105,7 +106,7 @@ export const software = [
     repo: `${GIT}/betterNAS`,
     note: "macos-native filesystem admin over http",
     status: "no longer maintained",
-    canvas: { col: "5 / span 5", drop: 3.5, w: 1280, h: 800, clip: true },
+    canvas: { col: "5 / span 5", drop: 3.5, x: 3, w: 1280, h: 800, clip: true },
     alt: "betternas mounting a remote machine in finder",
   },
   {

@@ -266,12 +266,15 @@ main.not-found {
    the title and the contents step aside */
 main.thought {
   padding-block: 5rem 4.5rem;
-  font-size: 1.0625rem;
+  font-size: 1rem;
   line-height: 1.75;
 }
+/* a post's scale: the title well above everything, section heads a step
+   above the prose */
 main.thought h1 {
-  font-size: 1.375rem;
-  line-height: 1.3;
+  font-size: 1.875rem;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
   text-wrap: balance;
 }
 main.thought .meta {
@@ -305,15 +308,16 @@ main.thought article > :not(header, figure, pre, .code, .callout) { max-width: 6
   }
   main.thought article > * { grid-column: 3 / span 7; min-width: 0 }
   main.thought article > header { display: contents }
-  main.thought article > header .meta {
+  main.thought article > header p.meta {
     grid-column: 1 / span 2;
     grid-row: 1 / span 2;
     flex-direction: column;
     align-self: start;
     margin: 0;
-    padding-top: 0.45rem;
+    /* its first line centred on the title's first line: (36 - 16.5) / 2 px */
+    padding-top: 0.61rem;
   }
-  main.thought article > header h1 { grid-column: 3 / span 7; margin-bottom: 1.25rem }
+  main.thought article > header h1 { grid-column: 3 / span 7; margin-bottom: 3rem }
 
   /* the contents: level with the first paragraph, then pinned while the
      article scrolls past */
@@ -380,16 +384,23 @@ main.thought article > :not(header, figure, pre, .code, .callout) { max-width: 6
   }
   .toc li a:is(:hover, .on) { color: var(--fg) }
 }
-main.thought h2 { margin-block: 2.5rem 0.75rem; font-size: 1em; scroll-margin-top: 2rem }
-/* each heading links to itself; a # surfaces in the gutter on hover */
+/* section heads: a step up, with air above. each links to itself; a #
+   in the heading's own face and size shows in the gutter on hover, so it
+   shares the heading's baseline */
+main.thought h2 {
+  margin-block: 3.25rem 1rem;
+  font-size: 1.1875rem;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  scroll-margin-top: 2rem;
+}
 main.thought h2 a { position: relative; color: inherit }
 main.thought h2 a::before {
   content: "#";
   position: absolute;
   right: 100%;
-  margin-right: 0.5em;
-  font-family: var(--pixel);
-  font-size: 0.8em;
+  margin-right: 0.6em;
   color: var(--faint);
   opacity: 0;
   transition: opacity 0.15s;
@@ -419,10 +430,12 @@ main.thought figure img { cursor: zoom-in }
   .zoom-veil, .zoom-img { transition: none }
 }
 main.thought article p { margin-block: 1em }
-main.thought article > header p.meta { margin-block: 0.75rem 1.5rem }
+@media (max-width: 1151px) { main.thought article > header p.meta { margin-block: 0.75rem 1.5rem } }
 @media (max-width: 640px) {
-  main.thought { padding-top: 3.5rem; font-size: 1rem; line-height: 1.65 }
-  main.thought h1 { font-size: 1.25rem }
+  main.thought { padding-top: 3.5rem; font-size: 0.9375rem; line-height: 1.65 }
+  main.thought h1 { font-size: 1.5rem }
+  main.thought h2 { font-size: 1.0625rem; margin-top: 2.5rem }
+  main.thought article > header p.meta { margin-bottom: 2.25rem }
 }
 
 figure { margin-inline: 0 }

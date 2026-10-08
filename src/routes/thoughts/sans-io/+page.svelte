@@ -66,7 +66,6 @@
 
 <style>
   h1 { text-wrap: balance; }
-  article :global(h2) { margin-top: 2.5em; }
   article :global(pre) { width: 100%; font-size: 0.78em; }
   article :global(figure picture) { display: block; }
   article :global(figure img) { min-width: 0; }
@@ -78,7 +77,6 @@
   }
 
   @media (max-width: 640px) {
-    main.sans-io { font-size: 1rem; }
     article :global(pre) { font-size: 0.82em; padding: 0.75rem; }
   }
 </style>
