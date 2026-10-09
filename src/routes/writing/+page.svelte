@@ -10,7 +10,7 @@
   }));
 </script>
 
-<Seo title="writing" description="on systems, agents and life." />
+<Seo title="writing" description="on systems, LLMs and life." />
 
 <main>
   <header class="blk first" style:--off="16.667%" style:--w="41.667%" style:--gap="6rem">
