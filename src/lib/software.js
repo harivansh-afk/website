@@ -23,7 +23,7 @@ export const software = [
     lang: "swift",
     group: "software",
     href: "https://mixbridge.app/",
-    note: "a beautiful listening experience for ios that mixes music on the go",
+    note: "a beautiful listening experience that mixes music on the go",
     status: null,
     canvas: { col: "2 / span 2", drop: 0, w: 590, h: 1280, phone: true, clip: true },
     alt: "mixbridge mixing between two tracks on an iphone",
