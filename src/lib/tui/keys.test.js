@@ -29,11 +29,20 @@ test("moves stop at the ends", () => {
   assert.equal(run(["k", "k"]).state.s, 0);
 });
 
-test("- goes up a level, then home", () => {
-  const up = run(["l", "j", "-"]);
-  assert.deepEqual([up.state.pane, up.state.r], ["sections", 1]);
-  assert.deepEqual(run(["-"]).effects, ["home"]);
-});
+for (const back of ["-", "Escape"]) {
+  test(`${back} goes up a level, then home`, () => {
+    const up = run(["l", "j", back]);
+    assert.deepEqual([up.state.pane, up.state.r], ["sections", 1]);
+    assert.deepEqual(run(["l", back, back]).effects, [null, null, "home"]);
+  });
+
+  test(`${back} leaves filtered rows and restores section navigation`, () => {
+    const keys = ["j", "/", "m", "Enter", "j", back];
+    assert.deepEqual(run(keys).state, { ...initial, s: 1 });
+    assert.deepEqual(run([...keys, "j"]).state, { ...initial, s: 2 });
+    assert.equal(run([...keys, back]).effects.at(-1), "home");
+  });
+}
 
 test("enter goes in, then opens", () => {
   assert.deepEqual(run(["l", "Enter"]).effects, [null, "open"]);
@@ -45,9 +54,9 @@ test("/ types a query that takes every key", () => {
   assert.ok(state.typing);
 });
 
-test("esc backs out of a search before anything else", () => {
-  const { state, effects } = run(["/", "m", "Enter", "j", "Escape"]);
-  assert.equal(state.query, null);
+test("esc cancels typing before navigating back", () => {
+  const { state, effects } = run(["/", "m", "Escape"]);
+  assert.deepEqual(state, { ...initial, pane: "rows" });
   assert.ok(!effects.includes("home"));
 });
 

@@ -11,9 +11,9 @@
 // effect: "open" (the selected row), "home" (leave for the site), or null
 //
 // keys, vim-shaped: j k (and arrows) move, g G jump to the ends, ctrl-d
-// ctrl-u move half a page, l or enter go in, h or - go out (- from the
-// sections goes home, like - at the root of a file tree), / searches, esc
-// backs out one level at a time
+// ctrl-u move half a page, l or enter go in, h goes out, - or esc go back
+// (from sections they go home, like - at the root of a file tree), /
+// searches, esc cancels while typing
 
 export const initial = { pane: "sections", s: 0, r: 0, query: null, typing: false };
 
@@ -74,15 +74,12 @@ export function step(state, key, view) {
     case "h":
     case "ArrowLeft":
     case "-":
+    case "Escape":
       if (state.query !== null) return { state: { ...state, query: null, r: 0, pane: "sections" }, effect: null };
       if (state.pane === "rows") return { state: { ...state, pane: "sections" }, effect: null };
-      return { state, effect: key === "-" ? "home" : null };
+      return { state, effect: key === "-" || key === "Escape" ? "home" : null };
     case "/":
       return { state: { ...state, query: "", typing: true, r: 0, pane: "rows" }, effect: null };
-    case "Escape":
-      if (state.query !== null) return { state: { ...state, query: null, r: 0 }, effect: null };
-      if (state.pane === "rows") return { state: { ...state, pane: "sections" }, effect: null };
-      return { state, effect: "home" };
   }
   return null; // not ours: let the browser have it
 }
