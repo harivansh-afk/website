@@ -5,6 +5,7 @@
   import { page } from "$app/state";
   import CodeDefs from "#lib/CodeDefs.svelte";
   import Dots from "#lib/Dots.svelte";
+  import Who from "#lib/Who.svelte";
   import { mountInteractionSounds } from "#lib/interactionSounds.js";
   import { DEV, CAFE } from "#lib/site.js";
 
@@ -159,7 +160,7 @@
 {:else}
   <div class="site">
     <header class="top">
-      <a class="who bare" href="/">hari</a>
+      <Who />
       <nav aria-label="site">
         {#each sections as section}
           <a

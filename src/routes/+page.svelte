@@ -55,12 +55,12 @@
   <section class="blk" style:--off="29%" style:--w="62%" style:--gap="8rem">
     <h2 class="label red">previously</h2>
     <p class="say">
-      i was a founding engineer at <a href="https://ix.dev" {...ext}>indexable</a> (YC S26), where we tackled the
+      i was a founding engineer at <a href="https://ix.dev" {...ext}>indexable</a> (YC S26), where we tackled <br>the
       problems of compute overscheduling and VM inefficiency.
     </p>
     <p class="say">
       just before that, i was an early employee at <a href="https://www.phia.com" {...ext}>phia</a>, where i led
-      the development of automation systems.<br />in my 9 months there, we went from 0 &rarr; 1M users and raised ~$40M.
+      the development <br>of applied ai & automation.<br />in my 9 months there, we went from 0 &rarr; 1M users and raised ~$40M.
     </p>
     <div class="attached">{@render rows(work)}</div>
   </section>
@@ -69,7 +69,7 @@
   <section class="blk" style:--off="5%" style:--w="58.333%" style:--gap="5.5rem">
     <h2 class="label">about</h2>
     <p class="say">i enjoy solving difficult problems.</p>
-    <p class="aside">lately, compilers and storage systems have been how i scratch that itch.</p>
+    <p class="aside">lately through compilers and storage systems.</p>
   </section>
 
   <section class="blk" style:--off="45%" style:--w="47%" style:--gap="9.5rem">
@@ -233,6 +233,45 @@
       0 0 6px color-mix(in srgb, currentColor 30%, transparent),
       0.5px 0 0 #ff46463a,
       -0.5px 0 0 #4696ff3a;
+  }
+  /* on the way in it tears for a third of a second: the colour fringe
+     blows out and slices of the screen itself, in its own face, flash over
+     the word. the slice rests invisible so the face is loaded before the
+     first hover */
+  .crt {
+    position: relative;
+  }
+  .crt::after {
+    content: "harivan.sh";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background:
+      repeating-linear-gradient(#0000 0 2px, #00000038 2px 3px),
+      #1e2139;
+    color: #e9e9ec;
+    font-family: "Iosevka Charon Mono", var(--mono);
+    -webkit-text-stroke: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .crt:is(:hover, :focus-visible) {
+      animation: fringe 0.32s steps(2);
+    }
+    .crt:is(:hover, :focus-visible)::after {
+      animation: slip 0.32s steps(1);
+    }
+  }
+  @keyframes fringe {
+    from { text-shadow: 2px 0 #ff4646, -2px 0 #4696ff }
+  }
+  @keyframes slip {
+    10% { opacity: 1; clip-path: inset(0 0 55% 0); transform: translateX(3px) }
+    25% { opacity: 1; clip-path: inset(0); transform: none }
+    70% { opacity: 1; clip-path: inset(40% 0 0 0); transform: translateX(-2px) }
+    85%, 100% { opacity: 0 }
   }
   .quiet {
     display: grid;
