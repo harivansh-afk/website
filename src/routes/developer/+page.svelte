@@ -132,18 +132,15 @@
     leave(href);
   }
 
-  // once the crt is switching off the screen is gone: keys pressed in those
-  // 170ms must not change it, or cross a second time
+  // keys do nothing once the crt is switching off
   let leaving = false;
   function leave(href) {
     leaving = true;
     crossTo(href);
   }
 
-  // whoever touched the screen last owns it. a key puts it in keyboard mode,
-  // where hover is ignored until the mouse really moves: redrawing rows under
-  // a resting pointer fires pointerenter on them, which would otherwise pull
-  // the focus into the rows pane while j walks the sections
+  // after a key, hover waits for the mouse to really move: rows redrawn
+  // under a resting pointer fire pointerenter and would steal the focus
   let keyboard = false;
   function onpointermove(e) {
     if (e.movementX || e.movementY) keyboard = false;
@@ -153,8 +150,7 @@
     ui = { ...ui, r: i, pane: "rows" };
   }
 
-  // a held key repeats; one press of a key that backs out goes one level
-  // only, never on to hari.cafe
+  // a held back key goes up one level, never on to hari.cafe
   const BACK = ["-", "Escape", "h", "ArrowLeft"];
 
   function onkeydown(e) {
@@ -190,8 +186,7 @@
     else if (list[i]?.href) crossClick(e, list[i].href);
   }
 
-  // the section is deep-linkable as #<id>; the row and pane ride along in
-  // the history entry, so coming back from hari.cafe lands where you left
+  // the section is deep-linkable as #<id>; history keeps the row and pane
   $effect(() => {
     if (!ready || ui.query !== null) return;
     const tui = { s: ui.s, r: ui.r, pane: ui.pane };
