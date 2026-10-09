@@ -205,7 +205,7 @@ html.crt-off body { animation: 170ms cubic-bezier(0.6, 0, 0.9, 0.4) both crt-off
 .rows .row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  align-items: baseline;
+  align-items: center;
   gap: 1.25rem;
   padding: 0.6rem 0.5rem;
   border-radius: 0.1875rem;
@@ -323,8 +323,10 @@ main.thought article > :not(header, figure, pre, .code, .callout) { max-width: 6
      article scrolls past */
   .toc { display: block; grid-column: 10 / span 3; padding-top: 12.5rem }
   .toc-in { position: sticky; top: 2.5rem }
+  /* inset like the list, so it lines up with the links, not the rail */
   .toc-label {
     margin-bottom: 0.6rem;
+    padding-left: 1.1rem;
     font-family: var(--pixel);
     font-size: 0.6875rem;
     text-transform: uppercase;
@@ -369,11 +371,6 @@ main.thought article > :not(header, figure, pre, .code, .callout) { max-width: 6
   .toc-mark::after { content: ""; position: absolute; inset: -6px }
   .toc-list.dragging, .toc-list.dragging .toc-mark { cursor: grabbing }
   .toc-list.dragging { user-select: none }
-  /* the share read starts the label, standing right over the rail */
-  .toc-label { display: flex; align-items: center; gap: 0.5rem }
-  .toc-read { color: var(--muted); font-variant-numeric: tabular-nums }
-  .toc-read .dots { margin-inline: 0.3rem }
-  .toc-read .dots:first-child { margin-left: 0 }
   .toc li a {
     display: block;
     padding-block: 0.3rem;

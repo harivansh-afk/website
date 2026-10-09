@@ -122,22 +122,49 @@
     else crossTo(href);
   }
   function perform(effect) {
-    if (effect === "home") crossTo(`${CAFE}/`);
+    if (effect === "home") leave(`${CAFE}/`);
     if (effect === "open" && row?.href) follow(row.href);
   }
   // a plain click on a link to hari.cafe crosses like the keyboard does
   function crossClick(e, href) {
     if (external(href) || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
     e.preventDefault();
+    leave(href);
+  }
+
+  // once the crt is switching off the screen is gone: keys pressed in those
+  // 170ms must not change it, or cross a second time
+  let leaving = false;
+  function leave(href) {
+    leaving = true;
     crossTo(href);
   }
+
+  // whoever touched the screen last owns it. a key puts it in keyboard mode,
+  // where hover is ignored until the mouse really moves: redrawing rows under
+  // a resting pointer fires pointerenter on them, which would otherwise pull
+  // the focus into the rows pane while j walks the sections
+  let keyboard = false;
+  function onpointermove(e) {
+    if (e.movementX || e.movementY) keyboard = false;
+  }
+  function hover(e, i) {
+    if (e.pointerType !== "mouse" || keyboard || ui.typing) return;
+    ui = { ...ui, r: i, pane: "rows" };
+  }
+
+  // a held key repeats; one press of a key that backs out goes one level
+  // only, never on to hari.cafe
+  const BACK = ["-", "Escape", "h", "ArrowLeft"];
 
   function onkeydown(e) {
     const key = keyName(e);
     if (!key) return;
+    if (leaving || (e.repeat && !ui.typing && BACK.includes(key))) return e.preventDefault();
     const out = step(ui, key, view);
     if (!out) return;
     e.preventDefault();
+    keyboard = true;
     ui = out.state;
     perform(out.effect);
   }
@@ -163,15 +190,20 @@
     else if (list[i]?.href) crossClick(e, list[i].href);
   }
 
-  // the section is deep-linkable as #<id>
+  // the section is deep-linkable as #<id>; the row and pane ride along in
+  // the history entry, so coming back from hari.cafe lands where you left
   $effect(() => {
-    if (ready && ui.query === null) history.replaceState(history.state, "", `#${sections[ui.s].id}`);
+    if (!ready || ui.query !== null) return;
+    const tui = { s: ui.s, r: ui.r, pane: ui.pane };
+    history.replaceState({ ...history.state, tui }, "", `#${sections[ui.s].id}`);
   });
 
   onMount(() => {
     mounted = true;
     const at = sections.findIndex((x) => x.id === location.hash.slice(1));
-    if (at >= 0) ui = { ...ui, s: at };
+    const back = history.state?.tui;
+    if (at >= 0 && back?.s === at && back.r < sections[at].rows.length) ui = { ...ui, ...back };
+    else if (at >= 0) ui = { ...ui, s: at };
 
     // the screen is css-zoomed above phone width (the style below), so the
     // viewport in its own px is the window divided by the zoom
@@ -207,7 +239,7 @@
   );
 </script>
 
-<svelte:window {onkeydown} />
+<svelte:window {onkeydown} {onpointermove} onpageshow={() => (leaving = false)} />
 
 <Seo
   url="{DEV}/"
@@ -268,7 +300,7 @@
           tabindex="-1"
           style={place(1, k + 1, at.rows.w - 2)}
           onclick={(e) => tapRow(e, i)}
-          onpointerenter={(e) => e.pointerType === "mouse" && !ui.typing && (ui = { ...ui, r: i, pane: "rows" })}
+          onpointerenter={(e) => hover(e, i)}
           >{" "}<span class="icon">{icon(x.icon)}</span>{pad(fit(x.key, keyWidth - 2), keyWidth)}<span class="muted">{fit(valueOf(x), w - keyWidth - 3)}</span></a
         >
       {:else}

@@ -19,14 +19,24 @@
   ];
 
   const projects = [
-    { name: "BAML", href: "https://github.com/BoundaryML/baml/pulls?q=is:pr+state:merged+author:harivansh-afk", when: "2026" },
+    {
+      name: "BAML",
+      href: "https://boundaryml.com",
+      repo: "https://github.com/BoundaryML/baml/pulls?q=is:pr+state:merged+author:harivansh-afk",
+      when: "2026",
+    },
     { name: "dueflow", href: "https://dueflow.co", when: "2026" },
     { name: "uva.builders", href: "https://uva.builders", when: "2026" },
-    { name: "companion", href: "https://companion.ai", when: "2026" },
     {
-      name: "content addressable storage",
+      name: "agentcomputer",
+      href: "https://agentcomputer.ai",
+      repo: "https://github.com/AgentComputerAI",
+      when: "2026",
+    },
+    {
+      name: "CAS",
       href: "https://cas-playbook.vercel.app/",
-      tag: "research",
+      repo: "https://github.com/harivansh-afk/cas",
       when: "2026",
     },
   ];
@@ -99,9 +109,31 @@
   <ul class="rows">
     {#each items as item}
       <li>
-        <a class="row bare" href={item.href} target="_blank" rel="noopener noreferrer"
-          ><span class="name">{item.name}{#if item.tag}<span class="tag">{item.tag}</span>{/if}</span>{#if item.when}<span class="fig">{item.when}</span>{/if}</a
-        >
+        {#if item.repo}
+          <!-- links can't nest: the name's link stretches over the row and
+               the github mark sits above it -->
+          <div class="row">
+            <span class="name"
+              ><a class="bare stretch" href={item.href} {...ext}>{item.name}</a>{#if item.tag}<span class="tag">{item.tag}</span>{/if}</span
+            ><span class="end"><a
+                class="bare gh"
+                href={item.repo}
+                aria-label="{item.name} on github"
+                {...ext}
+                ><svg viewBox="0 0 16 16" aria-hidden="true"
+                  ><path
+                    fill="currentColor"
+                    d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+                  /></svg
+                ></a
+              >{#if item.when}<span class="fig">{item.when}</span>{/if}</span
+            >
+          </div>
+        {:else}
+          <a class="row bare" href={item.href} {...ext}
+            ><span class="name">{item.name}{#if item.tag}<span class="tag">{item.tag}</span>{/if}</span>{#if item.when}<span class="fig">{item.when}</span>{/if}</a
+          >
+        {/if}
       </li>
     {/each}
   </ul>
@@ -139,6 +171,37 @@
   .attached {
     margin-top: 2.25rem;
     max-width: calc(52ch * 15 / 14 + 1rem);
+  }
+
+  /* a row with a repo: the name's link covers the row, the mark sits on top */
+  .rows li {
+    position: relative;
+  }
+  .stretch::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  .gh {
+    position: relative;
+    z-index: 1;
+    color: var(--faint);
+    transition: color 0.15s;
+  }
+  /* the mark sits just left of the date */
+  .end {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .gh svg {
+    display: block;
+    width: 0.8125rem;
+    height: 0.8125rem;
+  }
+  .gh:hover,
+  .gh:focus-visible {
+    color: var(--fg);
   }
 
   /* a small word after a row's name, in the label voice */

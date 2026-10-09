@@ -2,13 +2,11 @@
   // every thought sits in this grid, after benja.dev's articles: the page's
   // own <main> (date and views in its gutter, prose beside them) takes nine
   // twelfths, and "on this page" takes the last three, sticky: a rail whose
-  // marker follows the reading and can be dragged to scrub the article, and
-  // the share read beside its label. it also wires what the prerendered markup can't do
-  // alone: the copy buttons on code blocks, and figures that zoom to fill
-  // the window when clicked
+  // marker follows the reading and can be dragged to scrub the article. it
+  // also wires what the prerendered markup can't do alone: the copy buttons
+  // on code blocks, and figures that zoom to fill the window when clicked
   import { afterNavigate } from "$app/navigation";
   import { onMount } from "svelte";
-  import Dots from "#lib/Dots.svelte";
 
   let { children } = $props();
 
@@ -17,7 +15,6 @@
   let toc = $state([]);
   let active = $state(null);
   let markTop = $state(null);
-  let read = $state(0);
   let dragging = $state(false);
   let headings = [];
 
@@ -36,8 +33,7 @@
   }
 
   // the marker moves continuously: between two headings it sits the same
-  // share of the way between their links. the share read is the whole
-  // article's
+  // share of the way between their links
   function spy() {
     if (!headings.length || !list) return;
     const line = scrollY + innerHeight * LINE;
@@ -48,9 +44,6 @@
     const t = i + 1 < tops.length ? Math.min(1, Math.max(0, (line - tops[i]) / (tops[i + 1] - tops[i]))) : 0;
     active = line < tops[0] ? headings[0].id : headings[i].id;
     markTop = (line < tops[0] ? ys[0] : ys[i] + t * ((ys[i + 1] ?? ys[i]) - ys[i])) - 3.75;
-    const article = grid.querySelector("article");
-    const start = docTop(article), span = Math.max(1, article.offsetHeight * (document.documentElement.currentCSSZoom ?? 1) - innerHeight * 0.75);
-    read = Math.min(1, Math.max(0, (scrollY - start + innerHeight * LINE) / span));
   }
 
   // dragging the marker (or pressing the rail) scrubs the article: the
@@ -183,7 +176,7 @@
   {#if toc.length}
     <nav class="toc" aria-label="on this page">
       <div class="toc-in">
-        <p class="toc-label"><span class="toc-read"><Dots glyph="lb" />{Math.round(read * 100)}%<Dots glyph="rb" /></span>on this page</p>
+        <p class="toc-label">on this page</p>
         <div class="toc-list" class:dragging bind:this={list}>
           <!-- svelte-ignore a11y_no_static_element_interactions -->
           <span class="toc-rail" aria-hidden="true" onpointerdown={grab} onpointermove={drag} onpointerup={drop} onpointercancel={drop}
