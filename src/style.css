@@ -255,13 +255,25 @@ img { max-width: 100% }
 .rows { display: grid; gap: 0.125rem; margin: 0 -0.5rem; padding: 0; list-style: none }
 .rows .row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, max-content) minmax(1.5rem, 1fr) auto;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.5rem;
   padding: 0.6rem 0.5rem;
   border-radius: 0.1875rem;
   transition: background-color 0.15s;
 }
+.rows .row > :nth-child(2) { grid-column: 3 }
+/* a dotted leader carries the eye from name to figure */
+.rows .row::after {
+  content: "";
+  grid-row: 1;
+  grid-column: 2;
+  height: 1px;
+  margin-top: 0.15em;
+  background: radial-gradient(circle, var(--faint) 0.5px, transparent 0.75px) 0 0 / 9px 1px repeat-x;
+  opacity: 0.35;
+}
+.rows .row:not(:has(> :nth-child(2)))::after { display: none }
 .rows .row .name { color: var(--fg) }
 @media (hover: hover) { .rows .row:hover { background: var(--fill) } }
 
