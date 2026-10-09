@@ -89,7 +89,7 @@
       root.classList.remove("entering");
       void root.offsetWidth; // restart the rise if a nav lands mid-rise
       root.classList.add("entering");
-      settle = setTimeout(() => root.classList.remove("entering"), 1200);
+      settle = setTimeout(() => root.classList.remove("entering"), 600);
     };
     navigation.complete.then(() => (root.style.scrollBehavior = ""), () => (root.style.scrollBehavior = ""));
 
