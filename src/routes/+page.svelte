@@ -19,7 +19,7 @@
   ];
 
   const projects = [
-    { name: "BAML", href: "https://boundaryml.com", when: "2026" },
+    { name: "BAML", href: "https://github.com/BoundaryML/baml/pulls?q=is:pr+state:merged+author:harivansh-afk", when: "2026" },
     { name: "dueflow", href: "https://dueflow.co", when: "2026" },
     { name: "uva.builders", href: "https://uva.builders", when: "2026" },
     { name: "companion", href: "https://companion.ai", when: "2026" },
