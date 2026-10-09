@@ -46,11 +46,18 @@
   const rowOf = (path) => document.querySelector(`.rows a[href="${path}"] .name`);
   const brackets = () => [...document.querySelectorAll(".top nav a[aria-current] > .dots")];
 
-  // the pair of elements to carry: [on the page we leave, on the page we reach]
-  const shared = (from, to) => [
+  // the pair of elements to carry: [on the page we leave, on the page we reach].
+  // a section clicked in the nav already wears its hover brackets, so they stay
+  // put and only take its colour; carrying the old pair over would blank them
+  // and bring a fading copy in their place
+  const shared = (from, to, brackets_) => [
     { name: "title", old: () => rowOf(to) ?? titleOf(from), new: () => titleOf(to) ?? rowOf(from) },
-    { name: "bracket-l", old: () => brackets()[0], new: () => brackets()[0] },
-    { name: "bracket-r", old: () => brackets()[1], new: () => brackets()[1] },
+    ...(brackets_
+      ? [
+          { name: "bracket-l", old: () => brackets()[0], new: () => brackets()[0] },
+          { name: "bracket-r", old: () => brackets()[1], new: () => brackets()[1] },
+        ]
+      : []),
   ];
 
   // while a transition plays the browser sends every press to the page root,
@@ -79,8 +86,9 @@
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const root = document.documentElement;
-    // the brackets jump rather than fade while the nav swaps under the transition
-    root.classList.add("navigating");
+    const carry = !document.querySelector(".top nav a:hover");
+    // carried brackets jump rather than fade while the nav swaps under the transition
+    if (carry) root.classList.add("navigating");
     const done = () => root.classList.remove("navigating");
     // sveltekit's jump to the top must land before the new page is captured,
     // not glide there underneath it
@@ -101,7 +109,7 @@
       return;
     }
 
-    const pairs = shared(from, to);
+    const pairs = shared(from, to, carry);
     const named = [];
     const mark = (el, name) => {
       el.style.viewTransitionName = name;

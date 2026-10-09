@@ -59,7 +59,7 @@
      desktop renders them at 120% (the zoom below); phones at 100% */
   --text-title: 2.375rem; /* a thought's title */
   --text-head: 1.4375rem; /* a thought's section heads */
-  --text-mark: 1.25rem;   /* "hari" in the header */
+  --text-mark: 1.375rem;  /* "hari" in the header */
   --text: 1.125rem;       /* everything read: prose, statements, rows */
   --text-small: 0.875rem; /* intros, notes, the contents list */
   --pixel-size: 0.8125rem; /* the pixel face: nav, footer, labels, figures, meta */
@@ -142,7 +142,15 @@ img { max-width: 100% }
   align-items: baseline;
   gap: 1rem;
 }
-.top .who { color: var(--fg); font-size: var(--text-mark) }
+/* the name: the reading face a size up, its light thickened by a hair. each
+   letter swells under the cursor (#lib/Who.svelte, which owns the stroke's
+   width) */
+.top .who {
+  color: var(--fg);
+  font-size: var(--text-mark);
+  letter-spacing: -0.01em;
+  -webkit-text-stroke: 0.015em currentColor;
+}
 .top nav {
   display: flex;
   gap: 1.75rem;
@@ -158,7 +166,7 @@ img { max-width: 100% }
   top: 50%;
   translate: 0 -50%;
   opacity: 0;
-  transition: opacity 0.2s, transform 0.3s var(--ease);
+  transition: opacity 0.2s, transform 0.3s var(--ease), color 0.2s;
 }
 .top nav a .dots:first-child { right: 100%; transform: translateX(-0.125rem) }
 .top nav a .dots:last-child { left: 100%; transform: translateX(0.125rem) }
@@ -166,6 +174,8 @@ img { max-width: 100% }
 .top nav a:is(:hover, :focus-visible, [aria-current]) .dots { opacity: 1 }
 .top nav a:is(:hover, :focus-visible, [aria-current]) .dots:first-child { transform: translateX(-0.3rem) }
 .top nav a:is(:hover, :focus-visible, [aria-current]) .dots:last-child { transform: translateX(0.3rem) }
+/* a hovered section's brackets are a hint, quieter than a current one's colour */
+.top nav a:is(:hover, :focus-visible) .dots { color: var(--faint) }
 /* the current section's brackets take its colour */
 .top nav a[aria-current] > .dots { color: var(--c, currentColor) }
 /* inside a thought, a dotted ‹ before writing: the way back */
@@ -771,6 +781,10 @@ main.thought h1 { width: fit-content }
 ::view-transition-group(*) { animation-duration: 0.4s; animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1) }
 /* the brackets are a quick glance along the nav, not a journey */
 ::view-transition-group(bracket-l), ::view-transition-group(bracket-r) { animation-duration: 0.18s }
+/* and they arrive in their new colour, whole: two tiny snapshots cross-fading
+   read as a dim grey smudge that pops bright when the real ones take over */
+::view-transition-old(bracket-l), ::view-transition-old(bracket-r) { animation: none; opacity: 0 }
+::view-transition-new(bracket-l), ::view-transition-new(bracket-r) { animation: none }
 ::view-transition-old(title), ::view-transition-new(title) { height: 100%; animation-duration: 0.2s }
 /* a title with nowhere to go just leaves */
 ::view-transition-old(title):only-child { animation: none; opacity: 0 }
