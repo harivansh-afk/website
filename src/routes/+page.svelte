@@ -48,7 +48,7 @@
 <main class="home">
   <section class="blk first" style:--off="8.333%" style:--w="83.333%" style:--gap="6.5rem">
     <p class="lede">i enjoy computer programming,<br />distributed systems and good design, roughly in that order.</p>
-    <p class="aside">i'm currently 20 y/o and a 4th year at <a href="https://www.virginia.edu" {...ext}>UVA</a> where i study computer science</p>
+    <p class="aside">i'm currently 20 y/o and a 4th year at <a href="https://www.virginia.edu" {...ext}>UVA</a> where i study <br>computer science</p>
   </section>
 
   <!-- previously: where i've worked, with the rows attached under it -->

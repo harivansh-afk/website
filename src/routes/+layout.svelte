@@ -89,7 +89,9 @@
       root.classList.remove("entering");
       void root.offsetWidth; // restart the rise if a nav lands mid-rise
       root.classList.add("entering");
-      settle = setTimeout(() => root.classList.remove("entering"), 600);
+      // carrying-title goes with the rise, not with the transition: the
+      // transition ends first, and dropping it then would start the h1's rise
+      settle = setTimeout(() => root.classList.remove("entering", "carrying-title"), 600);
     };
     navigation.complete.then(() => (root.style.scrollBehavior = ""), () => (root.style.scrollBehavior = ""));
 
@@ -128,7 +130,6 @@
         if (running === transition) running = null;
         done();
         named.forEach((el) => (el.style.viewTransitionName = ""));
-        root.classList.remove("carrying-title");
       });
     });
   });
