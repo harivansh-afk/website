@@ -14,7 +14,7 @@
   import { blank, box, paint, titleSpan } from "#lib/tui/frame.js";
   import { step, keyName, initial } from "#lib/tui/keys.js";
   import { layout } from "./layout.js";
-  import { CAFE, DEV, crossTo } from "#lib/site.js";
+  import { CAFE, DEV } from "#lib/site.js";
   import { sections, everything } from "./content.js";
 
   const FONT = '16px "Iosevka Charon Mono"';
@@ -114,29 +114,22 @@
     return lines.slice(0, at.detail.h - 2);
   });
 
-  // the personal site opens in place, with the crt switching off; anything
-  // else is someone else's site and gets a new tab
+  // the personal site opens in place; anything else is someone else's site
+  // and gets a new tab
   const external = (href) => !href.startsWith(CAFE);
-  function follow(href) {
-    if (external(href)) window.open(href, "_blank", "noopener");
-    else crossTo(href);
-  }
   function perform(effect) {
     if (effect === "home") leave(`${CAFE}/`);
-    if (effect === "open" && row?.href) follow(row.href);
-  }
-  // a plain click on a link to hari.cafe crosses like the keyboard does
-  function crossClick(e, href) {
-    if (external(href) || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
-    e.preventDefault();
-    leave(href);
+    if (effect === "open" && row?.href) {
+      if (external(row.href)) window.open(row.href, "_blank", "noopener");
+      else leave(row.href);
+    }
   }
 
-  // keys do nothing once the crt is switching off
+  // keys do nothing once the page is on its way out
   let leaving = false;
   function leave(href) {
     leaving = true;
-    crossTo(href);
+    location.assign(href);
   }
 
   // after a key, hover waits for the mouse to really move: rows redrawn
@@ -183,7 +176,6 @@
     const first = ui.r !== i || ui.pane !== "rows";
     ui = { ...ui, r: i, pane: "rows", typing: false };
     if (first && e.pointerType !== "mouse") e.preventDefault();
-    else if (list[i]?.href) crossClick(e, list[i].href);
   }
 
   // the section is deep-linkable as #<id>; history keeps the row and pane
@@ -256,7 +248,7 @@
     <div class="line" style={place(0, 0, cols)}>
       <span class="icon">{icon("terminal")}</span><span class="fg">HARIVAN.SH</span>
     </div>
-    <a class="line link home" href="{CAFE}/" tabindex="-1" onclick={(e) => crossClick(e, `${CAFE}/`)} style={place(cols - 11, 0, 11)}><b>-</b>{" "}<span class="dest">hari.cafe</span></a>
+    <a class="line link home" href="{CAFE}/" tabindex="-1" style={place(cols - 11, 0, 11)}><b>-</b>{" "}<span class="dest">hari.cafe</span></a>
 
     <pre class="chrome">{chrome}</pre>
 
@@ -312,7 +304,6 @@
           target={external(line.href) ? "_blank" : null}
           rel={external(line.href) ? "noopener noreferrer" : null}
           tabindex="-1"
-          onclick={(e) => crossClick(e, line.href)}
           style={place(at.detail.x + 2, at.detail.y + 1 + k, line.text.length + 4)}
           ><span class="icon">{icon("link-external")}</span>{line.text}</a
         >
@@ -407,15 +398,8 @@
     inset: 12px 16px;
     visibility: hidden;
   }
-  /* it switches on like a crt the moment it can be drawn (style.css) */
   .screen.ready {
     visibility: visible;
-    animation: 360ms cubic-bezier(0.2, 0.8, 0.2, 1) both crt-on;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .screen.ready {
-      animation: none;
-    }
   }
   .probe {
     position: absolute;

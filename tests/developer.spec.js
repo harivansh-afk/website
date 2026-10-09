@@ -63,7 +63,12 @@ for (const back of ["-", "Escape"]) {
   });
 }
 
-test("keys during the switch-off change nothing", async ({ page }) => {
+test("keys after leaving change nothing", async ({ page }) => {
+  // a slow hari.cafe keeps the screen up while the browser navigates
+  await page.route("https://hari.cafe/**", async (route) => {
+    await new Promise((done) => setTimeout(done, 1000));
+    await route.fulfill({ contentType: "text/html", body: "<title>cafe</title>" });
+  });
   await page.keyboard.press("-");
   const before = await status(page);
   await page.keyboard.press("j");

@@ -45,13 +45,6 @@
   const speculation = `<script type="speculationrules">${JSON.stringify({
     prefetch: [{ where: { href_matches: [`${DEV}/*`, `${CAFE}/*`] }, eagerness: "moderate" }],
   })}</` + "script>";
-
-  // back from the other domain via bfcache: the page is still switched off
-  onMount(() => {
-    const on = () => document.documentElement.classList.remove("crt-off");
-    addEventListener("pageshow", on);
-    return () => removeEventListener("pageshow", on);
-  });
 </script>
 
 <svelte:head>{@html speculation}</svelte:head>

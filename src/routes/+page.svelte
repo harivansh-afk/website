@@ -1,14 +1,6 @@
 <script>
   import Seo from "#lib/Seo.svelte";
-  import { DEV, crossTo } from "#lib/site.js";
-
-  // the developer screen is on its own domain; a plain click crosses to it
-  // like a crt switching over (site.js)
-  function cross(e) {
-    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
-    e.preventDefault();
-    crossTo(`${DEV}/`);
-  }
+  import { DEV } from "#lib/site.js";
 
   // index rows read `name ........ when`
   const work = [
@@ -90,7 +82,7 @@
   <section class="blk last" style:--off="8.333%" style:--w="83.333%" style:--gap="8rem">
     <div class="dev-link">
       <h2 class="label navy">dev stuff</h2>
-      <p class="say"><a href="{DEV}/" onclick={cross}>harivan.sh</a></p>
+      <p class="say"><a class="dev" href="{DEV}/">harivan.sh</a></p>
     </div>
     <div class="quiet" aria-label="more about me">
       <p>
@@ -228,6 +220,19 @@
     .dev-link {
       margin: -2.5rem 0 0 10%;
     }
+  }
+  /* harivan.sh hovers as a glimpse of its own screen: the navy, the
+     off-white, the crt glow and scanlines (developer/+page.svelte) */
+  .dev:is(:hover, :focus-visible) {
+    background:
+      repeating-linear-gradient(#0000 0 2px, #00000038 2px 3px),
+      #1e2139;
+    color: #e9e9ec;
+    text-shadow:
+      0 0 1px color-mix(in srgb, currentColor 45%, transparent),
+      0 0 6px color-mix(in srgb, currentColor 30%, transparent),
+      0.5px 0 0 #ff46463a,
+      -0.5px 0 0 #4696ff3a;
   }
   .quiet {
     display: grid;
