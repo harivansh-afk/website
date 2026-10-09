@@ -1,7 +1,7 @@
 <script>
   import "../style.css";
   import { onMount } from "svelte";
-  import { afterNavigate } from "$app/navigation";
+  import { afterNavigate, onNavigate } from "$app/navigation";
   import { page } from "$app/state";
   import CodeDefs from "#lib/CodeDefs.svelte";
   import Dots from "#lib/Dots.svelte";
@@ -27,6 +27,110 @@
   });
   afterNavigate(({ type }) => {
     if (type !== "enter") hit(false);
+  });
+
+  // moving between pages. the page itself swaps at once and its blocks rise
+  // in one after another (`html.entering`, style.css); on top of that, a view
+  // transition carries what both pages share from where it was to where it
+  // lands: a thought's title between its row on /writing/ and its heading,
+  // and the current section's brackets along the nav. a thing is only carried
+  // when it is on screen on both sides, so nothing flies in from off the
+  // page. browsers without view transitions get the rise alone
+  const onScreen = (el) => {
+    const r = el?.getBoundingClientRect();
+    return r && r.bottom > 0 && r.top < innerHeight && r.width > 0;
+  };
+  // asked before the swap, these find the old page's elements; after it, the new one's
+  const titleOf = (path) => (path.startsWith("/thoughts/") ? document.querySelector("main.thought h1") : null);
+  const rowOf = (path) => document.querySelector(`.rows a[href="${path}"] .name`);
+  const brackets = () => [...document.querySelectorAll(".top nav a[aria-current] > .dots")];
+
+  // the pair of elements to carry: [on the page we leave, on the page we reach]
+  const shared = (from, to) => [
+    { name: "title", old: () => rowOf(to) ?? titleOf(from), new: () => titleOf(to) ?? rowOf(from) },
+    { name: "bracket-l", old: () => brackets()[0], new: () => brackets()[0] },
+    { name: "bracket-r", old: () => brackets()[1], new: () => brackets()[1] },
+  ];
+
+  // while a transition plays the browser sends every press to the page root,
+  // so the site would go dead for its length. a press ends it on the spot and
+  // goes to the link under the pointer, as if nothing had been moving
+  let running = null;
+  function cutIn(e) {
+    if (!running || e.button !== 0) return;
+    running.skipTransition();
+    running = null;
+    const link = document.elementFromPoint(e.clientX, e.clientY)?.closest("a[href]");
+    if (!link) return;
+    e.preventDefault();
+    link.click();
+  }
+  onMount(() => {
+    addEventListener("pointerdown", cutIn, true);
+    return () => removeEventListener("pointerdown", cutIn, true);
+  });
+
+  let settle;
+  onNavigate((navigation) => {
+    const from = navigation.from?.url.pathname;
+    const to = navigation.to?.url.pathname;
+    if (!from || !to || from === to) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const root = document.documentElement;
+    // the brackets jump rather than fade while the nav swaps under the transition
+    root.classList.add("navigating");
+    const done = () => root.classList.remove("navigating");
+    // sveltekit's jump to the top must land before the new page is captured,
+    // not glide there underneath it
+    root.style.scrollBehavior = "auto";
+    const enter = () => {
+      clearTimeout(settle);
+      root.classList.remove("entering");
+      void root.offsetWidth; // restart the rise if a nav lands mid-rise
+      root.classList.add("entering");
+      settle = setTimeout(() => root.classList.remove("entering"), 1200);
+    };
+    navigation.complete.then(() => (root.style.scrollBehavior = ""), () => (root.style.scrollBehavior = ""));
+
+    if (!document.startViewTransition) {
+      navigation.complete.then(enter, () => {}).finally(done);
+      return;
+    }
+
+    const pairs = shared(from, to);
+    const named = [];
+    const mark = (el, name) => {
+      el.style.viewTransitionName = name;
+      named.push(el);
+    };
+    const olds = pairs.map((p) => {
+      const el = p.old();
+      return onScreen(el) ? el : null;
+    });
+    olds.forEach((el, i) => el && mark(el, pairs[i].name));
+
+    return new Promise((resolve) => {
+      const transition = document.startViewTransition(async () => {
+        named.forEach((el) => (el.style.viewTransitionName = ""));
+        resolve();
+        await navigation.complete;
+        pairs.forEach((p, i) => {
+          const el = p.new();
+          // carried only if it was on screen before and is now
+          if (olds[i] && onScreen(el)) mark(el, p.name);
+        });
+        root.classList.toggle("carrying-title", !!titleOf(to) && named.includes(titleOf(to)));
+        enter();
+      });
+      running = transition;
+      transition.finished.finally(() => {
+        if (running === transition) running = null;
+        done();
+        named.forEach((el) => (el.style.viewTransitionName = ""));
+        root.classList.remove("carrying-title");
+      });
+    });
   });
 
   const sections = [

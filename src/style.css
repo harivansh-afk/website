@@ -747,3 +747,30 @@ mark {
 .def-doc p:last-child { margin-bottom: 0; }
 .def-doc code { padding: 0; background: none; color: inherit; }
 .def-link { display: inline-block; margin-top: 0.35rem; }
+
+/* moving between pages (onNavigate in +layout.svelte). the new page's
+   blocks rise in one after another, a beat apart */
+@keyframes rise { from { opacity: 0; transform: translateY(0.6rem) } }
+html.entering :is(.site main:not(.thought) > *, .canvas > .piece, main.thought article > :not(header), main.thought .meta, .toc) {
+  animation: rise 0.7s var(--ease) both;
+}
+/* a carried title is already in place; one arriving cold rises first */
+html.entering:not(.carrying-title) main.thought h1 { animation: rise 0.7s var(--ease) both }
+html.entering :is(.site main > :nth-child(2), main.thought .meta, .canvas > .piece:nth-child(-n + 3)) { animation-delay: 60ms }
+html.entering :is(.site main > :nth-child(3), main.thought article > :nth-child(2), .canvas > .piece:nth-child(n + 4)) { animation-delay: 120ms }
+html.entering :is(.site main > :nth-child(4), main.thought article > :nth-child(3), .toc) { animation-delay: 180ms }
+html.entering :is(.site main > :nth-child(n + 5), main.thought article > :nth-child(n + 4)) { animation-delay: 240ms }
+html.navigating .top nav a .dots { transition: none }
+
+/* the view transition: the page swaps at once (the rise above is its
+   motion) and only the shared pieces travel. a thought's heading is as wide
+   as its words, so its row's name scales into it without stretching */
+main.thought h1 { width: fit-content }
+::view-transition-old(root) { animation: none; opacity: 0 }
+::view-transition-new(root) { animation: none; mix-blend-mode: normal }
+::view-transition-group(*) { animation-duration: 0.6s; animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1) }
+/* the brackets are a quick glance along the nav, not a journey */
+::view-transition-group(bracket-l), ::view-transition-group(bracket-r) { animation-duration: 0.3s }
+::view-transition-old(title), ::view-transition-new(title) { height: 100%; animation-duration: 0.35s }
+/* a title with nowhere to go just leaves */
+::view-transition-old(title):only-child { animation: none; opacity: 0 }
