@@ -135,7 +135,7 @@
   }
   .note {
     max-width: 46ch;
-    font-size: 0.8125rem;
+    font-size: var(--text-small);
   }
 
   @media (min-width: 640px) {

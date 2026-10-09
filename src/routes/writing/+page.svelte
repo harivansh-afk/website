@@ -34,17 +34,17 @@
 
 <style>
   .title {
-    font-family: var(--mono);
-    font-size: 0.875rem;
+    font-family: var(--sans);
+    font-size: var(--text);
     text-transform: none;
-    letter-spacing: 0;
+    letter-spacing: 0.005em;
     color: var(--fg);
     margin-bottom: 0.75rem;
   }
   .intro {
     max-width: 44ch;
-    font-size: 0.8125rem;
-    line-height: 1.75;
+    font-size: var(--text-small);
+    line-height: 1.45;
   }
   .year {
     display: grid;
@@ -57,7 +57,7 @@
     padding-block: 0.6rem;
   }
   .year :global(.name) {
-    font-size: 0.9375rem;
+    font-size: var(--text);
   }
   @media (min-width: 640px) {
     .year {

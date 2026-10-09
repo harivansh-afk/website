@@ -46,13 +46,13 @@
      benja.dev, nudged off the twelfths and spaced unevenly on purpose; under 1152px (960 zoomed) every offset drops and the page is one
      left-aligned column -->
 <main class="home">
-  <section class="blk first" style:--off="16.667%" style:--w="75%" style:--gap="6.5rem">
+  <section class="blk first" style:--off="8.333%" style:--w="83.333%" style:--gap="6.5rem">
     <p class="lede">i enjoy computer programming,<br />distributed systems and good design, roughly in that order.</p>
     <p class="aside">i'm currently 20 y/o and a 4th year at <a href="https://www.virginia.edu" {...ext}>UVA</a> where i study computer science</p>
   </section>
 
   <!-- previously: where i've worked, with the rows attached under it -->
-  <section class="blk" style:--off="29%" style:--w="50%" style:--gap="8rem">
+  <section class="blk" style:--off="29%" style:--w="62%" style:--gap="8rem">
     <h2 class="label red">previously</h2>
     <p class="say">
       i was a founding engineer at <a href="https://ix.dev" {...ext}>indexable</a> (YC S26), where we tackled the
@@ -82,7 +82,7 @@
   <section class="blk last" style:--off="8.333%" style:--w="83.333%" style:--gap="8rem">
     <div class="dev-link">
       <h2 class="label navy">dev stuff</h2>
-      <p class="say"><a class="dev" href="{DEV}/">harivan.sh</a></p>
+      <p class="say"><a class="crt" href="{DEV}/">harivan.sh</a></p>
     </div>
     <div class="quiet" aria-label="more about me">
       <p>
@@ -136,15 +136,15 @@
      (the pixel face) are smaller */
   .lede {
     max-width: 66ch;
-    font-size: 0.9375rem;
-    line-height: 1.65;
+    font-size: var(--text);
+    line-height: 1.4;
     color: var(--fg);
     text-wrap: pretty;
   }
   .say {
-    max-width: 52ch;
-    font-size: 0.9375rem;
-    line-height: 1.65;
+    max-width: 64ch;
+    font-size: var(--text);
+    line-height: 1.4;
     color: var(--fg);
   }
   .say + .say {
@@ -152,17 +152,17 @@
   }
   /* a quieter second line under a statement */
   .aside {
-    max-width: 52ch;
+    max-width: 64ch;
     margin-top: 0.35rem;
-    font-size: 0.9375rem;
-    line-height: 1.65;
+    font-size: var(--text);
+    line-height: 1.4;
   }
   .rows {
-    font-size: 0.9375rem;
+    font-size: var(--text);
   }
   .attached {
     margin-top: 2.25rem;
-    max-width: calc(52ch * 15 / 14 + 1rem);
+    max-width: calc(64ch + 1rem);
   }
 
   /* a row with a repo: the name's link covers the row, the mark sits on top */
@@ -200,7 +200,7 @@
   .tag {
     margin-left: 0.75rem;
     font-family: var(--pixel);
-    font-size: 0.6875rem;
+    font-size: var(--pixel-size);
     text-transform: uppercase;
     letter-spacing: 0.03em;
     color: var(--faint);
@@ -223,7 +223,7 @@
   }
   /* harivan.sh hovers as a glimpse of its own screen: the navy, the
      off-white, the crt glow and scanlines (developer/+page.svelte) */
-  .dev:is(:hover, :focus-visible) {
+  .crt:is(:hover, :focus-visible) {
     background:
       repeating-linear-gradient(#0000 0 2px, #00000038 2px 3px),
       #1e2139;
@@ -238,7 +238,7 @@
     display: grid;
     gap: 0.9rem;
     max-width: 42ch;
-    font-size: 0.9375rem;
-    line-height: 1.65;
+    font-size: var(--text);
+    line-height: 1.4;
   }
 </style>

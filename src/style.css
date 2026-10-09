@@ -1,3 +1,32 @@
+/* the reading face: Suisse Int'l (Swiss Typefaces, licensed), light as the
+   regular and medium for emphasis, as on superlogical.com */
+@font-face {
+  font-family: "Suisse Intl";
+  src: url("/fonts/SuisseIntl-Light.woff2") format("woff2");
+  font-weight: 300 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Suisse Intl";
+  src: url("/fonts/SuisseIntl-LightItalic.woff2") format("woff2");
+  font-weight: 300 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Suisse Intl";
+  src: url("/fonts/SuisseIntl-Medium.woff2") format("woff2");
+  font-weight: 500 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Suisse Intl";
+  src: url("/fonts/SuisseIntl-MediumItalic.woff2") format("woff2");
+  font-weight: 500 700;
+  font-style: italic;
+  font-display: swap;
+}
+/* code and filetrees */
 @font-face {
   font-family: "Berkeley Mono";
   src: url("/fonts/BerkeleyMono-Regular.otf") format("opentype");
@@ -23,8 +52,17 @@
   --blue: #8daab9;
   --amber: #c5ae6a;
   --navy: #7c86d9;
+  --sans: "Suisse Intl", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
   --mono: "Berkeley Mono", ui-monospace, monospace;
   --pixel: "Departure Mono", "Berkeley Mono", ui-monospace, monospace;
+  /* the type scale, the only font sizes on the site (/developer aside).
+     desktop renders them at 120% (the zoom below); phones at 100% */
+  --text-title: 2.375rem; /* a thought's title */
+  --text-head: 1.4375rem; /* a thought's section heads */
+  --text-mark: 1.25rem;   /* "hari" in the header */
+  --text: 1.125rem;       /* everything read: prose, statements, rows */
+  --text-small: 0.875rem; /* intros, notes, the contents list */
+  --pixel-size: 0.8125rem; /* the pixel face: nav, footer, labels, figures, meta */
   --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
   color-scheme: dark;
 }
@@ -40,6 +78,16 @@
     --amber: #947322;
     --navy: #1e2139;
     color-scheme: light;
+  }
+}
+
+/* phones: no zoom, so the scale steps down a little */
+@media (max-width: 640px) {
+  :root {
+    --text-title: 1.875rem;
+    --text-head: 1.25rem;
+    --text: 1.0625rem;
+    --text-small: 0.9375rem;
   }
 }
 
@@ -60,13 +108,24 @@ body {
   overscroll-behavior: none;
   background: var(--bg);
   color: var(--muted);
-  font-family: var(--mono);
-  font-size: 0.875rem;
-  line-height: 1.6;
+  font-family: var(--sans);
+  font-size: var(--text);
+  line-height: 1.4;
+  /* the pack has light and medium but no regular: a hairline stroke brings
+     light up to superlogical's regular, and a little tracking gives back the
+     width regular has */
+  letter-spacing: 0.005em;
+  -webkit-text-stroke: 0.018em currentColor;
   -webkit-font-smoothing: antialiased;
+}
+/* the stroke is for the sans only */
+:is(code, pre, kbd, samp, .filetree, .top nav, .label, .fig, .elsewhere, .colophon,
+    main.thought .meta, .toc-label, .code-bar, .code-expand, .tag, strong, b) {
+  -webkit-text-stroke: 0;
 }
 
 h1, h2, h3 { margin: 0; color: var(--fg); font-weight: 400; font-size: inherit }
+strong, b { font-weight: 500 }
 p, figure { margin: 0 }
 img { max-width: 100% }
 
@@ -83,12 +142,12 @@ img { max-width: 100% }
   align-items: baseline;
   gap: 1rem;
 }
-.top .who { color: var(--fg) }
+.top .who { color: var(--fg); font-size: var(--text-mark) }
 .top nav {
   display: flex;
-  gap: 1.25rem;
+  gap: 1.75rem;
   font-family: var(--pixel);
-  font-size: 0.6875rem;
+  font-size: var(--pixel-size);
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
@@ -148,7 +207,7 @@ img { max-width: 100% }
   align-items: center;
   margin: 0 0 1rem;
   font-family: var(--pixel);
-  font-size: 0.6875rem;
+  font-size: var(--pixel-size);
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -159,13 +218,22 @@ img { max-width: 100% }
   content: "";
   position: absolute;
   right: calc(100% + 0.5rem);
-  top: calc(50% - 3.75px);
-  /* one shape, not four boxes, so it can't round lopsided; 7.5px is a whole
-     9px at the page's 120% zoom (18 on retina), so it stays crisp too */
-  width: 7.5px;
-  height: 7.5px;
+  top: calc(50% - 5px);
+  /* one shape, not four boxes, so it can't round lopsided; 10px is a whole
+     12px at the page's 120% zoom (24 on retina), so it stays crisp too */
+  width: 10px;
+  height: 10px;
   background: var(--d);
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'%3E%3Cpath d='M0 0h4v4H0zM5 0h4v4H5zM0 5h4v4H0zM5 5h4v4H5z'/%3E%3C/svg%3E") 0 0 / 100% 100%;
+}
+/* phones: the margin is too narrow to hang it in, so the marker joins the
+   line, flush with the text below and a gap before the word */
+@media (max-width: 640px) {
+  .label::before {
+    position: static;
+    flex: none;
+    margin-right: 0.6rem;
+  }
 }
 .label.red { --dot: var(--red) }
 .label.blue { --dot: var(--blue) }
@@ -176,7 +244,7 @@ img { max-width: 100% }
 /* figures: dates, counts, statuses. scanned, not read */
 .fig {
   font-family: var(--pixel);
-  font-size: 0.6875rem;
+  font-size: var(--pixel-size);
   color: var(--faint);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -209,16 +277,16 @@ img { max-width: 100% }
 .elsewhere {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem 0.9rem;
+  gap: 0.4rem 1.25rem;
   font-family: var(--pixel);
-  font-size: 0.6875rem;
+  font-size: var(--pixel-size);
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
-/* the pixel face at its own 11px, after benja.dev: departure's © is the mark */
+/* the pixel face, after benja.dev: departure's © is the mark */
 .colophon {
   font-family: var(--pixel);
-  font-size: 0.6875rem;
+  font-size: var(--pixel-size);
   line-height: 1.8;
   color: var(--faint);
   text-align: right;
@@ -235,7 +303,6 @@ main.not-found {
 
 /* mobile: tighter canvas, the colophon joins the left edge */
 @media (max-width: 640px) {
-  body { font-size: 0.8125rem; line-height: 1.5 }
   /* 24px sides, so a label marker hanging in the margin stays on screen */
   .site { padding: 1.5rem 24px 2rem }
   .blk { padding-bottom: 3.5rem }
@@ -249,15 +316,15 @@ main.not-found {
    the title and the contents step aside */
 main.thought {
   padding-block: 5rem 4.5rem;
-  font-size: 1rem;
-  line-height: 1.75;
+  font-size: var(--text);
+  line-height: 1.55;
 }
 /* a post's scale: the title well above everything, section heads a step
    above the prose */
 main.thought h1 {
-  font-size: 1.875rem;
-  line-height: 1.2;
-  letter-spacing: -0.015em;
+  font-size: var(--text-title);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 main.thought .meta {
@@ -267,7 +334,7 @@ main.thought .meta {
   margin-top: 0.75rem;
   margin-bottom: 1.5rem;
   font-family: var(--pixel);
-  font-size: 0.6875rem;
+  font-size: var(--pixel-size);
   line-height: 1.5;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -311,7 +378,7 @@ main.thought article > :not(header, figure, pre, .code, .callout) { max-width: 6
     margin-bottom: 0.6rem;
     padding-left: 1.1rem;
     font-family: var(--pixel);
-    font-size: 0.6875rem;
+    font-size: var(--pixel-size);
     text-transform: uppercase;
     letter-spacing: 0.03em;
     color: var(--faint);
@@ -357,8 +424,8 @@ main.thought article > :not(header, figure, pre, .code, .callout) { max-width: 6
   .toc li a {
     display: block;
     padding-block: 0.3rem;
-    font-size: 0.75rem;
-    line-height: 1.45;
+    font-size: var(--text-small);
+    line-height: 1.4;
     color: var(--muted);
     transition: color 0.15s;
   }
@@ -369,9 +436,9 @@ main.thought article > :not(header, figure, pre, .code, .callout) { max-width: 6
    shares the heading's baseline */
 main.thought h2 {
   margin-block: 3.25rem 1rem;
-  font-size: 1.1875rem;
-  line-height: 1.35;
-  letter-spacing: -0.01em;
+  font-size: var(--text-head);
+  line-height: 1.3;
+  letter-spacing: -0.015em;
   text-wrap: balance;
   scroll-margin-top: 2rem;
 }
@@ -412,9 +479,8 @@ main.thought figure img { cursor: zoom-in }
 main.thought article p { margin-block: 1em }
 @media (max-width: 1151px) { main.thought article > header p.meta { margin-block: 0.75rem 1.5rem } }
 @media (max-width: 640px) {
-  main.thought { padding-top: 3.5rem; font-size: 0.9375rem; line-height: 1.65 }
-  main.thought h1 { font-size: 1.5rem }
-  main.thought h2 { font-size: 1.0625rem; margin-top: 2.5rem }
+  main.thought { padding-top: 3.5rem; line-height: 1.5 }
+  main.thought h2 { margin-top: 2.5rem }
   main.thought article > header p.meta { margin-bottom: 2.25rem }
 }
 
@@ -430,11 +496,14 @@ figure { margin-inline: 0 }
 .ft-name { color: var(--fg) }
 .ft-note { color: var(--muted) }
 .ft-note::before { content: "# " }
-code, pre, kbd, samp {
-  /* avoid the UA `font-family: monospace` keyword, which shrinks text to ~0.81em */
-  font-family: inherit;
-  font-size: 1em;
+code, pre, kbd, samp, .filetree {
+  /* name the face rather than the UA `monospace` keyword, which shrinks text
+     to ~0.81em; mono runs wide beside the sans, so a step down */
+  font-family: var(--mono);
+  font-size: 0.875em;
+  letter-spacing: 0;
 }
+pre code, .code code { font-size: 1em }
 code {
   color: var(--fg);
 }
@@ -479,7 +548,7 @@ pre code {
   padding: 0.5rem 1rem;
   border-bottom: 1px solid var(--line);
   font-family: var(--pixel);
-  font-size: 0.6875rem;
+  font-size: var(--pixel-size);
   line-height: 1.4;
   color: var(--muted);
 }
@@ -487,7 +556,7 @@ pre code {
 .code-name { display: inline-flex; align-items: center; gap: 0.7rem }
 .code-icon {
   font-family: "Nonicons";
-  font-size: 0.75rem;
+  font-size: 1.1em;
   line-height: 1;
   color: var(--muted);
 }
@@ -533,7 +602,7 @@ pre code {
   padding: 0.5rem 1rem;
   border-top: 1px solid var(--line);
   font-family: var(--pixel);
-  font-size: 0.6875rem;
+  font-size: var(--pixel-size);
   text-align: center;
   color: var(--faint);
   cursor: pointer;
