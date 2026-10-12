@@ -14,7 +14,7 @@
     {
       name: "BAML",
       href: "https://boundaryml.com",
-      repo: "https://github.com/BoundaryML/baml/pulls?q=is:pr+state:merged+author:harivansh-afk",
+      repo: "https://github.com/BoundaryML/baml/pulls?q=is:pr:author:harivansh-afk",
       when: "2026",
     },
     {
