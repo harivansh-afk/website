@@ -14,7 +14,7 @@
     {
       name: "BAML",
       href: "https://boundaryml.com",
-      repo: "https://github.com/BoundaryML/baml/pulls?q=is:pr:author:harivansh-afk",
+      repo: "https://github.com/BoundaryML/baml/pulls?q=is:pr+author:harivansh-afk",
       when: "2026",
     },
     {
@@ -48,7 +48,7 @@
 />
 
 <!-- each block hangs off its own place on the page (--off, --w), after
-     benja.dev, nudged off the twelfths and spaced unevenly on purpose; under 1152px (960 zoomed) every offset drops and the page is one
+     benja.dev, nudged off the twelfths and spaced unevenly on purpose; under 1152px every offset drops and the page is one
      left-aligned column -->
 <main class="home">
   <section class="blk first" style:--off="8.333%" style:--w="83.333%" style:--gap="6.5rem">
@@ -230,14 +230,14 @@
      off-white, the crt glow and scanlines (developer/+page.svelte) */
   .crt:is(:hover, :focus-visible) {
     background:
-      repeating-linear-gradient(#0000 0 2px, #00000038 2px 3px),
+      repeating-linear-gradient(#0000 0 0.125rem, #00000038 0.125rem 0.1875rem),
       #1e2139;
     color: #e9e9ec;
     text-shadow:
-      0 0 1px color-mix(in srgb, currentColor 45%, transparent),
-      0 0 6px color-mix(in srgb, currentColor 30%, transparent),
-      0.5px 0 0 #ff46463a,
-      -0.5px 0 0 #4696ff3a;
+      0 0 0.0625rem color-mix(in srgb, currentColor 45%, transparent),
+      0 0 0.375rem color-mix(in srgb, currentColor 30%, transparent),
+      0.03125rem 0 0 #ff46463a,
+      -0.03125rem 0 0 #4696ff3a;
   }
   /* on the way in it tears for a third of a second: the colour fringe
      blows out and slices of the screen itself, in its own face, flash over
@@ -253,7 +253,7 @@
     display: grid;
     place-items: center;
     background:
-      repeating-linear-gradient(#0000 0 2px, #00000038 2px 3px),
+      repeating-linear-gradient(#0000 0 0.125rem, #00000038 0.125rem 0.1875rem),
       #1e2139;
     color: #e9e9ec;
     font-family: "Iosevka Charon Mono", var(--mono);
@@ -270,12 +270,12 @@
     }
   }
   @keyframes fringe {
-    from { text-shadow: 2px 0 #ff4646, -2px 0 #4696ff }
+    from { text-shadow: 0.125rem 0 #ff4646, -0.125rem 0 #4696ff }
   }
   @keyframes slip {
-    10% { opacity: 1; clip-path: inset(0 0 55% 0); transform: translateX(3px) }
+    10% { opacity: 1; clip-path: inset(0 0 55% 0); transform: translateX(0.1875rem) }
     25% { opacity: 1; clip-path: inset(0); transform: none }
-    70% { opacity: 1; clip-path: inset(40% 0 0 0); transform: translateX(-2px) }
+    70% { opacity: 1; clip-path: inset(40% 0 0 0); transform: translateX(-0.125rem) }
     85%, 100% { opacity: 0 }
   }
   .quiet {

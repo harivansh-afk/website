@@ -1,5 +1,6 @@
 {
   "extends": "$app/tsconfig",
-  "include": ["src", "test", "*"],
-  "exclude": ["src/service-worker"]
+  // plain js, untyped: svelte-check reports svelte's own diagnostics only
+  "compilerOptions": { "checkJs": false },
+  "include": ["src", "tests", "*"]
 }

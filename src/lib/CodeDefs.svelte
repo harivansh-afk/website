@@ -46,10 +46,8 @@
     let top = r.bottom + GAP;
     if (top + p.height > innerHeight - EDGE && r.top - GAP - p.height >= EDGE) top = r.top - GAP - p.height;
     top = Math.max(EDGE, Math.min(top, innerHeight - p.height - EDGE));
-    // rects are in screen px; the page is zoomed (style.css), so its own px are larger
-    const zoom = pop.currentCSSZoom ?? 1;
-    pop.style.left = left / zoom + "px";
-    pop.style.top = top / zoom + "px";
+    pop.style.left = left + "px";
+    pop.style.top = top + "px";
   }
 
   function show(el) {
@@ -129,9 +127,6 @@
   onMount(() => {
     enabled = true;
     document.documentElement.classList.add("code-defs");
-    // capture: a code block's own horizontal scroll does not bubble
-    addEventListener("scroll", scrolled, { capture: true, passive: true });
-    addEventListener("resize", scrolled, { passive: true });
 
     const pin = location.hash.match(/^#def=(.+)$/);
     if (pin) {
@@ -144,14 +139,12 @@
       }
     }
 
-    return () => {
-      removeEventListener("scroll", scrolled, { capture: true });
-      removeEventListener("resize", scrolled);
-      document.documentElement.classList.remove("code-defs");
-    };
+    return () => document.documentElement.classList.remove("code-defs");
   });
 </script>
 
+<!-- capture: a code block's own horizontal scroll does not bubble -->
+<svelte:window onscrollcapture={scrolled} onresize={scrolled} />
 <svelte:document
   onpointerover={enabled ? over : undefined}
   onpointerout={enabled ? out : undefined}

@@ -1,6 +1,6 @@
 <script>
   // the developer screen, after unicodekit.com: a terminal ui on a grid of
-  // character cells that always fills the viewport. layout.js places the
+  // character cells that always fills the viewport. panes.js places the
   // panes, frame.js draws their frames as text, keys.js turns keystrokes into
   // state; this file measures the cells, renders, and performs the effects.
   // until the cells are measured the screen stays hidden (no reflow flash);
@@ -13,16 +13,21 @@
   import { fit, pad, wrap, counter, bareUrl } from "#lib/tui/text.js";
   import { blank, box, paint, titleSpan } from "#lib/tui/frame.js";
   import { step, keyName, initial } from "#lib/tui/keys.js";
-  import { layout } from "./layout.js";
+  import { layout } from "./panes.js";
   import { CAFE, DEV } from "#lib/site.js";
   import { sections, everything } from "./content.js";
 
   const FONT = '16px "Iosevka Charon Mono"';
-  const LINE = 20; // px per row; a cell is (measured advance) x LINE
-  const PAD = { x: 16, y: 12 }; // least px around the grid; the rest centres it
+  const LINE = 20; // units per row; a cell is (measured advance) x LINE
+  const PAD = { x: 16, y: 12 }; // least units around the grid; the rest centres it
   const SCROLLOFF = 2;
 
+  // the screen reads at 150% above phone width: every size below is in
+  // units of --u (style), 1px on phones and 1.5px wider, so a cell is
+  // measured, and placed, in real px with no css zoom between
   let screen;
+  let u = $state(1);
+  const line = $derived(LINE * u);
   let cw = $state(8);
   let cols = $state(140);
   let rows = $state(44);
@@ -129,6 +134,8 @@
   let leaving = false;
   function leave(href) {
     leaving = true;
+    clearTimeout(pending);
+    flush?.();
     location.assign(href);
   }
 
@@ -178,11 +185,27 @@
     if (first && e.pointerType !== "mouse") e.preventDefault();
   }
 
+  const THROTTLE = 150;
+  let written = 0;
+  let pending = 0;
+  let flush = null;
+
   // the section is deep-linkable as #<id>; history keeps the row and pane
   $effect(() => {
     if (!ready || ui.query !== null) return;
     const tui = { s: ui.s, r: ui.r, pane: ui.pane };
-    history.replaceState({ ...history.state, tui }, "", `#${sections[ui.s].id}`);
+    const hash = `#${sections[ui.s].id}`;
+    // at most one write per THROTTLE ms, the last one always landing:
+    // safari throws past 100 history writes in 10s, which a held j reaches
+    clearTimeout(pending);
+    flush = () => {
+      flush = null;
+      written = performance.now();
+      history.replaceState({ ...history.state, tui }, "", hash);
+    };
+    const wait = written + THROTTLE - performance.now();
+    if (wait <= 0) flush();
+    else pending = setTimeout(() => flush?.(), wait);
   });
 
   onMount(() => {
@@ -192,35 +215,40 @@
     if (at >= 0 && back?.s === at && back.r < sections[at].rows.length) ui = { ...ui, ...back };
     else if (at >= 0) ui = { ...ui, s: at };
 
-    // the screen is css-zoomed above phone width (the style below), so the
-    // viewport in its own px is the window divided by the zoom
-    const zoom = () => screen.currentCSSZoom ?? 1;
-    const measure = () => {
-      const w = innerWidth / zoom();
-      const h = innerHeight / zoom();
-      cols = Math.max(20, Math.floor((w - 2 * PAD.x) / cw));
-      rows = Math.max(12, Math.floor((h - 2 * PAD.y) / LINE));
-      // the cells never fill the viewport exactly: split what's left evenly,
-      // so the margins match on both sides
-      margin = { x: Math.round((w - cols * cw) / 2), y: Math.round((h - rows * LINE) / 2) };
-    };
     let gone = false;
     Promise.all([document.fonts.load(FONT), document.fonts.load('16px "Nonicons"')])
       .catch(() => {})
       .then(() => {
         if (gone) return;
-        cw = screen.querySelector(".probe").getBoundingClientRect().width / 100 / zoom();
         measure();
         ready = true;
       });
-    addEventListener("resize", measure);
-    return () => {
-      gone = true;
-      removeEventListener("resize", measure);
-    };
+    return () => (gone = true);
   });
 
-  const place = (x, y, w) => `left:${x * cw}px;top:${y * LINE}px;width:${w * cw}px`;
+  // the grid, from the window in units: as many whole cells as fit inside
+  // the padding, and what's left split evenly so the margins match
+  function measure() {
+    if (!screen) return;
+    u = parseFloat(getComputedStyle(screen).getPropertyValue("--u")) || 1;
+    const cell = screen.querySelector(".probe").getBoundingClientRect().width / 100 / u;
+    const w = innerWidth / u;
+    const h = innerHeight / u;
+    cols = Math.max(20, Math.floor((w - 2 * PAD.x) / cell));
+    rows = Math.max(12, Math.floor((h - 2 * PAD.y) / LINE));
+    margin = { x: Math.round((w - cols * cell) / 2) * u, y: Math.round((h - rows * LINE) / 2) * u };
+    cw = cell * u;
+  }
+
+  // the screen is the viewport (.dev is fixed to it): re-measure whenever
+  // its size changes, once the cells can be measured at all
+  function fill(dev) {
+    const observer = new ResizeObserver(() => ready && measure());
+    observer.observe(dev);
+    return () => observer.disconnect();
+  }
+
+  const place = (x, y, w) => `left:${x * cw}px;top:${y * line}px;width:${w * cw}px`;
   const statusPath = $derived(
     ui.query === null ? `${sections[ui.s].name}${row ? " › " + row.key : ""}` : `search › ${list.length} found`,
   );
@@ -240,7 +268,7 @@
   <noscript><style>.screen { display: none } .outline { position: static !important; clip-path: none !important; width: auto !important; height: auto !important; }</style></noscript>
 </svelte:head>
 
-<div class="dev">
+<div class="dev" {@attach fill}>
   <div class="screen" class:ready bind:this={screen} style:--cw="{cw}px" style:inset="{margin.y}px {margin.x}px" aria-hidden="true">
     <span class="probe">{"0".repeat(100)}</span>
 
@@ -256,7 +284,7 @@
     <div class="line inv" style={place(focusTitle.x, focusTitle.y, focusTitle.w)}>{focusTitle.text}</div>
 
     <!-- sections -->
-    <div class="pane" onwheel={(e) => onwheel(e, "sections")} style={place(at.sections.x, at.sections.y, at.sections.w) + `;height:${at.sections.h * LINE}px`}>
+    <div class="pane" onwheel={(e) => onwheel(e, "sections")} style={place(at.sections.x, at.sections.y, at.sections.w) + `;height:${at.sections.h * line}px`}>
       {#each sections.slice(offset.sections, offset.sections + at.sections.h - 2) as x, k}
         {@const i = offset.sections + k}
         {@const w = inner(at.sections)}
@@ -273,7 +301,7 @@
     </div>
 
     <!-- rows -->
-    <div class="pane" onwheel={(e) => onwheel(e, "rows")} style={place(at.rows.x, at.rows.y, at.rows.w) + `;height:${at.rows.h * LINE}px`}>
+    <div class="pane" onwheel={(e) => onwheel(e, "rows")} style={place(at.rows.x, at.rows.y, at.rows.w) + `;height:${at.rows.h * line}px`}>
       {#each list.slice(offset.rows, offset.rows + at.rows.h - 2) as x, k (x.section + x.key)}
         {@const i = offset.rows + k}
         {@const w = inner(at.rows)}
@@ -362,19 +390,21 @@
     overflow: hidden;
     background: var(--uk-bg);
     color: var(--uk-fg);
-    font: 16px/20px "Iosevka Charon Mono", ui-monospace, monospace;
+    /* one unit: every size on the screen is a multiple of it. it reads at
+       150% above phone width, as if the browser were zoomed */
+    --u: 1px;
+    font: calc(16 * var(--u)) / calc(20 * var(--u)) "Iosevka Charon Mono", ui-monospace, monospace;
     font-variant-ligatures: none;
     /* the crt: a faint glow and a hair of colour fringing on every glyph */
     text-shadow:
-      0 0 1px color-mix(in srgb, currentColor 45%, transparent),
-      0 0 6px color-mix(in srgb, currentColor 18%, transparent),
-      0.5px 0 0 #ff46461f,
-      -0.5px 0 0 #4696ff1f;
+      0 0 var(--u) color-mix(in srgb, currentColor 45%, transparent),
+      0 0 calc(6 * var(--u)) color-mix(in srgb, currentColor 18%, transparent),
+      calc(0.5 * var(--u)) 0 0 #ff46461f,
+      calc(-0.5 * var(--u)) 0 0 #4696ff1f;
   }
-  /* read at 150% above phone width, as if the browser were zoomed */
   @media (min-width: 641px) {
     .dev {
-      zoom: 1.5;
+      --u: 1.5px;
     }
   }
   :global(html:has(.dev)),
@@ -389,13 +419,13 @@
     inset: 0;
     pointer-events: none;
     background:
-      repeating-linear-gradient(#0000 0 2px, #00000024 2px 3px),
+      repeating-linear-gradient(#0000 0 calc(2 * var(--u)), #00000024 calc(2 * var(--u)) calc(3 * var(--u))),
       radial-gradient(#0000 70%, #00000014 100%);
   }
 
   .screen {
     position: absolute;
-    inset: 12px 16px;
+    inset: calc(12 * var(--u)) calc(16 * var(--u));
     visibility: hidden;
   }
   .screen.ready {
@@ -425,7 +455,7 @@
   }
   .line {
     position: absolute;
-    height: 20px;
+    height: calc(20 * var(--u));
     overflow: hidden;
     white-space: pre;
   }
@@ -459,7 +489,7 @@
     display: inline-block;
     width: calc(3 * var(--cw));
     font-family: "Nonicons";
-    font-size: 13px;
+    font-size: calc(13 * var(--u));
     vertical-align: top;
   }
   /* the selection: inverted where the focus is, a tint where it isn't */
@@ -481,7 +511,7 @@
     background: none;
     color: var(--uk-fg);
     text-decoration: underline dotted var(--uk-muted);
-    text-underline-offset: 4px;
+    text-underline-offset: calc(4 * var(--u));
   }
   .link:hover {
     text-decoration-style: solid;
@@ -496,7 +526,7 @@
   .home .dest {
     color: var(--uk-muted);
     text-decoration: underline dotted var(--uk-muted);
-    text-underline-offset: 4px;
+    text-underline-offset: calc(4 * var(--u));
     transition: color 0.12s;
   }
   .home:hover .dest {

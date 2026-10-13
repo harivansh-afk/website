@@ -28,7 +28,7 @@ test("a resting pointer over the rows doesn't take the focus from j", async ({ p
   await overRows(page);
   await press(page, "h", "j", "j");
   expect(await focus(page)).toBe("SECTIONS");
-  expect(page.url()).toContain("#experiments");
+  await expect(page).toHaveURL(/#experiments$/);
 });
 
 test("moving the mouse hands the rows back to it", async ({ page }) => {
@@ -43,7 +43,7 @@ test("h and l cross between the panes with the pointer anywhere", async ({ page 
   await overRows(page);
   await press(page, "h", "j", "l", "j", "h", "k");
   expect(await focus(page)).toBe("SECTIONS");
-  expect(page.url()).toContain("#software");
+  await expect(page).toHaveURL(/#software$/);
 });
 
 for (const back of ["-", "Escape"]) {
@@ -69,10 +69,18 @@ test("keys after leaving change nothing", async ({ page }) => {
     await new Promise((done) => setTimeout(done, 1000));
     await route.fulfill({ contentType: "text/html", body: "<title>cafe</title>" });
   });
-  await page.keyboard.press("-");
-  const before = await status(page);
-  await page.keyboard.press("j");
-  expect(await status(page)).toBe(before);
+  // pressed and read inside one turn of the page, before the navigation
+  // can commit and take the document with it
+  const same = await page.evaluate(async () => {
+    const status = () => document.querySelector(".status").textContent;
+    const key = (k) => dispatchEvent(new KeyboardEvent("keydown", { key: k, bubbles: true }));
+    const before = status();
+    key("-");
+    key("j");
+    await new Promise(requestAnimationFrame);
+    return status() === before;
+  });
+  expect(same).toBe(true);
   await page.waitForURL("https://hari.cafe/");
 });
 
