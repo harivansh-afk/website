@@ -107,13 +107,14 @@
     {#each items as item}
       <li>
         {#if item.repo}
-          <!-- links can't nest: the name's link stretches over the row and
-               the github mark sits above it -->
-          <div class="row">
+          <!-- links can't nest: the row splits in two, the site on its left
+               half and the repo on its right, each link stretched over its
+               half. the github mark shows on hover -->
+          <div class="row split">
             <span class="name"
-              ><a class="bare stretch" href={item.href} {...ext}>{item.name}</a>{#if item.tag}<span class="tag">{item.tag}</span>{/if}</span
+              ><a class="bare half site" href={item.href} {...ext}>{item.name}</a>{#if item.tag}<span class="tag">{item.tag}</span>{/if}</span
             ><span class="end"><a
-                class="bare gh"
+                class="bare half gh"
                 href={item.repo}
                 aria-label="{item.name} on github"
                 {...ext}
@@ -170,20 +171,56 @@
     max-width: calc(64ch + 1rem);
   }
 
-  /* a row with a repo: the name's link covers the row, the mark sits on top */
+  /* a row with a repo, split down the middle: each link stretches over its
+     half of the row, and the half under the pointer takes a second tint
+     over the row's. a tint of the text's own colour leaves the text as it
+     was, so it can sit on top */
   .rows li {
     position: relative;
   }
-  .stretch::after {
+  .half::after {
     content: "";
     position: absolute;
-    inset: 0;
+    top: 0;
+    bottom: 0;
   }
+  .site::after {
+    left: 0;
+    right: 50%;
+    border-radius: 0.1875rem 0 0 0.1875rem;
+  }
+  .gh::after {
+    left: 50%;
+    right: 0;
+    border-radius: 0 0.1875rem 0.1875rem 0;
+  }
+  @media (hover: hover) {
+    .half:hover::after {
+      background: var(--fill);
+    }
+  }
+  .half:focus-visible {
+    outline: none;
+  }
+  .half:focus-visible::after {
+    outline: 1px solid var(--fg);
+  }
+  /* the mark: the repo's half, in the year's grey, shown while the row is
+     hovered (always, on screens that can't hover) */
   .gh {
-    position: relative;
-    z-index: 1;
     color: var(--faint);
-    transition: color 0.15s;
+  }
+  .gh svg {
+    opacity: 0;
+  }
+  .split:hover .gh svg,
+  .gh:focus-visible svg {
+    opacity: 1;
+  }
+  @media (hover: none) {
+    .gh svg {
+      opacity: 1;
+    }
   }
   /* the mark sits just left of the date */
   .end {
@@ -195,10 +232,6 @@
     display: block;
     width: 0.8125rem;
     height: 0.8125rem;
-  }
-  .gh:hover,
-  .gh:focus-visible {
-    color: var(--fg);
   }
 
   /* a small word after a row's name, in the label voice */

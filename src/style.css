@@ -165,28 +165,26 @@ img { max-width: 100% }
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
-/* dotted brackets slide in around the hovered or current section */
-.top nav a { position: relative; color: var(--muted); transition: color 0.2s }
+/* dotted brackets around the hovered or current section. every hover on
+   the site is instant: no transitions on hover states */
+.top nav a { position: relative; color: var(--muted) }
 .top nav a .dots {
   position: absolute;
   top: 50%;
   translate: 0 -50%;
   opacity: 0;
-  transition: opacity 0.2s, transform 0.3s var(--ease), color 0.2s;
 }
-.top nav a .dots:first-child { right: 100%; transform: translateX(-0.125rem) }
-.top nav a .dots:last-child { left: 100%; transform: translateX(0.125rem) }
+.top nav a .dots:first-child { right: calc(100% + 0.3rem) }
+.top nav a .dots:last-child { left: calc(100% + 0.3rem) }
 .top nav a:is(:hover, :focus-visible, [aria-current]) { color: var(--fg) }
 .top nav a:is(:hover, :focus-visible, [aria-current]) .dots { opacity: 1 }
-.top nav a:is(:hover, :focus-visible, [aria-current]) .dots:first-child { transform: translateX(-0.3rem) }
-.top nav a:is(:hover, :focus-visible, [aria-current]) .dots:last-child { transform: translateX(0.3rem) }
 /* a hovered section's brackets are a hint, quieter than a current one's colour */
 .top nav a:is(:hover, :focus-visible) .dots { color: var(--faint) }
 /* the current section's brackets take its colour */
 .top nav a[aria-current] > .dots { color: var(--c, currentColor) }
 /* inside a thought, a dotted ‹ before writing: the way back */
 .top nav a .back { margin-right: 0.25rem }
-.top nav a .back .dots.dots { position: static; opacity: 1; transform: none; translate: none }
+.top nav a .back .dots.dots { position: static; opacity: 1; translate: none }
 
 /* the stagger, after benja.dev: each block hangs off its own twelfth of the
    canvas (--off) at its own width (--w), with a lot of air below (--gap).
@@ -276,7 +274,6 @@ img { max-width: 100% }
   gap: 1.5rem;
   padding: 0.6rem 0.5rem;
   border-radius: 0.1875rem;
-  transition: background-color 0.15s;
 }
 .rows .row > :nth-child(2) { grid-column: 3 }
 /* a dotted leader carries the eye from name to figure */
@@ -457,7 +454,6 @@ main.thought article > :not(header, figure, pre, .code, .callout) { max-width: 6
     font-size: var(--text-small);
     line-height: 1.4;
     color: var(--muted);
-    transition: color 0.15s;
   }
   .toc li a:is(:hover, .on) { color: var(--fg) }
 }
@@ -480,7 +476,6 @@ main.thought h2 a::before {
   margin-right: 0.6em;
   color: var(--faint);
   opacity: 0;
-  transition: opacity 0.15s;
 }
 main.thought h2 a:is(:hover, :focus-visible)::before { opacity: 1 }
 html { scroll-behavior: smooth }
@@ -606,7 +601,6 @@ pre code {
   font: inherit;
   color: var(--faint);
   cursor: pointer;
-  transition: color 0.15s;
 }
 .code-copy:is(:hover, :focus-visible) { color: var(--fg) }
 .code pre {
@@ -645,7 +639,6 @@ pre code {
   text-align: center;
   color: var(--faint);
   cursor: pointer;
-  transition: color 0.15s;
 }
 .code-expand:hover, .code-more:focus-visible + .code-body + .code-expand { color: var(--fg) }
 .code:has(.code-more:checked) .code-expand { display: none }
@@ -658,7 +651,6 @@ a {
   padding: 0 0.18em;
   margin: 0 -0.06em;
   background: var(--fill);
-  transition: background-color 0.15s, color 0.15s;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
@@ -747,13 +739,11 @@ mark {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.12s ease, visibility 0s linear 0.12s;
 }
 .def-pop.on {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transition: opacity 0.12s ease;
 }
 .def-pop.on.passive { pointer-events: none; }
 /* Never scrolls: long lines wrap inside the popover instead. */

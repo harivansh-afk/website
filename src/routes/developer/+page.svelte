@@ -527,7 +527,6 @@
     color: var(--uk-muted);
     text-decoration: underline dotted var(--uk-muted);
     text-underline-offset: calc(4 * var(--u));
-    transition: color 0.12s;
   }
   .home:hover .dest {
     color: var(--uk-fg);

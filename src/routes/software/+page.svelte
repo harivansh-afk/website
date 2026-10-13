@@ -51,7 +51,10 @@
   }
   @media (min-width: 1152px) {
     .canvas {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
+      /* 24 columns at the gap 12 had: two and the gap between them are
+         exactly one of the old twelve, so placements have half-column
+         precision */
+      grid-template-columns: repeat(24, minmax(0, 1fr));
       column-gap: 1.25rem;
       row-gap: 4rem;
     }

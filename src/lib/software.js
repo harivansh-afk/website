@@ -4,8 +4,8 @@
 //
 // an entry: `name`, `href`, a one-line `note`, `status` (null while it still
 // runs, else how it ended) and `lang`, its main language. `repo` is the source when `href` is a
-// product page. `canvas` places it on the 12-column canvas: `col` (grid
-// columns), `drop` (rem from the row above), `x` (an optional sideways
+// product page. `canvas` places it on the 24-column canvas: `col` (grid
+// columns; tools/grid.mjs edits them on the page), `drop` (rem from the row above), `x` (an optional sideways
 // nudge in rem, for less than a column), and the poster's `w` x `h`
 // (static/software/<name>.webp). `clip` plays static/previews/<name>.mp4 on
 // hover; `phone` gives a phone recording a narrower frame with an iphone's corners
@@ -25,7 +25,7 @@ export const software = [
     href: "https://mixbridge.app/",
     note: "a beautiful listening experience that mixes music on the go",
     status: null,
-    canvas: { col: "2 / span 2", drop: 0, w: 590, h: 1280, phone: true, clip: true },
+    canvas: { col: "2 / span 4", drop: -0.5, w: 590, h: 1280, phone: true, clip: true },
     alt: "mixbridge mixing between two tracks on an iphone",
   },
   {
@@ -35,7 +35,7 @@ export const software = [
     href: "https://touchtips.app",
     note: "remember when, where and who you met.",
     status: null,
-    canvas: { col: "5 / span 5", drop: 3, w: 1280, h: 720, clip: true },
+    canvas: { col: "8 / span 10", drop: 3.75, w: 1280, h: 720, clip: true },
     alt: "touchtips open on a phone outdoors",
   },
   {
@@ -44,7 +44,7 @@ export const software = [
     href: "https://www.cnet.com/tech/services-and-software/companion-einstein-ai-tool/",
     note: "ai agent that does your homework autonomously",
     status: "cease and desisted :(",
-    canvas: { col: "11 / span 2", drop: 7.5, w: 640, h: 400 },
+    canvas: { col: "20 / span 5", drop: 12, w: 640, h: 400 },
     alt: "einstein's portrait on yellow",
   },
   {
@@ -54,7 +54,7 @@ export const software = [
     href: `${GIT}/draw`,
     note: "self-hosted excalidraw with real-time collaboration and link sharing",
     status: null,
-    canvas: { col: "1 / span 6", drop: 1.5, w: 1280, h: 536, clip: true },
+    canvas: { col: "1 / span 12", drop: 1, w: 1280, h: 536, clip: true },
     alt: "draw's dashboard of saved canvases",
   },
   {
@@ -64,7 +64,7 @@ export const software = [
     href: `${GIT}/roomcast`,
     note: "play any movie, tv-show or music video under the sun, one text away",
     status: null,
-    canvas: { col: "9 / span 2", drop: 0, w: 720, h: 1280, phone: true, clip: true },
+    canvas: { col: "15 / span 4", drop: -5.25, w: 720, h: 1280, phone: true, clip: true },
     alt: "a telegram message asking an agent to resume a show",
   },
   {
@@ -74,7 +74,7 @@ export const software = [
     href: `${GIT}/mux`,
     note: "a stateless, host-agnostic, macos-native terminal multiplexing client for libghostty",
     status: null,
-    canvas: { col: "3 / span 4", drop: -3.5, x: -1.5, w: 1184, h: 780, clip: true },
+    canvas: { col: "4 / span 8", drop: 0.75, x: -1.5, w: 1184, h: 780, clip: true },
     alt: "mux running a nix build across panes",
   },
   {
@@ -85,7 +85,7 @@ export const software = [
     repo: `${GIT}/deskctl`,
     note: "non-interactive x11 control cli",
     status: "no longer maintained",
-    canvas: { col: "8 / span 5", drop: 0, w: 1280, h: 652, clip: true },
+    canvas: { col: "13 / span 10", drop: 0.5, w: 1280, h: 652, clip: true },
     alt: "an agent driving a linux desktop through deskctl",
   },
   {
@@ -95,7 +95,7 @@ export const software = [
     href: `${GIT}/nap`,
     note: "extend your mac's display to a linux machine (realtime)",
     status: null,
-    canvas: { col: "2 / span 2", drop: 0, x: 3, w: 360, h: 640, phone: true, clip: true },
+    canvas: { col: "16 / span 4", drop: -0.75, x: 3, w: 360, h: 640, phone: true, clip: true },
     alt: "nap casting a mac display to a wall monitor",
   },
   {
@@ -106,7 +106,7 @@ export const software = [
     repo: `${GIT}/betterNAS`,
     note: "macos-native filesystem admin over http",
     status: "no longer maintained",
-    canvas: { col: "5 / span 5", drop: 3.5, x: 3, w: 1280, h: 800, clip: true },
+    canvas: { col: "4 / span 10", drop: -27.75, x: 3, w: 1280, h: 800, clip: true },
     alt: "betternas mounting a remote machine in finder",
   },
   {
@@ -116,7 +116,7 @@ export const software = [
     href: `${GIT}/pierrejo`,
     note: "beautiful, instantaneous diff viewing for forgejo",
     status: null,
-    canvas: { col: "1 / span 5", drop: 1, w: 1280, h: 894, clip: true },
+    canvas: { col: "2 / span 10", drop: -3, w: 1280, h: 894, clip: true },
     alt: "pierrejo rendering a pull request diff in forgejo",
   },
   {
@@ -133,7 +133,7 @@ export const software = [
     href: "https://github.com/AgentComputerAI",
     note: "isolated cloud computers for ai-agents",
     status: "no longer maintained",
-    canvas: { col: "8 / span 4", drop: 4, w: 1280, h: 782, clip: true },
+    canvas: { col: "14 / span 8", drop: -2.5, w: 1280, h: 782, clip: true },
     alt: "agentcomputer's landing page",
   },
   {
