@@ -230,6 +230,7 @@ img { max-width: 100% }
 .label::before {
   --d: var(--dot, var(--faint));
   content: "";
+  pointer-events: none;
   position: absolute;
   right: calc(100% + 0.5rem);
   top: calc(50% - 0.3125rem);
@@ -285,6 +286,8 @@ img { max-width: 100% }
   margin-top: 0.15em;
   background: radial-gradient(circle, var(--faint) 0.03125rem, transparent 0.046875rem) 0 0 / 0.5625rem 0.0625rem repeat-x;
   opacity: 0.35;
+  /* decoration: never what the pointer lands on */
+  pointer-events: none;
 }
 .rows .row:not(:has(> :nth-child(2)))::after { display: none }
 .rows .row .name { color: var(--fg) }

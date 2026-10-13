@@ -67,9 +67,17 @@
 </figure>
 
 <style>
+  /* only what's drawn takes the pointer: the poster and the caption's text.
+     a piece's box spans its columns and can reach over a neighbour (a
+     negative drop), and its empty parts mustn't steal that one's hover */
   .piece {
     margin: 0;
     min-width: 0;
+    pointer-events: none;
+  }
+  .frame,
+  figcaption > span {
+    pointer-events: auto;
   }
   /* every piece is the same kind of window: one corner radius (phones get
      an iphone's), and a hairline inside the edge so dark posters keep their

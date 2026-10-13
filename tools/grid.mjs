@@ -37,7 +37,7 @@ const editor = /* html */ `
   .g-cols div span { position: absolute; top: -1.4rem; font: 11px ui-monospace, monospace; color: rgb(255 120 120); }
   .g-off .g-cols { display: none }
   /* nothing drawn on the pieces: the page looks as it does live */
-  .canvas > .piece { cursor: grab; position: relative }
+  .canvas > .piece { cursor: grab; position: relative; pointer-events: auto }
   .g-edge { position: absolute; top: 0; bottom: 0; width: 14px; z-index: 32; cursor: ew-resize; }
   .g-edge.l { left: -7px } .g-edge.r { right: -7px }
   .g-panel { position: fixed; right: 12px; bottom: 12px; z-index: 40; width: 440px; max-height: 70vh; overflow: auto; padding: 12px; border: 1px solid #444; border-radius: 6px; background: #111e; color: #ddd; font: 12px/1.5 ui-monospace, monospace; -webkit-text-stroke: 0; letter-spacing: 0 }

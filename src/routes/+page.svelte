@@ -178,9 +178,12 @@
   .rows li {
     position: relative;
   }
+  /* above the row's dotted leader, whose opacity would otherwise paint it
+     over the halves and make it a dead spot under the pointer */
   .half::after {
     content: "";
     position: absolute;
+    z-index: 1;
     top: 0;
     bottom: 0;
   }
