@@ -17,11 +17,6 @@
       repo: "https://github.com/BoundaryML/baml/pulls?q=is:pr+author:harivansh-afk",
       when: "2026",
     },
-    {
-      name: "Wiive",
-      href: "https://wiive.ai",
-      when: "2026",
-    },
     { name: "Dueflow", href: "https://dueflow.co", when: "2026" },
     { name: "uva.builders", href: "https://uva.builders", when: "2026" },
     {
@@ -31,7 +26,7 @@
       when: "2026",
     },
     {
-      name: "CAS",
+      name: "CAS [research]",
       href: "https://cas-playbook.vercel.app/",
       repo: "https://github.com/harivansh-afk/cas",
       when: "2026",
@@ -65,7 +60,7 @@
     </p>
     <p class="say">
       just before that, i was an early employee at <a href="https://www.phia.com" {...ext}>phia</a>, where i led
-      the development <br>of applied ai & automation.<br />in my 9 months there, we went from 0 &rarr; 1M users and raised ~$40M.
+      the development <br>of applied ai & automation to manage growth.<br />in my 9 months there, we went from 0 &rarr; 1M users and raised ~$40M.
     </p>
     <div class="attached">{@render rows(work)}</div>
   </section>
