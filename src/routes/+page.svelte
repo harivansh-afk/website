@@ -12,21 +12,21 @@
 
   const projects = [
     {
-      name: "BAML",
+      name: "baml",
       href: "https://boundaryml.com",
       repo: "https://github.com/BoundaryML/baml/pulls?q=is:pr+author:harivansh-afk",
       when: "2026",
     },
-    { name: "Dueflow", href: "https://dueflow.co", when: "2026" },
+    { name: "dueflow", href: "https://dueflow.co", when: "2026" },
     { name: "uva.builders", href: "https://uva.builders", when: "2026" },
     {
-      name: "AgentComputer",
+      name: "agent-computer",
       href: "https://agentcomputer.ai",
       repo: "https://github.com/AgentComputerAI",
       when: "2026",
     },
     {
-      name: "CAS [research]",
+      name: "cas [research]",
       href: "https://cas-playbook.vercel.app/",
       repo: "https://github.com/harivansh-afk/cas",
       when: "2026",
