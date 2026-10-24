@@ -30,10 +30,12 @@
 
   const motion = new MediaQuery("(hover: hover) and (prefers-reduced-motion: no-preference)");
 
-  let link, dot, base;
-  const letters = [..."hari"];
+  // `text` swaps the name for other words (the 404); only an i gets the dot
+  let { text = "hari", class: cls = "who" } = $props();
+  let link, dot = $state(), base = $state();
+  const letters = $derived([...text]);
   const spans = [];
-  const k = letters.map(() => 0); // each letter's swell, 0 to 1
+  const k = $derived(letters.map(() => 0)); // each letter's swell, 0 to 1
 
   // at rest: each letter's centre (client x) and the name's middle (page y)
   let rest = null;
@@ -52,13 +54,14 @@
   }
 
   function measure() {
-    cut();
+    if (base) cut();
     const box = link.getBoundingClientRect();
     const em = parseFloat(getComputedStyle(link).fontSize);
     let shift = 0;
     rest = {
       em,
       y: box.top + scrollY + box.height / 2,
+      band: Math.max(BAND, box.height),
       reach: REACH * box.height,
       x: spans.map((s, n) => {
         const r = s.getBoundingClientRect();
@@ -73,7 +76,7 @@
   function frame() {
     raf = 0;
     if (!rest) return;
-    const near = cursor && Math.abs(cursor.y - (rest.y - scrollY)) < BAND;
+    const near = cursor && Math.abs(cursor.y - (rest.y - scrollY)) < rest.band;
     let shift = 0;
     let moving = false;
     for (let n = 0; n < spans.length; n++) {
@@ -94,7 +97,7 @@
       s.style.marginInline = e ? `${ROOM * e}em` : "";
     });
     const e = k[spans.length - 1];
-    dot.style.translate = e ? `0 ${-LIFT * e}em` : "";
+    if (dot) dot.style.translate = e ? `0 ${-LIFT * e}em` : "";
     if (moving) raf = requestAnimationFrame(frame);
   }
   const wake = () => (raf ||= requestAnimationFrame(frame));
@@ -119,7 +122,7 @@
 
 <svelte:window {onpointermove} {onpointerout} onresize={measure} />
 
-<a class="who bare" href="/" aria-label="hari" bind:this={link}
+<a class="{cls} bare" href="/" aria-label={text} bind:this={link}
   >{#each letters as l, n}{#if l === "i"}<span class="l i" bind:this={spans[n]}
         ><span class="stem">i</span><span class="dot" bind:this={dot} aria-hidden="true">i</span><span
           class="base"

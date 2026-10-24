@@ -1,7 +1,6 @@
 // bake view counts into dist/views.json: {views: {href: n}}. a thought's count
 // is its site reads (the hit log) + its x post's views (`x` in thoughts.js,
-// via the fxtwitter api) + its `seed`. the log also marks page loads (`e`),
-// which nothing reads yet.
+// via the fxtwitter api) + its `seed`. /counter/'s is every page load (`e`).
 //
 // the hit log is Caddy's: the page beacon (POST /counter/hit?p=<path>[&e=1])
 // is answered with a 204 and written, without ip or headers, one JSON line per
@@ -14,6 +13,9 @@ import { thoughts } from "../src/lib/thoughts.js";
 const LOG = process.env.WEBSITE_HITS_LOG ?? "/var/log/caddy/harivan.sh-hits.log";
 const OUT = new URL("../dist/views.json", import.meta.url);
 const DIST = new URL("../dist/", import.meta.url);
+
+// the sqlite counter's last total when this log replaced it (nix#718)
+let total = 4285;
 
 async function hits() {
   let text = "";
@@ -34,6 +36,7 @@ async function hits() {
     if (entry.status !== 204) continue;
     const url = new URL(entry.request.uri, "https://harivan.sh");
     if (url.pathname !== "/counter/hit") continue;
+    if (url.searchParams.has("e")) total++;
     const path = url.searchParams.get("p");
     if (path) paths.set(path, (paths.get(path) ?? 0) + 1);
   }
@@ -84,6 +87,7 @@ const views = {};
 for (const t of thoughts) {
   views[t.href] = (t.seed ?? 0) + (paths.get(t.href) ?? 0) + (x[t.x] ?? 0);
 }
+views["/counter/"] = total;
 
 // written whole, then renamed over, so a fetch never sees half a file
 const tmp = new URL("../dist/views.json.tmp", import.meta.url);

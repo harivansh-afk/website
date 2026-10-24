@@ -323,10 +323,16 @@ img { max-width: 100% }
 }
 
 main.not-found {
-  min-height: min(60vh, 24rem);
+  min-height: max(55vh, 20rem);
   display: grid;
   place-items: center;
-  text-align: center;
+}
+/* the 404 swells as the name does (#lib/Who.svelte) */
+main.not-found h1 { margin: 0; font-weight: inherit; line-height: 1 }
+main.not-found .big {
+  color: var(--fg);
+  font-size: clamp(5rem, 16vw, 9rem);
+  -webkit-text-stroke: 0.015em currentColor;
 }
 
 /* mobile: tighter canvas, the colophon joins the left edge */
