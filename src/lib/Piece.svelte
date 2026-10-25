@@ -3,7 +3,6 @@
   // full-colour poster (the clip's first frame) that plays its clip while
   // hovered or focused. the clip fetches on hover only and is dropped when
   // the pointer leaves
-  import Dots from "#lib/Dots.svelte";
   import { POSTER_V, clipSrc } from "#lib/media.js";
 
   let { piece } = $props();
@@ -58,9 +57,7 @@
   </a>
   <figcaption>
     <span class="name">{piece.name}</span>
-    <span class="fig"
-      >{#if piece.status}{piece.status}{:else}<Dots glyph="ongoing" label="still running" />{/if}</span
-    >
+    {#if piece.status}<span class="fig">{piece.status}</span>{/if}
     <span class="break"></span>
     <span class="note">{piece.note}</span>
   </figcaption>

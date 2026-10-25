@@ -9,12 +9,6 @@
     back: { rows: ["..#", ".#.", "#..", ".#.", "..#"], lift: -0.19 },
     lq: { rows: [".#..#", "#..#.", "##.##", "##.##"], lift: 0.36 },
     rq: { rows: ["##.##", "##.##", ".#..#", "#..#."], lift: 0.36 },
-    // the open end of a date range: four dotted slashes
-    ongoing: {
-      rows: ["...#...#...#...#", "..#...#...#...#.", ".#...#...#...#..", "#...#...#...#..."],
-      lift: 0,
-      pitch: 0.14,
-    },
   };
   const PITCH = 0.115; // em between dot centres
 
@@ -31,7 +25,7 @@
   let { glyph, label } = $props();
 
   const g = $derived(GLYPHS[glyph]);
-  const pitch = $derived(g.pitch ?? PITCH);
+  const pitch = PITCH;
   const w = $derived(g.rows[0].length);
   const h = $derived(g.rows.length);
 </script>
