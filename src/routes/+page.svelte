@@ -102,14 +102,13 @@
     {#each items as item}
       <li>
         {#if item.repo}
-          <!-- links can't nest: the row splits in two, the site on its left
-               half and the repo on its right, each link stretched over its
-               half -->
+          <!-- links can't nest: the site's link stretches over the whole
+               row and the repo's mark sits above it -->
           <div class="row split">
             <span class="name"
-              ><a class="bare half site" href={item.href} {...ext}>{item.name}</a>{#if item.tag}<span class="tag">{item.tag}</span>{/if}</span
+              ><a class="bare site" href={item.href} {...ext}>{item.name}</a>{#if item.tag}<span class="tag">{item.tag}</span>{/if}</span
             ><span class="end"><a
-                class="bare half gh"
+                class="bare gh"
                 href={item.repo}
                 aria-label="{item.name} on github"
                 {...ext}
@@ -166,38 +165,37 @@
     max-width: calc(64ch + 1rem);
   }
 
-  /* a row with a repo, split down the middle: each link stretches over its
-     half of the row, and the row tints as one */
+  /* a row with a repo: the site's link stretches over the row, the mark
+     is its own small target above it */
   .rows li {
     position: relative;
   }
   /* above the row's dotted leader, whose opacity would otherwise paint it
-     over the halves and make it a dead spot under the pointer */
-  .half::after {
+     over the row and make it a dead spot under the pointer */
+  .site::after {
     content: "";
     position: absolute;
     z-index: 1;
-    top: 0;
-    bottom: 0;
+    inset: 0;
     border-radius: 0.1875rem;
   }
-  .site::after {
-    left: 0;
-    right: 50%;
-  }
-  .gh::after {
-    left: 50%;
-    right: 0;
-  }
-  .half:focus-visible {
+  .site:focus-visible {
     outline: none;
   }
-  .half:focus-visible::after {
+  .site:focus-visible::after {
     outline: 1px solid var(--fg);
   }
-  /* the mark: the repo's half, in the year's grey */
+  /* the mark, in the year's grey, darkening under the pointer */
   .gh {
+    position: relative;
+    z-index: 2;
+    margin: -0.375rem;
+    padding: 0.375rem;
     color: var(--faint);
+    transition: color 0.15s;
+  }
+  .gh:is(:hover, :focus-visible) {
+    color: var(--fg);
   }
   /* the mark sits just left of the date */
   .end {
