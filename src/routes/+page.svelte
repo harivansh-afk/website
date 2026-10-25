@@ -104,7 +104,7 @@
         {#if item.repo}
           <!-- links can't nest: the row splits in two, the site on its left
                half and the repo on its right, each link stretched over its
-               half. the github mark shows on hover -->
+               half -->
           <div class="row split">
             <span class="name"
               ><a class="bare half site" href={item.href} {...ext}>{item.name}</a>{#if item.tag}<span class="tag">{item.tag}</span>{/if}</span
@@ -167,9 +167,7 @@
   }
 
   /* a row with a repo, split down the middle: each link stretches over its
-     half of the row, and the half under the pointer takes a second tint
-     over the row's. a tint of the text's own colour leaves the text as it
-     was, so it can sit on top */
+     half of the row, and the row tints as one */
   .rows li {
     position: relative;
   }
@@ -181,21 +179,15 @@
     z-index: 1;
     top: 0;
     bottom: 0;
+    border-radius: 0.1875rem;
   }
   .site::after {
     left: 0;
     right: 50%;
-    border-radius: 0.1875rem 0 0 0.1875rem;
   }
   .gh::after {
     left: 50%;
     right: 0;
-    border-radius: 0 0.1875rem 0.1875rem 0;
-  }
-  @media (hover: hover) {
-    .half:hover::after {
-      background: var(--fill);
-    }
   }
   .half:focus-visible {
     outline: none;
@@ -203,22 +195,9 @@
   .half:focus-visible::after {
     outline: 1px solid var(--fg);
   }
-  /* the mark: the repo's half, in the year's grey, shown while the row is
-     hovered (always, on screens that can't hover) */
+  /* the mark: the repo's half, in the year's grey */
   .gh {
     color: var(--faint);
-  }
-  .gh svg {
-    opacity: 0;
-  }
-  .split:hover .gh svg,
-  .gh:focus-visible svg {
-    opacity: 1;
-  }
-  @media (hover: none) {
-    .gh svg {
-      opacity: 1;
-    }
   }
   /* the mark sits just left of the date */
   .end {
