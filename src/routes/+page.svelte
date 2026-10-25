@@ -90,8 +90,7 @@
         <a
           href="https://www.facebook.com/roboclubonline/posts/roboclub-team-supercalifragilisticexpialidocious-at-the-first-lego-league-nation/1565656036804624/"
           {...ext}>FIRST world championship</a
-        > where my team placed 9th. a few years later, at age 9 i became a
-        <a href="https://www.worldcubeassociation.org/persons/2015RATH01" {...ext}>competitive cuber</a>.
+        > where my team placed 9th.
       </p>
     </div>
   </section>
