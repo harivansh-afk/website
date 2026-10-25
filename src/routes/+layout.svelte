@@ -6,7 +6,6 @@
   import CodeDefs from "#lib/CodeDefs.svelte";
   import Dots from "#lib/Dots.svelte";
   import Who from "#lib/Who.svelte";
-  import Sounds from "#lib/Sounds.svelte";
   import { DEV, CAFE } from "#lib/site.js";
 
   let { children } = $props();
@@ -111,4 +110,3 @@
 {/if}
 
 <CodeDefs />
-<Sounds />
