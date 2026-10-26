@@ -43,7 +43,7 @@ const ROLES = {
   keyword: ["red"],
   import: ["aqua"], // @keyword.import (use, mod)
   macro: ["aqua"], // Macro, PreProc (attributes, lifetimes)
-  func: ["green", "bold"], // Function
+  func: ["blue", "bold"], // Function
   type: ["yellow"],
   constant: ["purple"], // Constant, Number, Boolean, Character
   special: ["orange"], // Special: self, Some/None/Ok/Err, escapes, `_`
