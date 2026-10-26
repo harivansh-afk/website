@@ -73,7 +73,7 @@ export const software = [
     group: "software",
     href: `${GIT}/mux`,
     note: "a stateless, host-agnostic, macos-native terminal multiplexing client for libghostty",
-    status: null,
+    status: "no longer maintained",
     canvas: { col: "4 / span 8", drop: 0.75, x: -1.5, w: 1184, h: 780, clip: true },
     alt: "mux running a nix build across panes",
   },
