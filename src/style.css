@@ -194,7 +194,9 @@ img { max-width: 100% }
 /* the current section's brackets take its colour */
 .top nav a[aria-current] > .dots { color: var(--c, currentColor) }
 /* inside a thought, a dotted ‹ before writing: the way back */
-.top nav a .back { margin-right: 0.25rem }
+/* centred on the line box, like the brackets, not hung off the baseline */
+.top nav a:has(.back) { display: flex; align-items: center }
+.top nav a .back { display: flex; margin-right: 0.25rem }
 .top nav a .back .dots.dots { position: static; opacity: 1; translate: none }
 
 /* the stagger, after benja.dev: each block hangs off its own twelfth of the
