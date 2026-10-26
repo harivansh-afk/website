@@ -118,10 +118,10 @@ export const sections = [
       },
       {
         key: "terminal",
-        value: "mux",
+        value: "rex",
         icon: "tmux",
-        href: "https://git.harivan.sh/harivansh-afk/mux",
-        text: "my own terminal multiplexer: a native mac app, with sessions held by muxd.",
+        href: "https://superlogical.com/rex",
+        text: "superlogical's multiplexer for all work",
         facts: [],
       },
       {

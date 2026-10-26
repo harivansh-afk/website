@@ -24,19 +24,13 @@ const overRows = async (page) => {
   await page.waitForTimeout(150);
 };
 
-test("a resting pointer over the rows doesn't take the focus from j", async ({ page }) => {
+test("the pointer never takes the focus", async ({ page }) => {
   await overRows(page);
   await press(page, "h", "j", "j");
-  expect(await focus(page)).toBe("SECTIONS");
-  await expect(page).toHaveURL(/#experiments$/);
-});
-
-test("moving the mouse hands the rows back to it", async ({ page }) => {
-  await overRows(page);
-  await press(page, "h");
   await page.mouse.move(700, 300);
   await overRows(page);
-  expect(await focus(page)).toBe("SOFTWARE");
+  expect(await focus(page)).toBe("SECTIONS");
+  await expect(page).toHaveURL(/#experiments$/);
 });
 
 test("h and l cross between the panes with the pointer anywhere", async ({ page }) => {

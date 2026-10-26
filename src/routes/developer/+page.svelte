@@ -5,7 +5,7 @@
   // state; this file measures the cells, renders, and performs the effects.
   // until the cells are measured the screen stays hidden (no reflow flash);
   // the outline under it carries the same content for screen readers and
-  // for browsers without scripts
+  // for browsers without scripts. it answers keys and clicks, never hover
   import { onMount } from "svelte";
   import Seo from "#lib/Seo.svelte";
   import { viewsOf, formatCount } from "#lib/views.svelte.js";
@@ -139,17 +139,6 @@
     location.assign(href);
   }
 
-  // after a key, hover waits for the mouse to really move: rows redrawn
-  // under a resting pointer fire pointerenter and would steal the focus
-  let keyboard = false;
-  function onpointermove(e) {
-    if (e.movementX || e.movementY) keyboard = false;
-  }
-  function hover(e, i) {
-    if (e.pointerType !== "mouse" || keyboard || ui.typing) return;
-    ui = { ...ui, r: i, pane: "rows" };
-  }
-
   // a held back key goes up one level, never on to hari.cafe
   const BACK = ["-", "Escape", "h", "ArrowLeft"];
 
@@ -160,7 +149,6 @@
     const out = step(ui, key, view);
     if (!out) return;
     e.preventDefault();
-    keyboard = true;
     ui = out.state;
     perform(out.effect);
   }
@@ -254,7 +242,7 @@
   );
 </script>
 
-<svelte:window {onkeydown} {onpointermove} onpageshow={() => (leaving = false)} />
+<svelte:window {onkeydown} onpageshow={() => (leaving = false)} />
 
 <Seo
   url="{DEV}/"
@@ -272,88 +260,91 @@
   <div class="screen" class:ready bind:this={screen} style:--cw="{cw}px" style:inset="{margin.y}px {margin.x}px" aria-hidden="true">
     <span class="probe">{"0".repeat(100)}</span>
 
-    <!-- title bar -->
-    <div class="line" style={place(0, 0, cols)}>
-      <span class="icon">{icon("terminal")}</span><span class="fg">HARIVAN.SH</span>
-    </div>
-    <a class="line link home" href="{CAFE}/" tabindex="-1" style={place(cols - 11, 0, 11)}><b>-</b>{" "}<span class="dest">hari.cafe</span></a>
+    <!-- drawn only once the cell is measured: prerendered at a guessed size
+         it would be thrown away unseen -->
+    {#if ready}
+      <!-- title bar -->
+      <div class="line" style={place(0, 0, cols)}>
+        <span class="icon">{icon("terminal")}</span><span class="fg">HARIVAN.SH</span>
+      </div>
+      <a class="line link home" href="{CAFE}/" tabindex="-1" style={place(cols - 11, 0, 11)}><b>-</b>{" "}<span class="dest">hari.cafe</span></a>
 
-    <pre class="chrome">{chrome}</pre>
+      <pre class="chrome">{chrome}</pre>
 
-    <!-- focused pane: its title inverted -->
-    <div class="line inv" style={place(focusTitle.x, focusTitle.y, focusTitle.w)}>{focusTitle.text}</div>
+      <!-- focused pane: its title inverted -->
+      <div class="line inv" style={place(focusTitle.x, focusTitle.y, focusTitle.w)}>{focusTitle.text}</div>
 
-    <!-- sections -->
-    <div class="pane" onwheel={(e) => onwheel(e, "sections")} style={place(at.sections.x, at.sections.y, at.sections.w) + `;height:${at.sections.h * line}px`}>
-      {#each sections.slice(offset.sections, offset.sections + at.sections.h - 2) as x, k}
-        {@const i = offset.sections + k}
-        {@const w = inner(at.sections)}
-        <button
-          class="line item"
-          class:sel={i === ui.s && ui.query === null}
-          class:focus={ui.pane === "sections" && !ui.typing}
-          tabindex="-1"
-          style={place(1, k + 1, at.sections.w - 2)}
-          onclick={() => (ui = { ...ui, s: i, r: 0, pane: "rows", query: null, typing: false })}
-          >{" "}<span class="icon">{icon(x.icon)}</span>{pad(x.name, w - 7)}<span class="muted">{String(x.rows.length).padStart(3)}</span></button
-        >
+      <!-- sections -->
+      <div class="pane" onwheel={(e) => onwheel(e, "sections")} style={place(at.sections.x, at.sections.y, at.sections.w) + `;height:${at.sections.h * line}px`}>
+        {#each sections.slice(offset.sections, offset.sections + at.sections.h - 2) as x, k}
+          {@const i = offset.sections + k}
+          {@const w = inner(at.sections)}
+          <button
+            class="line item"
+            class:sel={i === ui.s && ui.query === null}
+            class:focus={ui.pane === "sections" && !ui.typing}
+            tabindex="-1"
+            style={place(1, k + 1, at.sections.w - 2)}
+            onclick={() => (ui = { ...ui, s: i, r: 0, pane: "rows", query: null, typing: false })}
+            >{" "}<span class="icon">{icon(x.icon)}</span>{pad(x.name, w - 7)}<span class="muted">{String(x.rows.length).padStart(3)}</span></button
+          >
+        {/each}
+      </div>
+
+      <!-- rows -->
+      <div class="pane" onwheel={(e) => onwheel(e, "rows")} style={place(at.rows.x, at.rows.y, at.rows.w) + `;height:${at.rows.h * line}px`}>
+        {#each list.slice(offset.rows, offset.rows + at.rows.h - 2) as x, k (x.section + x.key)}
+          {@const i = offset.rows + k}
+          {@const w = inner(at.rows)}
+          <a
+            class="line item"
+            class:sel={i === ui.r}
+            class:focus={ui.pane === "rows"}
+            href={x.href ?? null}
+            target={x.href && external(x.href) ? "_blank" : null}
+            rel={x.href && external(x.href) ? "noopener noreferrer" : null}
+            tabindex="-1"
+            style={place(1, k + 1, at.rows.w - 2)}
+            onclick={(e) => tapRow(e, i)}
+            >{" "}<span class="icon">{icon(x.icon)}</span>{pad(fit(x.key, keyWidth - 2), keyWidth)}<span class="muted">{fit(valueOf(x), w - keyWidth - 3)}</span></a
+          >
+        {:else}
+          <div class="line muted" style={place(2, 1, at.rows.w - 4)}>nothing matches “{ui.query}”</div>
+        {/each}
+      </div>
+
+      <!-- detail -->
+      {#each detail as line, k}
+        {#if line.href}
+          <a
+            class="line link"
+            href={line.href}
+            target={external(line.href) ? "_blank" : null}
+            rel={external(line.href) ? "noopener noreferrer" : null}
+            tabindex="-1"
+            style={place(at.detail.x + 2, at.detail.y + 1 + k, line.text.length + 4)}
+            ><span class="icon">{icon("link-external")}</span>{line.text}</a
+          >
+        {:else}
+          <div class="line {line.cls ?? ''}" style={place(at.detail.x + 2, at.detail.y + 1 + k, inner(at.detail))}>
+            {#if line.label}<span class="muted">{line.label}</span>{" "}{/if}{#if line.on || line.off}{"━".repeat(line.on)}<span class="dim">{"─".repeat(line.off)}</span>{" "}<span class="muted">{line.text}</span>{:else}{line.text}{/if}
+          </div>
+        {/if}
       {/each}
-    </div>
 
-    <!-- rows -->
-    <div class="pane" onwheel={(e) => onwheel(e, "rows")} style={place(at.rows.x, at.rows.y, at.rows.w) + `;height:${at.rows.h * line}px`}>
-      {#each list.slice(offset.rows, offset.rows + at.rows.h - 2) as x, k (x.section + x.key)}
-        {@const i = offset.rows + k}
-        {@const w = inner(at.rows)}
-        <a
-          class="line item"
-          class:sel={i === ui.r}
-          class:focus={ui.pane === "rows"}
-          href={x.href ?? null}
-          target={x.href && external(x.href) ? "_blank" : null}
-          rel={x.href && external(x.href) ? "noopener noreferrer" : null}
-          tabindex="-1"
-          style={place(1, k + 1, at.rows.w - 2)}
-          onclick={(e) => tapRow(e, i)}
-          onpointerenter={(e) => hover(e, i)}
-          >{" "}<span class="icon">{icon(x.icon)}</span>{pad(fit(x.key, keyWidth - 2), keyWidth)}<span class="muted">{fit(valueOf(x), w - keyWidth - 3)}</span></a
-        >
-      {:else}
-        <div class="line muted" style={place(2, 1, at.rows.w - 4)}>nothing matches “{ui.query}”</div>
-      {/each}
-    </div>
-
-    <!-- detail -->
-    {#each detail as line, k}
-      {#if line.href}
-        <a
-          class="line link"
-          href={line.href}
-          target={external(line.href) ? "_blank" : null}
-          rel={external(line.href) ? "noopener noreferrer" : null}
-          tabindex="-1"
-          style={place(at.detail.x + 2, at.detail.y + 1 + k, line.text.length + 4)}
-          ><span class="icon">{icon("link-external")}</span>{line.text}</a
-        >
-      {:else}
-        <div class="line {line.cls ?? ''}" style={place(at.detail.x + 2, at.detail.y + 1 + k, inner(at.detail))}>
-          {#if line.label}<span class="muted">{line.label}</span>{" "}{/if}{#if line.on || line.off}{"━".repeat(line.on)}<span class="dim">{"─".repeat(line.off)}</span>{" "}<span class="muted">{line.text}</span>{:else}{line.text}{/if}
+      <!-- status line -->
+      <div class="line status" style={place(0, at.status, cols)}>
+        {#if ui.typing}
+          <span class="inv">{" SEARCH "}</span>{" "}<span class="fg">/{ui.query}</span><span class="cursor">{" "}</span>
+        {:else}
+          <span class="inv">{ui.query === null ? " NORMAL " : " FILTER "}</span>{" "}<span class="muted">{fit(statusPath, Math.max(0, cols - 60))}</span>
+        {/if}
+      </div>
+      {#if cols >= 72}
+        <div class="line muted hints" style={place(cols - 50, at.status, 50)}>
+          <b>j k</b>{" move  "}<b>-</b>{" up  "}<b>enter</b>{" open  "}<b>/</b>{" find  "}<b>esc</b>{" back"}
         </div>
       {/if}
-    {/each}
-
-    <!-- status line -->
-    <div class="line status" style={place(0, at.status, cols)}>
-      {#if ui.typing}
-        <span class="inv">{" SEARCH "}</span>{" "}<span class="fg">/{ui.query}</span><span class="cursor">{" "}</span>
-      {:else}
-        <span class="inv">{ui.query === null ? " NORMAL " : " FILTER "}</span>{" "}<span class="muted">{fit(statusPath, Math.max(0, cols - 60))}</span>
-      {/if}
-    </div>
-    {#if cols >= 72}
-      <div class="line muted hints" style={place(cols - 50, at.status, 50)}>
-        <b>j k</b>{" move  "}<b>-</b>{" up  "}<b>enter</b>{" open  "}<b>/</b>{" find  "}<b>esc</b>{" back"}
-      </div>
     {/if}
   </div>
 
@@ -513,9 +504,6 @@
     text-decoration: underline dotted var(--uk-muted);
     text-underline-offset: calc(4 * var(--u));
   }
-  .link:hover {
-    text-decoration-style: solid;
-  }
   .home {
     text-align: right;
     text-decoration: none;
@@ -527,16 +515,6 @@
     color: var(--uk-muted);
     text-decoration: underline dotted var(--uk-muted);
     text-underline-offset: calc(4 * var(--u));
-  }
-  .home:hover .dest {
-    color: var(--uk-fg);
-    text-decoration-style: solid;
-  }
-  /* a row under the pointer that isn't selected yet gets a breath of tint */
-  @media (hover: hover) {
-    .item:not(.sel):hover {
-      background: color-mix(in srgb, var(--uk-fg) 7%, transparent);
-    }
   }
   .hints {
     text-align: right;
