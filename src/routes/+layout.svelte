@@ -103,6 +103,7 @@
         <a href="https://github.com/harivansh-afk" target="_blank" rel="noopener noreferrer">github</a>
         <a href="https://linkedin.com/in/harivansh-rathi" target="_blank" rel="noopener noreferrer">linkedin</a>
         <a href="https://x.com/HarivanshRathi" target="_blank" rel="noopener noreferrer">x.com</a>
+        <a href="mailto:me@hari.cafe" target="_blank">email</a>
       </nav>
       <p class="colophon">© 2026 hari</p>
     </footer>
