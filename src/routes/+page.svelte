@@ -26,7 +26,7 @@
       when: "2026",
     },
     {
-      name: "cas [research]",
+      name: "content-addressable storage",
       href: "https://cas-playbook.vercel.app/",
       repo: "https://github.com/harivansh-afk/cas",
       when: "2026",
