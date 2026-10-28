@@ -66,7 +66,7 @@
   --mono: "Berkeley Mono", ui-monospace, monospace;
   --pixel: "Departure Mono", "Berkeley Mono", ui-monospace, monospace;
   /* the type scale, the only font sizes on the site (/developer aside).
-     desktop renders them at 120% (the root size below); phones at 100% */
+     desktop renders them at 125% (the root size below); phones at 100% */
   --text-title: 2.375rem; /* a thought's title */
   --text-head: 1.4375rem; /* a thought's section heads */
   --text-mark: 1.375rem;  /* "hari" in the header */
@@ -109,13 +109,13 @@ html {
   /* no rubber-band overscroll at the top/bottom of a page */
   overscroll-behavior: none;
 }
-/* above phone width the whole page reads at 120%: every size is in rem, so
+/* above phone width the whole page reads at 125%: every size is in rem, so
    a larger root scales it all, as a browser zoom would but without css
    zoom's geometry (which engines still disagree on). media queries see the
    viewport in css px, so the desktop breakpoint is 1152px.
    /developer sizes its cells in px and ignores this */
 @media (min-width: 641px) {
-  html { font-size: 120% }
+  html { font-size: 125% }
 }
 
 body {
@@ -246,11 +246,13 @@ img { max-width: 100% }
   pointer-events: none;
   position: absolute;
   right: calc(100% + 0.5rem);
-  top: calc(50% - 0.3125rem);
-  /* one shape, not four boxes, so it can't round lopsided; 0.625rem is a
-     whole 12px at the desktop root (24 on retina), so it stays crisp too */
-  width: 0.625rem;
-  height: 0.625rem;
+  /* exactly the capitals: Departure Mono's caps are 8 of its 11-unit em
+     (400/550) and, at line-height 1, start 1.5 units down (ascent 550,
+     descent 150, half-leading -75); one shape, not four boxes, so it can't
+     round lopsided */
+  top: calc(1.5em / 11);
+  width: calc(8em / 11);
+  height: calc(8em / 11);
   background: var(--d);
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'%3E%3Cpath d='M0 0h4v4H0zM5 0h4v4H5zM0 5h4v4H0zM5 5h4v4H5z'/%3E%3C/svg%3E") 0 0 / 100% 100%;
   transition: scale 0.3s var(--ease);

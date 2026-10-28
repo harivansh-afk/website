@@ -85,7 +85,7 @@ test("no css zoom: desktop scales by the root size", async ({ page }) => {
   await page.goto("/");
   const html = page.locator("html");
   await expect(html).toHaveCSS("zoom", "1");
-  await expect(html).toHaveCSS("font-size", "19.2px");
+  await expect(html).toHaveCSS("font-size", "20px");
 });
 
 test("the developer screen fits the window at every size", async ({ page }) => {

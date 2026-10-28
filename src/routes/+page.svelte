@@ -2,7 +2,7 @@
   import Seo from "#lib/Seo.svelte";
   import { DEV } from "#lib/site.js";
 
-  // index rows read `name ........ when`
+  // index rows read `name ........ when`; projects carry no date
   const work = [
     { name: "indexable", href: "https://ix.dev", when: "2026" },
     { name: "phia", href: "https://www.phia.com", when: "2025" },
@@ -15,21 +15,18 @@
       name: "baml",
       href: "https://boundaryml.com",
       repo: "https://github.com/BoundaryML/baml/pulls?q=is:pr+author:harivansh-afk",
-      when: "2026",
     },
-    { name: "dueflow", href: "https://dueflow.co", when: "2026" },
-    { name: "uva.builders", href: "https://uva.builders", when: "2026" },
+    { name: "dueflow", href: "https://dueflow.co" },
+    { name: "uva.builders", href: "https://uva.builders" },
     {
       name: "agent-computer",
       href: "https://agentcomputer.ai",
       repo: "https://github.com/AgentComputerAI",
-      when: "2026",
     },
     {
       name: "content-addressable storage",
       href: "https://cas-playbook.vercel.app/",
       repo: "https://github.com/harivansh-afk/cas",
-      when: "2026",
     },
   ];
 
@@ -55,7 +52,7 @@
   <section class="blk" style:--off="29%" style:--w="62%" style:--gap="8rem">
     <h2 class="label red">previously</h2>
     <p class="say">
-      i was a founding engineer at <a href="https://ix.dev" {...ext}>indexable</a> (YC S26), where we tackled <br>the
+      i was a founding engineer at <a href="https://ix.dev" {...ext}>indexable</a> (YC F26), where we tackled <br>the
       problems of compute overscheduling and VM inefficiency.
     </p>
     <p class="say">
@@ -202,10 +199,18 @@
     align-items: center;
     gap: 0.6rem;
   }
+  /* the octicon is drawn on a 16-unit grid: at 16px each unit is a whole
+     pixel (two on retina) and every edge lands on one. A px size on purpose:
+     a rem would scale it off the grid */
   .gh svg {
     display: block;
-    width: 0.8125rem;
-    height: 0.8125rem;
+    width: 16px;
+    height: 16px;
+    transition: scale 0.3s var(--ease);
+  }
+  /* it swells while its row is hovered, as a label's marker does */
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .rows li:hover .gh svg { scale: 1.4 }
   }
 
   /* a small word after a row's name, in the label voice */
