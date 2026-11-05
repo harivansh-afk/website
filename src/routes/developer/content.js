@@ -11,7 +11,7 @@ import { thoughts } from "#lib/thoughts.js";
 import { bareUrl } from "#lib/tui/text.js";
 import { CAFE } from "#lib/site.js";
 
-const NIX = "https://git.harivan.sh/harivansh-afk/nix/src/branch/main";
+const NIX = "https://github.com/harivansh-afk/nix/tree/main";
 
 const fromCatalog = (group) =>
   software
