@@ -1,5 +1,5 @@
 // Shiki themes for code blocks: cozybox, the Neovim colorscheme
-// (git.harivan.sh/harivansh-afk/cozybox.nvim), dark and light. Colors are the
+// (github.com/harivansh-afk/cozybox.nvim), dark and light. Colors are the
 // plugin's resolved palette; scope roles follow its treesitter links for Rust
 // (nvim-treesitter's rust highlights.scm). TextMate scopes cannot tell some of
 // those captures apart, so `cozyboxTransformer` repaints them from context.

@@ -154,19 +154,11 @@ export const sections = [
     note: "where else i am",
     rows: [
       {
-        key: "forgejo",
-        value: "git.harivan.sh",
-        icon: "server",
-        href: "https://git.harivan.sh/harivansh-afk",
-        text: "the source of truth for my code.",
-        facts: [],
-      },
-      {
         key: "github",
         value: "harivansh-afk",
         icon: "mark-github",
         href: "https://github.com/harivansh-afk",
-        text: "mirrors and older work.",
+        text: "where my code lives.",
         facts: [],
       },
       {

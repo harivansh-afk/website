@@ -9,7 +9,7 @@
 // nudge in rem, for less than a column), and the poster's `w` x `h`
 // (static/software/<name>.webp). `clip` plays static/previews/<name>.mp4 on
 // hover; `phone` gives a phone recording a narrower frame with an iphone's corners
-const GIT = "https://git.harivan.sh/harivansh-afk";
+const GIT = "https://github.com/harivansh-afk";
 
 export const groups = {
   software: "things people use",
