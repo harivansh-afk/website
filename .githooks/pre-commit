@@ -5,4 +5,3 @@ repo_root=$(git rev-parse --show-toplevel)
 cd "$repo_root"
 
 ./build.sh
-rsync -a --delete --chmod=D755,F644 dist/ /srv/harivan.sh/dist/

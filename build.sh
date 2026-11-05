@@ -6,11 +6,7 @@ cd "$(dirname "$0")"
 # into it: sveltekit + adapter-static prerender everything into .build/,
 # which then takes dist/'s place in one atomic rename
 rm -rf .build
-if command -v bun >/dev/null 2>&1; then
-  SITE_OUT=.build bun run build
-else
-  SITE_OUT=.build npm run build
-fi
+SITE_OUT=.build npm run build
 
 if [ -d dist ]; then
   # tabs opened before this deploy still fetch the chunks they were built
