@@ -42,7 +42,7 @@
 <Seo
   title="hari"
   ogTitle="Harivansh Rathi"
-  description="i enjoy computer programming, distributed systems and good design, roughly in that order."
+  description="i enjoy computer programming and product design<"
 />
 
 <!-- each block hangs off its own place on the page (--off, --w), after
@@ -50,7 +50,7 @@
      left-aligned column -->
 <main class="home">
   <section class="blk first" style:--off="8.333%" style:--w="83.333%" style:--gap="6.5rem">
-    <p class="lede">i enjoy computer programming and good design</p>
+    <p class="lede">i enjoy computer programming and product design</p>
     <p class="aside">i'm currently 20 y/o and a 4th year at <a href="https://www.virginia.edu" {...ext}>UVA</a> where i study <br>computer science</p>
   </section>
 
