@@ -11,7 +11,11 @@
   ];
 
   const projects = [
-    { name: "mixbridge", href: "https://apps.apple.com/us/app/mixbridge/id6755342141" },
+    {
+      name: "mixbridge",
+      href: "https://apps.apple.com/us/app/mixbridge/id6755342141",
+      repo: "https://github.com/harivansh-afk/mixbridge-ios",
+    },
     {
       name: "baml",
       href: "https://boundaryml.com",
