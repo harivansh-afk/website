@@ -12,15 +12,16 @@
 
   const projects = [
     {
-      name: "mixbridge",
-      href: "https://apps.apple.com/us/app/mixbridge/id6755342141",
-      repo: "https://github.com/harivansh-afk/mixbridge-ios",
-    },
-    {
       name: "baml",
       href: "https://boundaryml.com",
       repo: "https://github.com/BoundaryML/baml/pulls?q=is:pr+author:harivansh-afk",
     },
+    {
+      name: "mixbridge",
+      href: "https://apps.apple.com/us/app/mixbridge/id6755342141",
+      repo: "https://github.com/harivansh-afk/mixbridge-ios",
+    },
+
     { name: "dueflow", href: "https://dueflow.co" },
     { name: "uva.builders", href: "https://uva.builders" },
     {
@@ -49,7 +50,7 @@
      left-aligned column -->
 <main class="home">
   <section class="blk first" style:--off="8.333%" style:--w="83.333%" style:--gap="6.5rem">
-    <p class="lede">i enjoy computer programming,<br />distributed systems and good design, roughly in that order.</p>
+    <p class="lede">i enjoy computer programming and good design</p>
     <p class="aside">i'm currently 20 y/o and a 4th year at <a href="https://www.virginia.edu" {...ext}>UVA</a> where i study <br>computer science</p>
   </section>
 
@@ -70,7 +71,7 @@
 
   <section class="blk" style:--off="5%" style:--w="58.333%" style:--gap="5.5rem">
     <h2 class="label">about</h2>
-    <p class="say">i enjoy solving hard problems and building beautiful products.</p>
+    <p class="say">i like solving hard problems and building beautiful products.</p>
     <p class="aside">lately through compilers and ios apps.</p>
   </section>
 
