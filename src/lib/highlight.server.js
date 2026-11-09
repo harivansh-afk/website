@@ -13,10 +13,14 @@
 import { createHighlighter } from "shiki";
 import { glossary } from "./code-glossary.js";
 import { cozyboxDark, cozyboxLight, cozyboxTransformer } from "./code-theme.js";
+// BAML's own grammar, copied from the BAML repo (typescript2/pkg-grammar)
+import baml from "./grammars/baml.tmLanguage.json" with { type: "json" };
 
 const THEMES = { light: cozyboxLight.name, dark: cozyboxDark.name };
-const LANGS = ["rust"];
-const highlighter = createHighlighter({ themes: [cozyboxLight, cozyboxDark], langs: LANGS });
+const LANGS = ["rust", "baml"];
+// languages without a grammar of their own, colored by a close one (no hovers)
+const ALIAS = { mir: "rust" };
+const highlighter = createHighlighter({ themes: [cozyboxLight, cozyboxDark], langs: ["rust", { ...baml, name: "baml" }] });
 
 const KEYWORDS = new Set(
   (
@@ -448,8 +452,8 @@ const CODE_ICON = 61734;
 // the frame around every block: a bar with its name and a copy button, the
 // code, and for long blocks a fold. the fold is a checkbox and its label, so
 // it opens without scripts; copy is wired by the thoughts layout
-function frame(html, { name, lang, lines, id }) {
-  const fold = lines > FOLD_AT;
+function frame(html, { name, lang, lines, id, open }) {
+  const fold = lines > FOLD_AT && !open;
   const cls = ["code", fold && "fold", lines >= NUMBER_FROM && "numbered"].filter(Boolean).join(" ");
   return (
     `<div class="${cls}" style="--shown:${FOLD_SHOW}">` +
@@ -470,7 +474,7 @@ export async function createCodeRenderer() {
   let blocks = 0;
   const highlight = (code, lang, transformers = []) =>
     syntax.codeToHtml(code, {
-      lang: LANGS.includes(lang) ? lang : "text",
+      lang: LANGS.includes(lang) ? lang : (ALIAS[lang] ?? "text"),
       themes: THEMES,
       defaultColor: false,
       transformers: [cozyboxTransformer(), ...transformers],
@@ -497,7 +501,7 @@ export async function createCodeRenderer() {
    * without it, the source shows whole. `name` labels the block's bar (a
    * file name); it defaults to the language.
    */
-  return function render(source, { lang = "rust", region, name } = {}) {
+  return function render(source, { lang = "rust", region, name, open = false } = {}) {
     const src = source.replace(/\r\n/g, "\n");
     const lines = src.split("\n");
     const picked = shownLines(lines, region);
@@ -508,7 +512,7 @@ export async function createCodeRenderer() {
 
     const rust = lang === "rust" || lang === "rs";
     const framed = (html) =>
-      frame(html, { name: name ?? lang, lang, lines: shown.split("\n").length, id: `code-${hash(src)}-${blocks++}` });
+      frame(html, { name: name ?? lang, lang, lines: shown.split("\n").length, id: `code-${hash(src)}-${blocks++}`, open });
     if (!rust) return framed(highlight(shown, lang));
 
     // map resolved source offsets onto the shown text

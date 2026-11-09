@@ -21,26 +21,26 @@ Writing rules (from hashimoto, bernstein, fallin, the boundary agents post):
 - name real functions, not "A" and "B". no "simply", "pretty easily", "a mere", "quite", "!".
 -->
 
-<!-- TODO opening: what we built and the headline number, in Hari's words. -->
+<!-- NUMBERS: kpis-native-v0-frame-records (2026-10-22, bench/frame-records f90ef6b, the merged compiled-call design; 8-core x86 VM, telemetry off, 5 trials). 29 workloads vs the interpreter: geomean 3.45x, median 2.77x, compute 5.4x, max 33.6x (nested loops 500x500), startup 0.95x. Earlier runs: fibers 2.77x, native-v0 3.15x. The 34x "geomean" in older notes is the abandoned Rc backend, not this one. -->
 
-<!-- TODO number check: kpis-fibers (Oct 20, Spark, telemetry off), 29 workloads: geomean 2.77x, median 1.66x, max 42.4x (nested loops 500x500), and process startup is 0.6x (slower). Re-run on the merged build before publishing. -->
-BAML may look like a small language from the outside, but it is extremely feature heavy and provides a lot of runtime guarantees. 
+We wrote a new backend for the BAML compiler that lets us compile all BAML code into Rust. On average the compiled code runs ==3.5x== faster than our interpreter, and up to ==34x== faster on tight loops.
 
-Any function can await like in Go, theres no ‘async’ keyword so any function can also pause. Telemetry (BTEL) at the default level records a span for call so you cant let LLVM inline a function out of existence. And memory is garbage collected at runtime with a stop-the-world moving GC which only runs when every task is at a safe point. 
+BAML may look like a small language from the outside, but it is extremely feature heavy and provides a lot of runtime guarantees. It reads like TypeScript and is concurrent like Go. Any function can await/pause and there's no `async` keyword. It also profiles every function call it makes down to the nanosecond and automatically tracks where each error started and how it moved up the stack.
 
-This means we have to walk a very thin line when trying to maintain the runtime guarantees of this language in compiled form.
+All this to say that this project was much harder than initially anticipated. We will talk about the major issues we had to deal with during the development of the Rust compiler.
 
 ## Why Rust
 
 <!-- TODO honesty: we ruled LLVM IR, C and Cranelift out by argument; we didn't benchmark them. Say so. -->
 
-Before landing on Rust, we considered many alternatives. Since most options ended up at LLVM or something like it,  the question that decided it was what ends up sitting between our MIR and the final runtime? and how can we do the least amount of work in this middle-ground while reaping the most benefit from the final representation.
+Most of the options we looked at end up at LLVM or something like it. The question that mattered to us was : "what sits between our MIR (mid-level intermediate representation) and the runtime? and how little of the runtime can we rebuild to get the maximum amount of optimization?". 
 
-Emitting LLVM IR was a valid option. Since it takes arbitrary branches there’d be no need to rebuild structured loops. It also has state-points for moving collectors which is quite helpful. State-points dont connect to our collector and LLVM makes no promise that they will be stable across versions so every operation we expose to LLVM directly is a piece of BAML behavior we now have to own and develop internally… 
+LLVM IR is a decent pick. It has a simliar system to GOTO which can be used to jump around blocks which means we dont need to rebuild structured loops from our MIR. Since our VM is written in Rust, the IR can only call it through the C ABI. This means all VM calls become a black box that the inliner cannot optimize through unless they are rewritten as IR operations. This is too much work.
 
-C was also tempting since it supports GOTO statements so MIR blocks are able to translate to it almost line for line. Since BAML does arithmetic a bit differently, we would have to re-implement a lot here and every generated C call would have to cross an FFI like boundary for this to work. Cranelift has the opposite problem where it compiles fast and has things like stack maps built in but it can only inline bodies in its own IR. So a Rust runtime compiled by LLVM is opaque to it and every helper call ends up staying local. 
+C also has GOTO ootb so MIR can compile to it 1:1. The ABI wall is hit with this as well since even + in BAML is a 63 bit checked add that lives in a VM helper which C cannot see nor optimize.
+Cranelift can only inline its own IR meaning our Rust runtime is again a black box.
 
-If we take a step back, each of these options share a similar problem- each makes the runtime boundary a foreign-function-call (FFI). Rust makes a lot of this disappear. The VM is a rust program so generated code is able to allocate, read fields and throws by calling VM functions that already exist. You can also go as far as sharing the Vm’s types and with fat LTO, LLVM is able to optimize the generated code + runtime as a single unit (which is huge for farming our optimization). Rustc type-checks the output too so a wrong field index is found at compile time.
+Since our VM runtime is written in rust, most of these problems disappear with this choice. Generated code calls Vm functions that already exist and can reuse the same types. WIth fat LTO, LLVM optimizes the gneerated code and the runtime as a single unit which means shared helpers also get inlined. This is great. WIth rustC tpechecking the output too, we find most field index errors at compile time.
 
 <!-- TODO handoff: the three things Rust doesn't give us: goto, a way to pause mid-stack, stack maps. Each is a section below. -->
 
@@ -48,7 +48,15 @@ If we take a step back, each of these options share a similar problem- each make
 
 <!-- TODO what `sum` costs in the interpreter: each bytecode op pays decode, tag check and stack traffic; the compiled loop keeps `i` and `total` in registers. Thesis sentence goes here. -->
 
-MIR is an lowered representation of BAML. It lies at level 3 in the lowering order and comes after things like AST
+MIR is a lowered representation of BAML. It comes after type checking (source, AST, HIR, TIR, then MIR) and it's the last step before a program becomes bytecode, or Rust in this case.
+
+<!-- @claude Hari: is it HIR, TIR, what comes before/after? bytecode after?
+Answer: source -> AST -> HIR -> TIR (typed HIR) -> MIR, and MIR then becomes either bytecode or Rust. So x = TIR (after type checking), y = bytecode/Rust.
+"Level 3" is off (AST, HIR, TIR come first); drop the number and say "after type checking".
+MIR = mid-level intermediate representation (not "misl intermediary"). -->
+
+<!-- @claude Hari: bracket the full form of terms like MIR or IR.
+Answer, first use only: IR (intermediate representation), AST, HIR (high-level IR), TIR (typed IR), MIR (mid-level IR), CFG (control-flow graph), FFI (foreign function interface), ABI (application binary interface), LTO (link-time optimization), SIMD (single instruction, multiple data). -->
 
 <!-- TODO why MIR and not typed BAML (TIR). The reasons from the Oct 1 decision:
 - GC rooting and evaluation order are MIR facts; TIR has no temporaries or program points
@@ -58,7 +66,7 @@ MIR is an lowered representation of BAML. It lies at level 3 in the lowering ord
 
 MIR looks something like this :
 
-```text sum.baml
+```baml sum.baml
 
 function sum(xs: int[]) -> int {
   let total = 0;
@@ -71,21 +79,11 @@ function sum(xs: int[]) -> int {
 }
 ```
 
-```text sum.mir
+<!-- @claude Hari: shorter MIR example?
+Done: all six blocks shown, locals list cut. -->
 
+```mir sum.mir open
 fn user.sum(xs: int[]) -> int {
-    // Locals:
-    let _0: int // _0 // return
-    let _1: int[] // xs // param
-    let _2: int // total
-    let _3: int // i
-    let _4: bool
-    let _5: int
-    let _6: int
-    let _7: int
-    let _8: int[]
-    let _9: int
-
     bb0: {
         _2 = const 0_i64;
         _3 = const 0_i64;
@@ -123,18 +121,71 @@ fn user.sum(xs: int[]) -> int {
 }
 ```
 
-![The control-flow graph of sum: bb0 to bb1 to bb2, which branches to bb5 or bb3; bb5 jumps back to bb1; bb3 goes to bb4 and returns.](/diagrams/baml-rust/sum-cfg.svg "The MIR of <code>sum</code> as a graph. The one backward jump, bb5 to bb1, is the loop.")
+![The control-flow graph of sum: bb0 to bb1 to bb2, which branches to bb5 or bb3; bb5 jumps back to bb1; bb3 goes to bb4 and returns.](/diagrams/baml-rust/sum-cfg.svg)
 
-The naive approach to get around this is a loop around a match block. This is not wrong and passes all test cases but LLVM doesn’t see the loop you wrote, it only sees a single loop with a switch so i never lands in a register and its unable to optimize through it (vectorization/hoisting). 
+<!-- @claude Hari: drop the diagram explanation. Done: the caption is gone; it's explained in the two sentences below. -->
 
-<!-- VISUAL: `sum` as generated loop/match Rust, next to `sum` as structured Rust. Pull both from the emitter. -->
+The arrow from `bb5` back to `bb1` is the only jump that goes backwards, and that jump is the loop. Rust has no goto, so we need another way to write these jumps.
 
-We must emit the control flow that LLVM wants. Every back edge turns into a loop and a forward jump becomes a break ‘label. This only works if every loop has exactly a single entry-point. After a sweep of 15,012 BAML functions, we found no exceptions to this. This doesn’t mean much as its not something we formally verified. To get around this we created two rules:
 
-- the only jump allowed to go backwards is a loop jumping to its own header
-- the only way into a loop is through that same header
+The naive approach to get around this is a loop around a match block in Rust. This passes all test cases but LLVM only sees a single loop with a switch, so it can't reliably find the real loop inside it. Without that, it can't vectorize the loop (run several iterations at once with SIMD instructions) or hoist work out of it (move anything that gives the same answer every iteration out of the loop so it runs once).
 
-The MIR builder checks both rules against every function at compile time which solves this problem without causing runtime issues
+<!-- NOTE: the first block is hand-written to show the naive shape; the emitter never produces it. The second is real output for user.sum (OptLevel::Two, canary 7c55cb9cb0), trimmed: pc bookkeeping and error arms removed, the l8 copy of xs folded into l1, l0 folded into the return. -->
+
+<!-- @claude Hari: is this the bad case or how we do it now?
+Answer: naive.rs below is the bad case (loop + match), hand-written; we never emit it. What we actually emit is user_sum.rs, now moved to the end of the section, after the rules. -->
+
+```rust naive.rs
+let mut block = 0;
+loop {
+    match block {
+        0 => { total = 0; i = 0; block = 1; }
+        1 => { n = len(xs); block = 2; }
+        2 => { block = if i < n { 5 } else { 3 }; }
+        3 => { result = total; block = 4; }
+        4 => return result,
+        5 => { total += xs[i]; i += 1; block = 1; }
+        _ => unreachable!(),
+    }
+}
+```
+
+In order to emit the control flow LLVM needs for optimization, we must give it a real loop: one header block that every iteration passes through, with a single jump back to it.
+
+<!-- @claude Hari: what does LLVM need to optimize?
+Answer: a natural loop. One header block that every iteration passes through, plus a jump back to it. Rust's `loop` gives exactly that. Loop + match hides it: the only loop LLVM sees is the dispatcher, so it can't reliably find the real one (it sometimes untangles tiny cases, so say "can't reliably", not "never").
+Vectorization: running several iterations at once with SIMD instructions, e.g. four adds in one instruction.
+Hoisting: moving work that gives the same answer every iteration out of the loop so it runs once. -->
+
+<!-- @claude Hari: highlight code bits like notion. Done: anything in backticks renders as a tinted pill. -->
+
+We can turn every back edge into a loop and every forward jump into a `break 'label`. This only works if every loop has exactly a single entry-point. After a sweep of 15,012 BAML functions, we found no exceptions to this. This doesn’t mean much as its not something we formally verified. To get around this we created two rules:
+
+1. the only jump allowed to go backwards is a loop jumping to its own header
+2. the only way into a loop is through that same header
+
+Any loop that follows both rules has one way in, so every loop in MIR can be written as a Rust `loop`. The MIR builder checks both rules against every function at compile time, so a loop with two ways in becomes a compiler error instead of a function we can't emit.
+
+<!-- @claude Hari: "how? what problem is solved? see tags above, we need to mention the problem here"
+Answer: Rust can only express loops with one way in. If MIR ever produced a loop you could enter from two places, the emitter couldn't write it as Rust. The sweep only says "none so far"; the two rules make it impossible.
+Fact check: PR #5222 (the rules in the MIR builder) is still open, not merged. On canary today the Rust backend checks each function and rejects any irreducible one, which then stays bytecode. Either merge #5222 before publishing or describe that fallback. -->
+
+```rust user_sum.rs
+'l1: loop {
+    l5 = l3;
+    l6 = expect_int(vm.container_len(l1)?)?;
+    l4 = l5 < l6;
+    if l4 {
+        l9 = l3;
+        l7 = expect_int(vm.load_array_element(l1, Value::int(l9))?)?;
+        l2 = vm.add_i64(l2, l7)?;
+        l3 = vm.add_i64(l3, 1)?;
+        continue 'l1;
+    } else {
+        return Ok(l2);
+    }
+}
+```
 
 <!-- TODO handoff: `sum` is fast now. Put an await inside it and it can't be compiled this way. -->
 
@@ -162,6 +213,16 @@ This costs almost nothing for functions that dont pause and a mere 3.7KB of park
 ## Garbage collection
 
 <!-- TODO crux: `sum` holds `xs` across the await, and the GC moves objects. The obvious answer is stack maps, and Rust has none. The GC only runs when every VM is paused at a safe point. Before every pause, live heap values are written to the VM's frame slots and reloaded after. The collector never scans a fiber stack, so a VM paused in compiled code looks exactly like one paused in bytecode. -->
+
+<!-- NOTE: real output, the top of the same 'l1 loop in user_sum, trimmed the same way. Every 16 iterations it may yield; xs (l1) goes into frame slot 0 before the suspend and comes back after. -->
+
+```rust user_sum.rs
+if iterations % 16 == 0 && vm.should_yield() {
+    vm.set_slot(fr, 0, l1);
+    vm.suspend(Step::Yield)?;
+    l1 = vm.slot(fr, 0);
+}
+```
 
 ![A paused VM: the fiber stack holds saved registers and scalars, the frame slot holds xs, and the GC reads only frame slots.](/diagrams/baml-rust/paused-vm.svg "Before a pause, heap values move to frame slots. The GC never scans the fiber.")
 
