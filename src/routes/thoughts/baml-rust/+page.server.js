@@ -1,0 +1,81 @@
+// This thought is written in post.md, by hand. At build time the markdown
+// becomes the same markup the hand-written thoughts use: `##` heads get an
+// id and a self-link (the layout's "on this page" reads them), fenced code
+// goes through the shared code renderer, and an image alone on its line
+// becomes a zoomable figure whose title is its caption, with `?rev=` set
+// from the file so the CDN never serves a stale diagram.
+//
+// HTML comments are drafting notes. `vite dev` shows the ones that start
+// with TODO, VISUAL or RAW as callouts; a build drops every comment.
+import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { join } from "node:path";
+import { dev } from "$app/environment";
+import { Marked } from "marked";
+import { createCodeRenderer } from "#lib/highlight.server.js";
+import source from "./post.md?raw";
+
+const escapeHtml = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const slug = (s) =>
+  s
+    .toLowerCase()
+    .replace(/<[^>]+>/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+// a diagram's intrinsic size and cache key, from the file under static/
+function diagram(href) {
+  if (!href.startsWith("/diagrams/")) return { src: href, size: "" };
+  const svg = readFileSync(join(process.cwd(), "static", href), "utf8");
+  const rev = createHash("sha256").update(svg).digest("hex").slice(0, 12);
+  const box = svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
+  return { src: `${href}?rev=${rev}`, size: box ? ` width="${box[1]}" height="${box[2]}"` : "" };
+}
+
+function figure({ href, title, text }) {
+  const { src, size } = diagram(href);
+  const alt = escapeHtml(text);
+  return (
+    `<figure><div class="diagram-scroll" tabindex="0" role="region" aria-label="${alt}">` +
+    `<img src="${src}"${size} alt="${alt}" /></div>` +
+    (title ? `<figcaption>${title}</figcaption>` : "") +
+    `</figure>`
+  );
+}
+
+const NOTE = /^<!--\s*(TODO|VISUAL|RAW|SPINE)\b([\s\S]*?)-->\s*$/;
+
+export async function load() {
+  const code = await createCodeRenderer();
+  const marked = new Marked({
+    gfm: true,
+    renderer: {
+      heading({ tokens, depth }) {
+        const html = this.parser.parseInline(tokens);
+        if (depth !== 2) return `<h${depth}>${html}</h${depth}>`;
+        const id = slug(html);
+        return `<h2 id="${id}"><a class="bare" href="#${id}">${html}</a></h2>`;
+      },
+      // ```lang name: `name` labels the block's bar
+      code({ text, lang = "" }) {
+        const [kind = "text", name] = lang.trim().split(/\s+/);
+        return code(text, { lang: kind, name: name ?? kind });
+      },
+      paragraph({ tokens }) {
+        const only = tokens.filter((t) => !(t.type === "text" && !t.text.trim()));
+        if (only.length === 1 && only[0].type === "image") return figure(only[0]);
+        return `<p>${this.parser.parseInline(tokens)}</p>`;
+      },
+      html({ text }) {
+        const note = text.trim().match(NOTE);
+        if (note && dev && note[1] !== "SPINE")
+          return `<aside class="callout draft"><p class="callout-label">${note[1]}</p><p>${escapeHtml(note[2].trim())}</p></aside>`;
+        return text.trim().startsWith("<!--") ? "" : text;
+      },
+    },
+  });
+
+  const title = source.match(/^# (.+)$/m)?.[1] ?? "baml to rust";
+  const body = marked.parse(source.replace(/^# .+$/m, ""));
+  return { title, body };
+}

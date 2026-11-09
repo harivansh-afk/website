@@ -1,8 +1,8 @@
 <script>
   // every thought sits in this grid, after benja.dev's articles: the page's
   // own <main> (date and views in its gutter, prose beside them) takes nine
-  // twelfths, and "on this page" takes the last three, sticky: a rail whose
-  // marker follows the reading and can be dragged to scrub the article. it
+  // twelfths, and "on this page" takes the last three, sticky, with the
+  // section being read in full colour. it
   // also wires what the prerendered markup can't do alone: the copy buttons
   // on code blocks, and figures that zoom to fill the window when clicked
   import { afterNavigate } from "$app/navigation";
@@ -11,64 +11,25 @@
   let { children } = $props();
 
   let grid;
-  let list = $state();
   let toc = $state([]);
   let active = $state(null);
-  let markTop = $state(null);
-  let dragging = $state(false);
   let headings = [];
 
   // the reading line sits a quarter of the way down the window
   const LINE = 0.25;
   const docTop = (el) => el.getBoundingClientRect().top + scrollY;
 
-  // where each section's link sits on the rail: its first line, in the
-  // list's own px
-  function stops() {
-    return [...list.querySelectorAll("ol a")].map((a) => {
-      const cs = getComputedStyle(a);
-      return a.offsetTop + parseFloat(cs.paddingTop) + parseFloat(cs.lineHeight) / 2;
-    });
-  }
-
-  // the marker moves continuously: between two headings it sits the same
-  // share of the way between their links
   function spy() {
-    if (!headings.length || !list) return;
+    if (!headings.length) return;
     const line = scrollY + innerHeight * LINE;
-    const tops = headings.map(docTop);
-    const ys = stops();
     let i = 0;
-    while (i + 1 < tops.length && tops[i + 1] <= line) i++;
-    const t = i + 1 < tops.length ? Math.min(1, Math.max(0, (line - tops[i]) / (tops[i + 1] - tops[i]))) : 0;
-    active = line < tops[0] ? headings[0].id : headings[i].id;
-    markTop = line < tops[0] ? ys[0] : ys[i] + t * ((ys[i + 1] ?? ys[i]) - ys[i]);
+    while (i + 1 < headings.length && docTop(headings[i + 1]) <= line) i++;
+    active = headings[i].id;
   }
 
   // scroll and resize fire faster than frames; measure once per frame
   let frame = 0;
   const schedule = () => (frame ||= requestAnimationFrame(() => ((frame = 0), spy())));
-
-  // dragging the marker (or pressing the rail) scrubs the article: the
-  // inverse of spy, scrolling instantly so the page follows the pointer
-  function scrub(e) {
-    const y = e.clientY - list.getBoundingClientRect().top;
-    const tops = headings.map(docTop);
-    const ys = stops();
-    let i = 0;
-    while (i + 1 < ys.length && ys[i + 1] <= y) i++;
-    const t = i + 1 < ys.length ? Math.min(1, Math.max(0, (y - ys[i]) / (ys[i + 1] - ys[i]))) : 0;
-    const line = y < ys[0] ? tops[0] : tops[i] + t * ((tops[i + 1] ?? tops[i]) - tops[i]);
-    scrollTo({ top: line - innerHeight * LINE, behavior: "instant" });
-  }
-  function grab(e) {
-    e.preventDefault();
-    dragging = true;
-    e.currentTarget.setPointerCapture(e.pointerId);
-    scrub(e);
-  }
-  const drag = (e) => dragging && scrub(e);
-  const drop = () => (dragging = false);
 
   afterNavigate(() => {
     finish();
@@ -166,19 +127,7 @@
     <nav class="toc" aria-label="on this page">
       <div class="toc-in">
         <p class="toc-label">on this page</p>
-        <div class="toc-list" class:dragging bind:this={list}>
-          <!-- svelte-ignore a11y_no_static_element_interactions -->
-          <span class="toc-rail" aria-hidden="true" onpointerdown={grab} onpointermove={drag} onpointerup={drop} onpointercancel={drop}
-          ></span>
-          {#if markTop !== null}<!-- svelte-ignore a11y_no_static_element_interactions --><span
-              class="toc-mark"
-              style:top="{markTop}px"
-              aria-hidden="true"
-              onpointerdown={grab}
-              onpointermove={drag}
-              onpointerup={drop}
-              onpointercancel={drop}
-            ></span>{/if}
+        <div>
           <ol>
             {#each toc as h (h.id)}
               <li>

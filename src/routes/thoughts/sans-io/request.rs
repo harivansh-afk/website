@@ -66,7 +66,10 @@ mod tests {
     fn reply_before_timeout() {
         let mut request = pending_request();
 
-        assert_eq!(request.on_reply(), Some(Action::Complete { request_id: 7 }));
+        assert_eq!(
+            request.on_reply(),
+            Some(Action::Complete { request_id: 7 })
+        );
         assert_eq!(request.tick(Duration::from_secs(10)), None);
     }
 
@@ -78,7 +81,10 @@ mod tests {
             request.tick(Duration::from_secs(10)),
             Some(Action::Send { request_id: 7 })
         );
-        assert_eq!(request.on_reply(), Some(Action::Complete { request_id: 7 }));
+        assert_eq!(
+            request.on_reply(),
+            Some(Action::Complete { request_id: 7 })
+        );
     }
     // #endregion
 

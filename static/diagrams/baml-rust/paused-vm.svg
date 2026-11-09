@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 320" role="img" aria-labelledby="title desc">
+<title id="title">Where the pointers are while a VM is paused</title>
+<desc id="desc">The fiber stack holds saved registers and sum's scalars i and total. Before the pause, xs is spilled into a slot in sum's VM frame, which points to the array on the heap. The GC reads frame slots as roots and never scans the fiber stack.</desc>
+<style>
+  :root { color: #1a1a1a; --secondary: #6b6b66; --accent: #42677b; }
+  @media (prefers-color-scheme: dark) {
+    :root { color: #f3f3ee; --secondary: #aaa89f; --accent: #9abccc; }
+  }
+  text { fill: currentColor; font-family: monospace; font-size: 15px; }
+  .small { font-size: 13px; }
+  .muted { fill: var(--secondary); }
+  .action { fill: var(--accent); }
+  .center { text-anchor: middle; }
+  rect, path { fill: none; stroke: currentColor; stroke-width: 1.25; }
+  .faint { stroke: var(--secondary); }
+  .flow { stroke: var(--accent); }
+  .dash { stroke-dasharray: 4 4; }
+  .on { stroke: var(--accent); stroke-width: 1.75; }
+</style>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 9 5 1 9" /></marker>
+  <marker id="arrow-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="flow" d="M1 1 9 5 1 9" /></marker>
+  <marker id="arrow-m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="faint" d="M1 1 9 5 1 9" /></marker>
+</defs>
+
+<text class="small muted center" x="116" y="46">fiber stack</text>
+<rect class="faint" x="16" y="60" width="200" height="170" rx="4" />
+<rect x="32" y="130" width="168" height="40" rx="3" />
+<text class="small center" x="116" y="155">saved registers</text>
+<rect x="32" y="176" width="168" height="40" rx="3" />
+<text class="small center" x="116" y="201">sum: i, total</text>
+<text class="small muted center" x="380" y="46">VM frames</text>
+<rect class="faint" x="280" y="60" width="200" height="170" rx="4" />
+<rect x="292" y="104" width="176" height="112" rx="3" />
+<text class="small muted center" x="380" y="128">sum</text>
+<rect x="304" y="148" width="152" height="34" rx="3" />
+<text class="small center" x="380" y="170">slot: xs</text>
+<text class="small muted center" x="644" y="46">heap</text>
+<rect class="faint" x="544" y="60" width="200" height="170" rx="4" />
+<rect x="568" y="148" width="152" height="34" rx="3" />
+<text class="small center" x="644" y="170">[1, 2, 3]</text>
+<path d="M456 165H568" marker-end="url(#arrow)" />
+<path class="flow" d="M200 196C252 196 252 165 304 165" marker-end="url(#arrow-a)" />
+<text class="small action center" x="248" y="156">spill</text>
+<rect class="on" x="330" y="262" width="100" height="40" rx="4" />
+<text class="center" x="380" y="287">GC</text>
+<path class="flow" d="M380 262V232" marker-end="url(#arrow-a)" />
+<text class="small action" x="392" y="252">roots</text>
+<path class="faint dash" d="M330 282H116V232" />
+<text class="small muted center" x="222" y="300">never scanned</text>
+</svg>

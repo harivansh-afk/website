@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 310" role="img" aria-labelledby="title desc">
+<title id="title">The control-flow graph of sum</title>
+<desc id="desc">bb0 initializes total and i, bb1 reads the length, bb2 branches to bb5 for the loop body or bb3 to finish. bb5 jumps back to bb1. bb3 goes to bb4, which returns.</desc>
+<style>
+  :root { color: #1a1a1a; --secondary: #6b6b66; --accent: #42677b; }
+  @media (prefers-color-scheme: dark) {
+    :root { color: #f3f3ee; --secondary: #aaa89f; --accent: #9abccc; }
+  }
+  text { fill: currentColor; font-family: monospace; font-size: 15px; }
+  .small { font-size: 13px; }
+  .muted { fill: var(--secondary); }
+  .action { fill: var(--accent); }
+  .center { text-anchor: middle; }
+  rect, path { fill: none; stroke: currentColor; stroke-width: 1.25; }
+  .faint { stroke: var(--secondary); }
+  .flow { stroke: var(--accent); }
+  .dash { stroke-dasharray: 4 4; }
+  .on { stroke: var(--accent); stroke-width: 1.75; }
+</style>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 9 5 1 9" /></marker>
+  <marker id="arrow-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="flow" d="M1 1 9 5 1 9" /></marker>
+  <marker id="arrow-m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="faint" d="M1 1 9 5 1 9" /></marker>
+</defs>
+
+<rect x="16" y="40" width="150" height="80" rx="4" />
+<text class="small muted center" x="91" y="64">bb0</text>
+<text class="center" x="91" y="84">total = 0</text>
+<text class="center" x="91" y="104">i = 0</text>
+<rect x="206" y="40" width="150" height="80" rx="4" />
+<text class="small muted center" x="281" y="64">bb1</text>
+<text class="center" x="281" y="88">n = len(xs)</text>
+<rect x="396" y="40" width="150" height="80" rx="4" />
+<text class="small muted center" x="471" y="64">bb2</text>
+<text class="center" x="471" y="88">i &lt; n ?</text>
+<rect x="594" y="40" width="150" height="80" rx="4" />
+<text class="small muted center" x="669" y="64">bb3</text>
+<text class="center" x="669" y="88">_0 = total</text>
+<rect x="376" y="210" width="190" height="80" rx="4" />
+<text class="small muted center" x="471" y="234">bb5</text>
+<text class="center" x="471" y="254">total += xs[i]</text>
+<text class="center" x="471" y="274">i += 1</text>
+<rect x="594" y="210" width="150" height="80" rx="4" />
+<text class="small muted center" x="669" y="234">bb4</text>
+<text class="center" x="669" y="258">return</text>
+<path d="M166 80H206" marker-end="url(#arrow)" />
+<path d="M356 80H396" marker-end="url(#arrow)" />
+<path d="M546 80H594" marker-end="url(#arrow)" />
+<text class="small muted center" x="570" y="72">no</text>
+<path d="M471 120V210" marker-end="url(#arrow)" />
+<text class="small muted" x="481" y="170">yes</text>
+<path d="M669 120V210" marker-end="url(#arrow)" />
+<path class="flow" d="M376 250H281V120" marker-end="url(#arrow-a)" />
+<text class="small action center" x="328" y="274">back edge</text>
+</svg>
