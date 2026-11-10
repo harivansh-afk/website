@@ -2,14 +2,11 @@
 <title id="title">Where the pointers are while a VM is paused</title>
 <desc id="desc">The fiber stack holds saved registers and sum's scalars i and total. Before the pause, xs is spilled into a slot in sum's VM frame, which points to the array on the heap. The GC reads frame slots as roots and never scans the fiber stack.</desc>
 <style>
-  :root { color: #1a1a1a; --secondary: #6b6b66; --accent: #42677b; }
-  @media (prefers-color-scheme: dark) {
-    :root { color: #f3f3ee; --secondary: #aaa89f; --accent: #9abccc; }
-  }
+  :root { color: #f3f3ee; --secondary: #aaa89f; --accent: #cf8078; }
   text { fill: currentColor; font-family: monospace; font-size: 15px; }
   .small { font-size: 13px; }
   .muted { fill: var(--secondary); }
-  .action { fill: var(--accent); }
+  .action { fill: currentColor; }
   .center { text-anchor: middle; }
   rect, path { fill: none; stroke: currentColor; stroke-width: 1.25; }
   .faint { stroke: var(--secondary); }

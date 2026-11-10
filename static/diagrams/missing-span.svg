@@ -2,8 +2,7 @@
 <title id="title">The missing span</title>
 <desc id="desc">The first trace shows a parent operation and two child spans separated by an unexplained gap. The second trace names the gap receive_body. Both illustrate the same operation, without measured timings.</desc>
 <style>
-  :root { color: #1a1a1a; --failure: #b34d48; --pass: #347763; --unknown: #947322; --evidence: #52778c; }
-  @media (prefers-color-scheme: dark) { :root { color: #f3f3ee; --failure: #cf8078; --pass: #81b29b; --unknown: #c5ae6a; --evidence: #8daab9; } }
+  :root { color: #f3f3ee; --failure: #cf8078; --pass: #81b29b; --unknown: #c5ae6a; --evidence: #8daab9; }
   text { fill: currentColor; font-family: monospace; font-size: 17px; }
   .small { font-size: 14px; }
   rect, circle, path, line { stroke: currentColor; stroke-width: 1.3; fill: none; }

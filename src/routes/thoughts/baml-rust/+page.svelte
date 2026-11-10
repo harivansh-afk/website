@@ -25,13 +25,8 @@
   article :global(figure picture) { display: block; }
   article :global(figcaption) { max-width: 65ch; }
   article :global(a code) { color: inherit; }
-  /* inline code reads as code, after notion: tinted, on the usual pill */
-  article :global(:is(p, li) > code) { color: var(--red); }
   article :global(.draft) { white-space: pre-line; opacity: 0.75; }
 
-  @media (prefers-color-scheme: light) {
-    article :global(.code) { background: #fff; }
-  }
 
   @media (max-width: 640px) {
     article :global(pre) { font-size: 0.82em; padding: 0.75rem; }

@@ -27,7 +27,11 @@ We wrote a new backend for the BAML compiler that lets us compile all BAML code 
 
 BAML may look like a small language from the outside, but it is extremely feature heavy and provides a lot of runtime guarantees. It reads like TypeScript and is concurrent like Go. Any function can await/pause and there's no `async` keyword. It also profiles every function call it makes down to the nanosecond and automatically tracks where each error started and how it moved up the stack.
 
-All this to say that this project was much harder than initially anticipated. We will talk about the major issues we had to deal with during the development of the Rust compiler.
+All this to say that this project was much harder than initially anticipated.
+
+![The BAML compiler: source, tokens, CST, AST, HIR, TIR and MIR are shared. From MIR one path emits bytecode for the VM exec loop; the new path emits Rust, built by rustc with fat LTO into compiled functions. Both live in one executable with the heap, GC and BTEL, and call each other.](/diagrams/baml-rust/pipeline.svg)
+
+This diagram shows the inner workings of the BAML compiler and all of its intermediate representations. We chose to compile from MIR, one level above bytecode. Any higher and we would have to redo all of BAML's lowering ourselves and hope we made the same choices as the bytecode compiler.
 
 ## Why Rust
 
@@ -48,8 +52,6 @@ Since our VM runtime is written in rust, most of these problems disappear with t
 
 <!-- TODO what `sum` costs in the interpreter: each bytecode op pays decode, tag check and stack traffic; the compiled loop keeps `i` and `total` in registers. Thesis sentence goes here. -->
 
-MIR is a lowered representation of BAML. It comes after type checking (source, AST, HIR, TIR, then MIR) and it's the last step before a program becomes bytecode, or Rust in this case.
-
 <!-- @claude Hari: is it HIR, TIR, what comes before/after? bytecode after?
 Answer: source -> AST -> HIR -> TIR (typed HIR) -> MIR, and MIR then becomes either bytecode or Rust. So x = TIR (after type checking), y = bytecode/Rust.
 "Level 3" is off (AST, HIR, TIR come first); drop the number and say "after type checking".
@@ -64,7 +66,31 @@ Answer, first use only: IR (intermediate representation), AST, HIR (high-level I
 - irreducible control flow only exists after lowering, so MIR is where the "Rust has no goto" objection can be answered at all
 -->
 
-MIR looks something like this :
+The main compatability issue with GOTO is irreducible control flow. 
+If BAML has control flow that cannot be reduced to match and loop?
+
+The naive approach to get around this is a loop around a match block in Rust. This technically works but LLVM can't reliably find and optimize the loops inside the match statements. It can't vectorize the loop (run several iterations at once with SIMD instructions) or hoist work out of it (move anything that gives the same answer every iteration out of the loop so it runs once), its pretty during runtime.
+
+@claude move the () explanantions in this to be hover to show explanations instead like we did in the other blog
+
+```rust naive.rs
+let mut block = 0;
+loop {
+    match block {
+        0 => { total = 0; i = 0; block = 1; }
+        1 => { n = len(xs); block = 2; }
+        2 => { block = if i < n { 5 } else { 3 }; }
+        3 => { result = total; block = 4; }
+        4 => return result,
+        5 => { total += xs[i]; i += 1; block = 1; }
+        _ => unreachable!(),
+    }
+}
+```
+
+for reference, BAML MIR for a while loop looks something like this :
+
+@claude make this a tab thing inside hte codeviewer so that the .baml and the .mir are tabs in the header of the thing ykwim. simliar to how we did back in the day for ix.dev docs
 
 ```baml sum.baml
 
@@ -125,32 +151,7 @@ fn user.sum(xs: int[]) -> int {
 
 <!-- @claude Hari: drop the diagram explanation. Done: the caption is gone; it's explained in the two sentences below. -->
 
-The arrow from `bb5` back to `bb1` is the only jump that goes backwards, and that jump is the loop. Rust has no goto, so we need another way to write these jumps.
-
-
-The naive approach to get around this is a loop around a match block in Rust. This passes all test cases but LLVM only sees a single loop with a switch, so it can't reliably find the real loop inside it. Without that, it can't vectorize the loop (run several iterations at once with SIMD instructions) or hoist work out of it (move anything that gives the same answer every iteration out of the loop so it runs once).
-
-<!-- NOTE: the first block is hand-written to show the naive shape; the emitter never produces it. The second is real output for user.sum (OptLevel::Two, canary 7c55cb9cb0), trimmed: pc bookkeeping and error arms removed, the l8 copy of xs folded into l1, l0 folded into the return. -->
-
-<!-- @claude Hari: is this the bad case or how we do it now?
-Answer: naive.rs below is the bad case (loop + match), hand-written; we never emit it. What we actually emit is user_sum.rs, now moved to the end of the section, after the rules. -->
-
-```rust naive.rs
-let mut block = 0;
-loop {
-    match block {
-        0 => { total = 0; i = 0; block = 1; }
-        1 => { n = len(xs); block = 2; }
-        2 => { block = if i < n { 5 } else { 3 }; }
-        3 => { result = total; block = 4; }
-        4 => return result,
-        5 => { total += xs[i]; i += 1; block = 1; }
-        _ => unreachable!(),
-    }
-}
-```
-
-In order to emit the control flow LLVM needs for optimization, we must give it a real loop: one header block that every iteration passes through, with a single jump back to it.
+(note that the arrow from `bb5` back to `bb1` is the only jump that goes backwards)
 
 <!-- @claude Hari: what does LLVM need to optimize?
 Answer: a natural loop. One header block that every iteration passes through, plus a jump back to it. Rust's `loop` gives exactly that. Loop + match hides it: the only loop LLVM sees is the dispatcher, so it can't reliably find the real one (it sometimes untangles tiny cases, so say "can't reliably", not "never").
@@ -159,12 +160,16 @@ Hoisting: moving work that gives the same answer every iteration out of the loop
 
 <!-- @claude Hari: highlight code bits like notion. Done: anything in backticks renders as a tinted pill. -->
 
-We can turn every back edge into a loop and every forward jump into a `break 'label`. This only works if every loop has exactly a single entry-point. After a sweep of 15,012 BAML functions, we found no exceptions to this. This doesn’t mean much as its not something we formally verified. To get around this we created two rules:
+We can turn every back edge into a loop and every forward jump into a `break 'label`. 
+This only works if every loop has exactly one entry-point. After a sweep of ~15k BAML functions, I found no exceptions to this. 
+We did not formally verify this finding, instead we get around this with two rules:
 
 1. the only jump allowed to go backwards is a loop jumping to its own header
 2. the only way into a loop is through that same header
 
-Any loop that follows both rules has one way in, so every loop in MIR can be written as a Rust `loop`. The MIR builder checks both rules against every function at compile time, so a loop with two ways in becomes a compiler error instead of a function we can't emit.
+The MIR builder is able to check both rules at compile time
+
+It returns an output that looks like this :
 
 <!-- @claude Hari: "how? what problem is solved? see tags above, we need to mention the problem here"
 Answer: Rust can only express loops with one way in. If MIR ever produced a loop you could enter from two places, the emitter couldn't write it as Rust. The sweep only says "none so far"; the two rules make it impossible.
@@ -187,9 +192,16 @@ Fact check: PR #5222 (the rules in the MIR builder) is still open, not merged. O
 }
 ```
 
+LLVM is able to optimize most of these if statements into a single loop call, making it 2-5x faster during runtime for larger while loops.
+
 <!-- TODO handoff: `sum` is fast now. Put an await inside it and it can't be compiled this way. -->
 
 ## Pausing
+
+The other big problem with Rust is that pausing a thread at runtime does not let you store its locals and data across resume by default.
+This means that local variables inside a block of code + the stack pointer we store for the register value + the pointer count need to be stored someplace else for resume time. We introduced a small stack to store this for each program, by extension each VM maintains a small storage stack called a fiber.
+
+When a fucntion needs to pause, the interpreter puts the x, the y and the z (@claude can u check and fix this + top sentence, ensruing th avlues stores in fiber are correct..) fiber stack. The VM pushes a frame doing xyz to the interpreter so that when the fprogram needs to resume, it reads instructions from this stack and is picked up by one of the threads.
 
 <!-- TODO rewrite this section. Stakes first: BAML has no async keyword, so any function can pause: an await, a sys op, or a call into anything that can pause. LLM calls are the common case, not the only one. Use a real function that awaits instead of A and B.
 Beats: the interpreter keeps frames in a Vec, so it can stop anywhere -> a compiled call is a CPU call, and the only way to hand the thread back is to return -> naive approach: state machines -> the problem: pausing spreads up the call graph, 69% of functions at 1.3-1.8x bytecode against 12-20x for the rest -> fibers: a second stack per VM, suspend and resume as a stack-pointer swap -> cost: 3.7 KB per paused task. -->
@@ -227,10 +239,6 @@ if iterations % 16 == 0 && vm.should_yield() {
 ![A paused VM: the fiber stack holds saved registers and scalars, the frame slot holds xs, and the GC reads only frame slots.](/diagrams/baml-rust/paused-vm.svg "Before a pause, heap values move to frame slots. The GC never scans the fiber.")
 
 ## Building it with agents
-
-I am no expert in building compilers. This project was actually my first introduction to the inner workings of a programming language.
-
-Using a verification first approach, i was able to push our a simple working version of this project in < 2 weeks. 
 
 <!-- TODO crux: bytecode is the oracle. 9,711 of 9,711 corpus programs byte-identical as bytecode and compiled, again under GC_STRESS=1.
 - the agent got the project, made the decisions, and produced a first draft that passed every test before I read any code

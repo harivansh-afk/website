@@ -2,14 +2,11 @@
 <title id="title">Two delivery orders for the same pending request</title>
 <desc id="desc">When the reply is processed first, the request completes and the timeout does nothing. When the timeout is processed first, the request returns a Send action and the reply then completes the request.</desc>
 <style>
-  :root { color: #1a1a1a; --secondary: #6b6b66; --accent: #42677b; }
-  @media (prefers-color-scheme: dark) {
-    :root { color: #f3f3ee; --secondary: #aaa89f; --accent: #9abccc; }
-  }
+  :root { color: #f3f3ee; --secondary: #aaa89f; --accent: #9abccc; }
   text { fill: currentColor; font-family: monospace; font-size: 16px; }
   .small { font-size: 14px; }
   .muted { fill: var(--secondary); }
-  .action { fill: var(--accent); }
+  .action { fill: currentColor; }
   .center { text-anchor: middle; }
   .end { text-anchor: end; }
   rect, path { fill: none; stroke: currentColor; stroke-width: 1.25; }

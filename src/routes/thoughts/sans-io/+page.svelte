@@ -26,8 +26,8 @@
       <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
     <div class="diagram-scroll" tabindex="0" role="region" aria-label="I/O and request state">
         <picture>
-          <source media="(max-width: 640px)" srcset="/diagrams/request-boundary-mobile.svg" width="360" height="480" />
-          <img src="/diagrams/request-boundary.svg" width="760" height="330" alt="The caller reads the clock and socket, then calls tick(now) or on_reply(). Request owns its state and returns Send or Complete actions for the caller to perform." />
+          <source media="(max-width: 640px)" srcset="/diagrams/request-boundary-mobile.svg?rev=4dd0b6d5790e" width="360" height="480" />
+          <img src="/diagrams/request-boundary.svg?rev=f59c6b02a5af" width="760" height="330" alt="The caller reads the clock and socket, then calls tick(now) or on_reply(). Request owns its state and returns Send or Complete actions for the caller to perform." />
         </picture>
       </div>
       <figcaption>If <code>tick(now)</code> returns <code>Send</code>, the caller sends the request. When a reply arrives, it calls <code>on_reply()</code>.</figcaption>
@@ -42,8 +42,8 @@
       <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
     <div class="diagram-scroll" tabindex="0" role="region" aria-label="Reply and timeout delivery orders">
         <picture>
-          <source media="(max-width: 640px)" srcset="/diagrams/retry-order-mobile.svg" width="360" height="648" />
-          <img src="/diagrams/retry-order.svg" width="760" height="380" alt="Both histories start with request 7 pending. Reply then tick at ten seconds returns Complete then no action. Tick at ten seconds then reply returns Send then Complete. Both complete once, but only the second ordering requests a retry." />
+          <source media="(max-width: 640px)" srcset="/diagrams/retry-order-mobile.svg?rev=496d3e43e353" width="360" height="648" />
+          <img src="/diagrams/retry-order.svg?rev=0dc3abf7bfa7" width="760" height="380" alt="Both histories start with request 7 pending. Reply then tick at ten seconds returns Complete then no action. Tick at ten seconds then reply returns Send then Complete. Both complete once, but only the second ordering requests a retry." />
         </picture>
       </div>
       <figcaption>Processing the reply before <code>tick(10s)</code> prevents a <code>Send</code> action.</figcaption>
@@ -72,9 +72,6 @@
   article :global(figcaption) { max-width: 65ch; }
   article :global(a code) { color: inherit; }
 
-  @media (prefers-color-scheme: light) {
-    article :global(.code) { background: #fff; }
-  }
 
   @media (max-width: 640px) {
     article :global(pre) { font-size: 0.82em; padding: 0.75rem; }

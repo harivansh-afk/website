@@ -77,24 +77,6 @@
   color-scheme: dark;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #fdfdfc;
-    --fg: #1a1a1a;
-    --muted: #6b6b66;
-    --faint: #a3a39c;
-    --red: #b34d48;
-    --blue: #42677b;
-    --amber: #947322;
-    --navy: #1e2139;
-    --code-bg: #e7e7e7;
-    --code-fg: #3c3836;
-    --code-nr: #a89984;
-    --code-line: #d5c4a1;
-    color-scheme: light;
-  }
-}
-
 /* phones: the root stays at 100%, so the scale steps down a little */
 @media (max-width: 640px) {
   :root {
@@ -689,19 +671,12 @@ mark {
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
-@media (prefers-color-scheme: light) {
-  mark { background: rgb(250 220 75 / 26%); }
-}
 
 /* Syntax tokens: cozybox (src/lib/code-theme.js) in the page's theme, on
    cozybox's background (.code above). */
 .shiki, .shiki span { color: var(--shiki-dark); }
 /* cozybox, as in the editor: functions bold, comments and strings italic */
 .shiki span { font-style: var(--shiki-dark-font-style); font-weight: var(--shiki-dark-font-weight); font-synthesis: style weight; }
-@media (prefers-color-scheme: light) {
-  .shiki, .shiki span { color: var(--shiki-light); }
-  .shiki span { font-style: var(--shiki-light-font-style); font-weight: var(--shiki-light-font-weight); }
-}
 
 /* Code definitions (CodeDefs.svelte): names in code blocks show their
    definition on hover or focus. A faint underline marks them; the class on

@@ -2,10 +2,7 @@
 <title id="title">The autonomy radius</title>
 <desc id="desc">Horizontal ovals surround an agent. Compiler feedback, structural checks, runtime validation and production evidence expand the work it can evaluate independently. A muted blue outline emphasizes available compiler feedback and the outward direction; other boundaries remain neutral and unfilled.</desc>
 <style>
-  :root { color: #1a1a1a; --accent: #52778c; }
-  @media (prefers-color-scheme: dark) {
-    :root { color: #f3f3ee; --accent: #8daab9; }
-  }
+  :root { color: #f3f3ee; --accent: #8daab9; }
   text { fill: currentColor; font-family: monospace; font-size: 17px; text-anchor: middle; }
   ellipse, path { fill: none; stroke-width: 1.4; }
   .agent { stroke: currentColor; }

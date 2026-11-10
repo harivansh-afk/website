@@ -2,14 +2,11 @@
 <title id="title">The control-flow graph of sum</title>
 <desc id="desc">bb0 initializes total and i, bb1 reads the length, bb2 branches to bb5 for the loop body or bb3 to finish. bb5 jumps back to bb1. bb3 goes to bb4, which returns.</desc>
 <style>
-  :root { color: #1a1a1a; --secondary: #6b6b66; --accent: #42677b; }
-  @media (prefers-color-scheme: dark) {
-    :root { color: #f3f3ee; --secondary: #aaa89f; --accent: #9abccc; }
-  }
+  :root { color: #f3f3ee; --secondary: #aaa89f; --accent: #cf8078; }
   text { fill: currentColor; font-family: monospace; font-size: 15px; }
   .small { font-size: 13px; }
   .muted { fill: var(--secondary); }
-  .action { fill: var(--accent); }
+  .action { fill: currentColor; }
   .center { text-anchor: middle; }
   rect, path { fill: none; stroke: currentColor; stroke-width: 1.25; }
   .faint { stroke: var(--secondary); }

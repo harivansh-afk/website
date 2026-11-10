@@ -2,14 +2,11 @@
 <title id="title">A pause is a stack-pointer swap</title>
 <desc id="desc">Three panels. Running: the stack pointer is on the fiber, where sum runs. Suspend: registers are pushed onto the fiber and the stack pointer moves back to the thread, where the VM loop receives Await(fut). Resume: the stack pointer moves back to the fiber and suspend returns to sum.</desc>
 <style>
-  :root { color: #1a1a1a; --secondary: #6b6b66; --accent: #42677b; }
-  @media (prefers-color-scheme: dark) {
-    :root { color: #f3f3ee; --secondary: #aaa89f; --accent: #9abccc; }
-  }
+  :root { color: #f3f3ee; --secondary: #aaa89f; --accent: #cf8078; }
   text { fill: currentColor; font-family: monospace; font-size: 15px; }
   .small { font-size: 13px; }
   .muted { fill: var(--secondary); }
-  .action { fill: var(--accent); }
+  .action { fill: currentColor; }
   .center { text-anchor: middle; }
   rect, path { fill: none; stroke: currentColor; stroke-width: 1.25; }
   .faint { stroke: var(--secondary); }

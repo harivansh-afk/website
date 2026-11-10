@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 362" role="img" aria-labelledby="title desc">
+<title id="title">The BAML compiler, with its two backends</title>
+<desc id="desc">Source is lexed into tokens, parsed into a CST, then lowered to AST, HIR, TIR and MIR, all shared. From MIR, one path emits bytecode, which the VM exec loop runs. The new path emits Rust, built by rustc with fat LTO into compiled functions. Both end up in one executable with the heap, GC and BTEL telemetry, and bytecode and compiled functions call each other.</desc>
+<style>
+  :root { color: #f3f3ee; --secondary: #aaa89f; --accent: #cf8078; }
+  text { fill: currentColor; font-family: monospace; font-size: 15px; }
+  .small { font-size: 13px; }
+  .muted { fill: var(--secondary); }
+  .action { fill: currentColor; }
+  .center { text-anchor: middle; }
+  rect, path { fill: none; stroke: currentColor; stroke-width: 1.25; }
+  .faint { stroke: var(--secondary); }
+  .flow { stroke: var(--accent); }
+  .dash { stroke-dasharray: 4 4; }
+  .on { stroke: var(--accent); stroke-width: 1.75; }
+</style>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 9 5 1 9" /></marker>
+  <marker id="arrow-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="flow" d="M1 1 9 5 1 9" /></marker>
+  <marker id="arrow-m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="faint" d="M1 1 9 5 1 9" /></marker>
+</defs>
+<defs><marker id="arrow-s" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M9 1 1 5 9 9" /></marker></defs>
+<rect x="18" y="30" width="88" height="44" rx="4" />
+<text class="center" x="62" y="57">source</text>
+<rect x="124" y="30" width="88" height="44" rx="4" />
+<text class="center" x="168" y="57">tokens</text>
+<path d="M106 52H124" marker-end="url(#arrow)" />
+<rect x="230" y="30" width="88" height="44" rx="4" />
+<text class="center" x="274" y="57">CST</text>
+<path d="M212 52H230" marker-end="url(#arrow)" />
+<rect x="336" y="30" width="88" height="44" rx="4" />
+<text class="center" x="380" y="57">AST</text>
+<path d="M318 52H336" marker-end="url(#arrow)" />
+<rect x="442" y="30" width="88" height="44" rx="4" />
+<text class="center" x="486" y="57">HIR</text>
+<path d="M424 52H442" marker-end="url(#arrow)" />
+<rect x="548" y="30" width="88" height="44" rx="4" />
+<text class="center" x="592" y="57">TIR</text>
+<path d="M530 52H548" marker-end="url(#arrow)" />
+<rect class="on" x="654" y="30" width="88" height="44" rx="4" />
+<text class="center" x="698" y="57">MIR</text>
+<path d="M636 52H654" marker-end="url(#arrow)" />
+<rect x="150" y="140" width="200" height="44" rx="4" />
+<text class="center" x="250" y="167">bytecode</text>
+<rect class="on" x="430" y="140" width="120" height="44" rx="4" />
+<text class="center action" x="490" y="167">Rust</text>
+<rect class="on" x="590" y="140" width="152" height="44" rx="4" />
+<text class="center action" x="666" y="167">rustc, fat LTO</text>
+<path d="M550 162H590" class="flow" marker-end="url(#arrow-a)" />
+<path d="M672 74V106H250V140" marker-end="url(#arrow)" />
+<path class="flow" d="M724 74V118H490V140" marker-end="url(#arrow-a)" />
+<rect class="faint" x="18" y="226" width="724" height="120" rx="4" />
+<text class="small muted" x="34" y="250">executable, heap, GC, BTEL</text>
+<rect x="150" y="268" width="200" height="56" rx="4" />
+<text class="center" x="250" y="292">VM exec loop</text>
+<text class="small muted center" x="250" y="312">runs bytecode</text>
+<rect class="on" x="560" y="268" width="166" height="56" rx="4" />
+<text class="center action" x="643" y="292">compiled</text>
+<text class="center action" x="643" y="312">functions</text>
+<path d="M250 184V268" marker-end="url(#arrow)" />
+<path class="flow" d="M666 184V268" marker-end="url(#arrow-a)" />
+<path d="M352 296H558" marker-start="url(#arrow-s)" marker-end="url(#arrow)" />
+<text class="small muted center" x="455" y="286">call each other</text>
+</svg>
