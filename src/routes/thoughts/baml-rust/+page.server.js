@@ -9,7 +9,8 @@
 // [term]{definition} underlines a term in the prose and shows the definition on
 // hover or tap, through the same popover as names in code blocks (CodeDefs).
 // Fenced blocks marked `tab` that sit next to each other share one frame,
-// with their names as tabs in its bar (no-JS: radio buttons and CSS).
+// with their names as tabs in its bar (no-JS: radio buttons and CSS). The
+// first tab is selected unless another block is marked `selected`.
 //
 // HTML comments are drafting notes. `vite dev` shows the ones that start
 // with TODO, VISUAL, RAW, NOTE or @claude as callouts; a build drops every
@@ -105,7 +106,7 @@ export async function load() {
       code({ text, lang = "" }) {
         const [kind = "text", name, ...flags] = lang.trim().split(/\s+/);
         const html = code(text, { lang: kind, name: name ?? kind, open: flags.includes("open") });
-        return flags.includes("tab") ? `<!--tab:${escapeHtml(name ?? kind)}-->${html}<!--/tab-->` : html;
+        return flags.includes("tab") ? `<!--tab:${escapeHtml(name ?? kind)}${flags.includes("selected") ? "|selected" : ""}-->${html}<!--/tab-->` : html;
       },
       paragraph({ tokens }) {
         const only = tokens.filter((t) => !(t.type === "text" && !t.text.trim()));
@@ -129,12 +130,13 @@ export async function load() {
     .parse(source.replace(/^# .+$/m, ""))
     .replace(/(?:<!--tab:[^>]*?-->[\s\S]*?<!--\/tab-->\s*){2,}/g, (run) => {
       const g = `tabs-${groups++}`;
-      const tabs = [...run.matchAll(/<!--tab:([^>]*?)-->([\s\S]*?)<!--\/tab-->/g)];
+      const tabs = [...run.matchAll(/<!--tab:([^>|]*?)(\|selected)?-->([\s\S]*?)<!--\/tab-->/g)];
+      const pick = Math.max(0, tabs.findIndex((t) => t[2]));
       return (
         `<div class="code-tabs">` +
-        tabs.map((_, i) => `<input type="radio" class="tab-input" name="${g}" id="${g}-${i}"${i ? "" : " checked"} />`).join("") +
+        tabs.map((_, i) => `<input type="radio" class="tab-input" name="${g}" id="${g}-${i}"${i === pick ? " checked" : ""} />`).join("") +
         `<nav class="tab-labels">` + tabs.map(([, name], i) => `<label for="${g}-${i}">${name}</label>`).join("") + `</nav>` +
-        tabs.map(([, , html]) => `<div class="tab-panel">${html}</div>`).join("") +
+        tabs.map(([, , , html]) => `<div class="tab-panel">${html}</div>`).join("") +
         `</div>`
       );
     })

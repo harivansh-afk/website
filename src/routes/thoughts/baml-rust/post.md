@@ -25,6 +25,17 @@ Writing rules (from hashimoto, bernstein, fallin, the boundary agents post):
 
 We wrote a new backend for the BAML compiler that lets us compile all BAML code into Rust. On average the compiled code runs ==3.5x== faster than our interpreter, and up to ==34x== faster on tight loops.
 
+<!-- TABLE: same run as the intro numbers (kpis-native-v0-frame-records, 2026-10-22, 8-core x86 VM, telemetry off, median of 5 trials). Node on the same run: nested loops 0.466 ms, generate+sort 5.27 ms (both slower than compiled). -->
+
+| Workload | Interpreter | Compiled | Speedup |
+|:---|---:|---:|---:|
+| nested loops 500×500 | 12.61 ms | 0.38 ms | ==33.6×== |
+| tree walk, 262k nodes | 892 ms | 35.8 ms | ==24.9×== |
+| array traversal 8k | 10.33 ms | 0.86 ms | ==12.0×== |
+| 1M function calls | 80.5 ms | 8.1 ms | ==9.9×== |
+| Richards scheduler | 578 ms | 114 ms | ==5.1×== |
+| agent loop, 300 conversations | 129 ms | 87 ms | ==1.5×== |
+
 BAML may look like a small language from the outside, but it is extremely feature heavy and provides a lot of runtime guarantees. It reads like TypeScript and is concurrent like Go. Any function can await/pause and there's no `async` keyword. It also profiles every function call it makes down to the nanosecond and automatically tracks where each error started and how it moved up the stack.
 
 All this to say that this project was much harder than initially anticipated.
@@ -100,7 +111,7 @@ function sum(xs: int[]) -> int {
 }
 ```
 
-```mir sum.mir open tab
+```mir sum.mir open tab selected
 fn user.sum(xs: int[]) -> int {
     bb0: {
         _2 = const 0_i64;
@@ -153,7 +164,7 @@ Hoisting: moving work that gives the same answer every iteration out of the loop
 <!-- @claude Hari: highlight code bits like notion. Done: anything in backticks renders as a tinted pill. -->
 
 We can turn every back edge into a loop and every forward jump into a `break 'label`. 
-This only works if every loop has exactly one entry point. After a sweep of ~15k BAML functions, I found no exceptions to this. We did not formally verify this finding, so instead we get around it with two rules:
+This only works if every loop has exactly one entry point. After a sweep of ~15k BAML functions, we found no exceptions to this. We did not formally verify this finding, so instead we get around it with two rules:
 
 1. the only jump allowed to go backwards is a loop jumping to its own header
 2. the only way into a loop is through that same header
@@ -183,34 +194,30 @@ Fact check: PR #5222 (the rules in the MIR builder) is still open, not merged. O
 
 LLVM can see this loop and optimize it, which makes larger `while` loops 2-5x faster at runtime.
 
+sum is fast now, the remaining issue is `await`
+
 <!-- TODO handoff: `sum` is fast now. Put an await inside it and it can't be compiled this way. -->
 
 ## Pausing
 
-The other big problem with Rust is that a function can't pause halfway and resume later, because its locals live in its frame on the CPU stack, which throws them away on return.
+The other big problem is task suspension. A compiled BAML function is simply native Rust function with locals in task's own stack frame which is popped on function return.
+This makes it impossible to hand control and data back to the VM at resume time for our native runtime without creating a new state machine.
 
-So the locals and registers need to live somewhere that survives the pause. Each VM gets its own small stack for this, called a fiber, and compiled functions run on it instead of on the thread's stack.
+We solve this with stackful coroutines(@claude hyperlink this to corosensei..). Each VM owns a separate stack (a `fiber`), and compiled code runs on the fiber instead of the thread's local stack. Suspending a function is then simply a context switch between threads.
 
-When a function needs to pause, it calls `vm.suspend` with what it's waiting on, like `Await(future)`. That saves the CPU registers onto the fiber and points the stack pointer back at the VM's own stack. Everything else stays on the fiber, every compiled function's frame and its locals, exactly where they were. The VM handles the request the same way it would for bytecode and goes off to run other tasks. To resume, it points the stack pointer back at the fiber, restores the registers, and `suspend` returns the result to the function that called it.
+A function can call `vm.suspend` with something like `Await(future)`. `suspend` pushes the callee-saved registers onto the fiber and switches the stack pointer back to the thread's stack, returning control to the VM. 
+The VM handles the request same as it would for bytecode and schedules other tasks in the meantime.
 
-<!-- TODO rewrite this section. Stakes first: BAML has no async keyword, so any function can pause: an await, a sys op, or a call into anything that can pause. LLM calls are the common case, not the only one. Use a real function that awaits instead of A and B.
-Beats: the interpreter keeps frames in a Vec, so it can stop anywhere -> a compiled call is a CPU call, and the only way to hand the thread back is to return -> naive approach: state machines -> the problem: pausing spreads up the call graph, 69% of functions at 1.3-1.8x bytecode against 12-20x for the rest -> fibers: a second stack per VM, suspend and resume as a stack-pointer swap -> cost: 3.7 KB per paused task. -->
+To resume, the VM switches the stack pointer back to the fiber and restores the registers. `suspend` then returns the request's result like an ordinary function call in the compiled RUST.
 
 ![Three panels: sum runs on the fiber; suspend swaps the stack pointer back to the VM with Await(fut); resume swaps it back into suspend.](/diagrams/baml-rust/fiber-switch.svg "A pause is a stack-pointer swap.")
 
-<!-- RAW MATERIAL (flagged as AI-sounding, rewrite from scratch, keep the facts):
-In the BAML interpreter, a function call ≠ a CPU call. The VM pushes a Frame onto a Vec and the CPU stays in the VM exec loop. Bytecode functions can pause anywhere since the Vec retains all the information they need to resume (stack pointers, locals)
+<!-- SOURCES: corosensei (stackful coroutines), vm.suspend(Step) and Step::Await in bex_vm compiled_rt; 4 MiB lazy fiber stack (fiber.rs STACK_SIZE); 3.7 KB per parked task = 10k sleeping tasks 384 MB compiled vs 347 MB bytecode (PR #5318); state machines: 69% of functions at 1.3-1.8x slower than bytecode (pr5264-decisions). -->
 
-Compiled function A calling compiled function B is a real CPU call. The CPU is inside A and the only way to give the thread to B is to return which destroys A. The first approach was to compile any function that might pause as a simple state machine. Putting locals into frame slots and saving a block number to resume from. This worked fine but since ANY BAML function can pause, after profiling, this proved to be be 1.3-1.8x slower than Bytecode for 69% of functions, against a 12-20x speedup on functions that didn’t pause. This was quite unacceptable. 
+Functions that never suspend pay almost nothing in this approach. A suspended task occupies only ~3.7 KB in memory.
 
-What if we just give each VM its own stack to store this pause data? Giving it a second stack called a ‘fiber’ lets us get around this issue pretty easily. 
-
-Since the CPU's stack pointer is a register and nothing says it has to point at the thread's stack,  each VM can maintain its own its own fiber. When function B needs to await, it simply calls vm.suspend(Await(fut)) which pushes the live registers onto the fiber stack, saves the fiber's stack pointer, and loads the thread's stack pointer back. Execution lands in the VM, which now holds a message saying "B is waiting on this future" and can go run other tasks. 
-
-Resume is the same thing backwards, you simply save the thread's pointer, load the fibers, pop the registers, and execution returns into the middle of suspend, which hands B back its result. From B's point of view, it called a function that took a while.
-
-This costs almost nothing for functions that dont pause and a mere 3.7KB of parked memory per task that does !
--->
+The alternative was stackless coroutines + compiling every function that may suspend into a state machine (simliar to Rust's `async`). 
+Since suspension is transitive, this design spread to ~69% of compiled functions, making them ~1.3–1.8x slower than bytecode.
 
 ## Garbage collection
 

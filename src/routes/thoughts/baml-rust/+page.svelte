@@ -27,6 +27,18 @@
   article :global(a code) { color: inherit; }
   article :global(.draft) { white-space: pre-line; opacity: 0.75; }
 
+  /* benchmark tables: mono figures, hairline rows, labels in the pixel face */
+  article :global(table) { width: 100%; margin-block: 1.75rem; border-collapse: collapse; font-size: 0.9em; }
+  article :global(th) {
+    padding: 0 0 0.6rem; border-bottom: 1px solid var(--line);
+    font-family: var(--pixel); font-size: var(--pixel-size); font-weight: normal;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted);
+  }
+  article :global(td) { padding: 0.55rem 0; border-bottom: 1px solid var(--line); }
+  article :global(:is(th, td) + :is(th, td)) { padding-left: 1rem; }
+  article :global(td[align="right"]) { font-family: var(--mono); font-size: 0.875em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  article :global(td mark) { padding: 0.1em 0.35em; }
+
   /* hover terms in prose: a dotted underline, the code popover on hover */
   article :global(.term) { text-decoration: underline dotted color-mix(in srgb, currentColor 55%, transparent); text-underline-offset: 0.2em; cursor: help; outline: none; }
   article :global(.term:focus-visible) { outline: 1px solid var(--fg); outline-offset: 0.125rem; }
