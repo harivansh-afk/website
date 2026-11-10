@@ -66,12 +66,9 @@ Answer, first use only: IR (intermediate representation), AST, HIR (high-level I
 - irreducible control flow only exists after lowering, so MIR is where the "Rust has no goto" objection can be answered at all
 -->
 
-The main compatability issue with GOTO is irreducible control flow. 
-If BAML has control flow that cannot be reduced to match and loop?
+The main problem with GOTO is irreducible control flow: jumps that can't be rewritten as a Rust `loop` and `match`.
 
-The naive approach to get around this is a loop around a match block in Rust. This technically works but LLVM can't reliably find and optimize the loops inside the match statements. It can't vectorize the loop (run several iterations at once with SIMD instructions) or hoist work out of it (move anything that gives the same answer every iteration out of the loop so it runs once), its pretty during runtime.
-
-@claude move the () explanantions in this to be hover to show explanations instead like we did in the other blog
+The naive approach to get around this is a loop around a match block in Rust. This technically works, but LLVM can't reliably find and optimize the loops inside the match statement. It can't [vectorize]{Run several iterations of a loop at once with SIMD instructions, e.g. four adds in one instruction.} the loop or [hoist]{Move work that gives the same answer every iteration out of the loop, so it runs once.} work out of it, so it's pretty slow at runtime.
 
 ```rust naive.rs
 let mut block = 0;
@@ -88,11 +85,9 @@ loop {
 }
 ```
 
-for reference, BAML MIR for a while loop looks something like this :
+For reference, here is a `while` loop in BAML and its MIR:
 
-@claude make this a tab thing inside hte codeviewer so that the .baml and the .mir are tabs in the header of the thing ykwim. simliar to how we did back in the day for ix.dev docs
-
-```baml sum.baml
+```baml sum.baml tab
 
 function sum(xs: int[]) -> int {
   let total = 0;
@@ -105,10 +100,7 @@ function sum(xs: int[]) -> int {
 }
 ```
 
-<!-- @claude Hari: shorter MIR example?
-Done: all six blocks shown, locals list cut. -->
-
-```mir sum.mir open
+```mir sum.mir open tab
 fn user.sum(xs: int[]) -> int {
     bb0: {
         _2 = const 0_i64;
@@ -151,7 +143,7 @@ fn user.sum(xs: int[]) -> int {
 
 <!-- @claude Hari: drop the diagram explanation. Done: the caption is gone; it's explained in the two sentences below. -->
 
-(note that the arrow from `bb5` back to `bb1` is the only jump that goes backwards)
+Note that the arrow from `bb5` back to `bb1` is the only jump that goes backwards.
 
 <!-- @claude Hari: what does LLVM need to optimize?
 Answer: a natural loop. One header block that every iteration passes through, plus a jump back to it. Rust's `loop` gives exactly that. Loop + match hides it: the only loop LLVM sees is the dispatcher, so it can't reliably find the real one (it sometimes untangles tiny cases, so say "can't reliably", not "never").
@@ -161,15 +153,12 @@ Hoisting: moving work that gives the same answer every iteration out of the loop
 <!-- @claude Hari: highlight code bits like notion. Done: anything in backticks renders as a tinted pill. -->
 
 We can turn every back edge into a loop and every forward jump into a `break 'label`. 
-This only works if every loop has exactly one entry-point. After a sweep of ~15k BAML functions, I found no exceptions to this. 
-We did not formally verify this finding, instead we get around this with two rules:
+This only works if every loop has exactly one entry point. After a sweep of ~15k BAML functions, I found no exceptions to this. We did not formally verify this finding, so instead we get around it with two rules:
 
 1. the only jump allowed to go backwards is a loop jumping to its own header
 2. the only way into a loop is through that same header
 
-The MIR builder is able to check both rules at compile time
-
-It returns an output that looks like this :
+The MIR builder checks both rules at compile time. The Rust we emit for `sum` looks like this:
 
 <!-- @claude Hari: "how? what problem is solved? see tags above, we need to mention the problem here"
 Answer: Rust can only express loops with one way in. If MIR ever produced a loop you could enter from two places, the emitter couldn't write it as Rust. The sweep only says "none so far"; the two rules make it impossible.
@@ -192,16 +181,17 @@ Fact check: PR #5222 (the rules in the MIR builder) is still open, not merged. O
 }
 ```
 
-LLVM is able to optimize most of these if statements into a single loop call, making it 2-5x faster during runtime for larger while loops.
+LLVM can see this loop and optimize it, which makes larger `while` loops 2-5x faster at runtime.
 
 <!-- TODO handoff: `sum` is fast now. Put an await inside it and it can't be compiled this way. -->
 
 ## Pausing
 
-The other big problem with Rust is that pausing a thread at runtime does not let you store its locals and data across resume by default.
-This means that local variables inside a block of code + the stack pointer we store for the register value + the pointer count need to be stored someplace else for resume time. We introduced a small stack to store this for each program, by extension each VM maintains a small storage stack called a fiber.
+The other big problem with Rust is that a function can't pause halfway and resume later, because its locals live in its frame on the CPU stack, which throws them away on return.
 
-When a fucntion needs to pause, the interpreter puts the x, the y and the z (@claude can u check and fix this + top sentence, ensruing th avlues stores in fiber are correct..) fiber stack. The VM pushes a frame doing xyz to the interpreter so that when the fprogram needs to resume, it reads instructions from this stack and is picked up by one of the threads.
+So the locals and registers need to live somewhere that survives the pause. Each VM gets its own small stack for this, called a fiber, and compiled functions run on it instead of on the thread's stack.
+
+When a function needs to pause, it calls `vm.suspend` with what it's waiting on, like `Await(future)`. That saves the CPU registers onto the fiber and points the stack pointer back at the VM's own stack. Everything else stays on the fiber, every compiled function's frame and its locals, exactly where they were. The VM handles the request the same way it would for bytecode and goes off to run other tasks. To resume, it points the stack pointer back at the fiber, restores the registers, and `suspend` returns the result to the function that called it.
 
 <!-- TODO rewrite this section. Stakes first: BAML has no async keyword, so any function can pause: an await, a sys op, or a call into anything that can pause. LLM calls are the common case, not the only one. Use a real function that awaits instead of A and B.
 Beats: the interpreter keeps frames in a Vec, so it can stop anywhere -> a compiled call is a CPU call, and the only way to hand the thread back is to return -> naive approach: state machines -> the problem: pausing spreads up the call graph, 69% of functions at 1.3-1.8x bytecode against 12-20x for the rest -> fibers: a second stack per VM, suspend and resume as a stack-pointer swap -> cost: 3.7 KB per paused task. -->
@@ -237,8 +227,6 @@ if iterations % 16 == 0 && vm.should_yield() {
 ```
 
 ![A paused VM: the fiber stack holds saved registers and scalars, the frame slot holds xs, and the GC reads only frame slots.](/diagrams/baml-rust/paused-vm.svg "Before a pause, heap values move to frame slots. The GC never scans the fiber.")
-
-## Building it with agents
 
 <!-- TODO crux: bytecode is the oracle. 9,711 of 9,711 corpus programs byte-identical as bytecode and compiled, again under GC_STRESS=1.
 - the agent got the project, made the decisions, and produced a first draft that passed every test before I read any code

@@ -6,6 +6,10 @@
 // from the file so the CDN never serves a stale diagram.
 //
 // ==text== is the yellow marker the other thoughts use (<mark>).
+// [term]{definition} underlines a term in the prose and shows the definition on
+// hover or tap, through the same popover as names in code blocks (CodeDefs).
+// Fenced blocks marked `tab` that sit next to each other share one frame,
+// with their names as tabs in its bar (no-JS: radio buttons and CSS).
 //
 // HTML comments are drafting notes. `vite dev` shows the ones that start
 // with TODO, VISUAL, RAW, NOTE or @claude as callouts; a build drops every
@@ -57,8 +61,25 @@ const callout = (label, text) =>
 
 export async function load() {
   const code = await createCodeRenderer();
+  let terms = 0;
   const marked = new Marked({
     extensions: [
+      {
+        name: "term",
+        level: "inline",
+        start: (src) => src.indexOf("["),
+        tokenizer(src) {
+          const m = /^\[([^\]\n]+)\]\{([^}\n]+)\}/.exec(src);
+          if (m) return { type: "term", raw: m[0], def: m[2].trim(), tokens: this.lexer.inlineTokens(m[1]) };
+        },
+        renderer(token) {
+          const key = `term:${terms++}`;
+          return (
+            `<span class="term" data-def="${key}" tabindex="0">${this.parser.parseInline(token.tokens)}</span>` +
+            `<template data-def-key="${key}"><div class="def-doc"><p>${escapeHtml(token.def)}</p></div></template>`
+          );
+        },
+      },
       {
         name: "mark",
         level: "inline",
@@ -83,7 +104,8 @@ export async function load() {
       // ```lang name [open]: `name` labels the block's bar; `open` never folds
       code({ text, lang = "" }) {
         const [kind = "text", name, ...flags] = lang.trim().split(/\s+/);
-        return code(text, { lang: kind, name: name ?? kind, open: flags.includes("open") });
+        const html = code(text, { lang: kind, name: name ?? kind, open: flags.includes("open") });
+        return flags.includes("tab") ? `<!--tab:${escapeHtml(name ?? kind)}-->${html}<!--/tab-->` : html;
       },
       paragraph({ tokens }) {
         const only = tokens.filter((t) => !(t.type === "text" && !t.text.trim()));
@@ -101,6 +123,21 @@ export async function load() {
   });
 
   const title = source.match(/^# (.+)$/m)?.[1] ?? "baml to rust";
-  const body = marked.parse(source.replace(/^# .+$/m, ""));
+  // neighbouring tab blocks become one frame
+  let groups = 0;
+  const body = marked
+    .parse(source.replace(/^# .+$/m, ""))
+    .replace(/(?:<!--tab:[^>]*?-->[\s\S]*?<!--\/tab-->\s*){2,}/g, (run) => {
+      const g = `tabs-${groups++}`;
+      const tabs = [...run.matchAll(/<!--tab:([^>]*?)-->([\s\S]*?)<!--\/tab-->/g)];
+      return (
+        `<div class="code-tabs">` +
+        tabs.map((_, i) => `<input type="radio" class="tab-input" name="${g}" id="${g}-${i}"${i ? "" : " checked"} />`).join("") +
+        `<nav class="tab-labels">` + tabs.map(([, name], i) => `<label for="${g}-${i}">${name}</label>`).join("") + `</nav>` +
+        tabs.map(([, , html]) => `<div class="tab-panel">${html}</div>`).join("") +
+        `</div>`
+      );
+    })
+    .replace(/<!--\/?tab(:[^>]*)?-->/g, "");
   return { title, body };
 }

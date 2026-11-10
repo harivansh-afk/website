@@ -747,3 +747,12 @@ mark {
   html.navigated :is(.site main > :nth-child(4), main.thought article > :nth-child(3), .toc) { animation-delay: 75ms }
   html.navigated :is(.site main > :nth-child(n + 5), main.thought article > :nth-child(n + 4)) { animation-delay: 100ms }
 }
+
+/* a prose term's popover (just a definition) reads at the small size, not the prose's */
+.def-pop:has(> .def-doc:only-child) {
+  font-size: var(--text-small) !important;
+  max-width: min(22rem, calc(100vw - 1.5rem));
+  padding: 0.6rem 0.8rem;
+  line-height: 1.45;
+}
+.def-pop > .def-doc:only-child { margin: 0; color: var(--fg); }
