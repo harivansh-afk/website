@@ -4,6 +4,7 @@
 // the x post's views when `x` names one, plus `seed` for reads from before
 // the counter existed
 export const thoughts = [
+  { title: "compiling BAML to Rust", href: "/thoughts/baml-rust/", year: 2026 },
   {
     title: "ai psychosis",
     href: "https://x.com/HarivanshRathi/status/2105361997776794095",

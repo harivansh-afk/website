@@ -30,31 +30,31 @@ On average the compiled code runs ==~3.5x== faster than our interpreter, and up 
 
 | Workload | Interpreter | Compiled | Speedup |
 |:---|---:|---:|---:|
-| nested loops 500×500 | 12.61 ms | 0.38 ms | ==33.6×== |
-| tree walk, 262k nodes | 892 ms | 35.8 ms | ==24.9×== |
-| array traversal 8k | 10.33 ms | 0.86 ms | ==12.0×== |
-| 1M function calls | 80.5 ms | 8.1 ms | ==9.9×== |
-| Richards scheduler | 578 ms | 114 ms | ==5.1×== |
-| agent loop, 300 conversations | 129 ms | 87 ms | ==1.5×== |
+| [nested loops 500×500]{Two nested loops of 500 iterations each.} | 12.61 ms | 0.38 ms | ==33.6×== |
+| [tree walk, 262k nodes]{A read-only recursive walk of a live tree of 262,144 nodes.} | 892 ms | 35.8 ms | ==24.9×== |
+| [array traversal 8k]{Iterate, index and rebuild an array of 8,192 integers.} | 10.33 ms | 0.86 ms | ==12.0×== |
+| [1M function calls]{1,000,000 calls of a one-line function.} | 80.5 ms | 8.1 ms | ==9.9×== |
+| [Richards scheduler]{The Richards benchmark: an OS task-scheduler simulation, run 50 times.} | 578 ms | 114 ms | ==5.1×== |
+| [agent loop, 300 conversations]{An agent loop over 300 recorded conversations: typed decode into a union, match dispatch and retries.} | 129 ms | 87 ms | ==1.5×== |
 
 BAML may look like a small language from the outside, but it is extremely feature heavy and provides a lot of runtime guarantees. It reads like TypeScript and is concurrent like Go. Any function can await/pause and there's no `async` keyword. It also profiles every function call it makes down to the nanosecond and automatically tracks where each error started and how it moved up the stack.
 
 ![The BAML compiler: source, tokens, CST, AST, HIR, TIR and MIR are shared. From MIR one path emits bytecode for the VM exec loop; the new path emits Rust, built by rustc with fat LTO into compiled functions. Both live in one executable with the heap, GC and BTEL, and call each other.](/diagrams/baml-rust/pipeline.svg)
 
-This diagram shows the inner workings of the BAML compiler and all of its intermediate representations. We chose to compile from MIR, one level above bytecode. Any higher and we would have to redo all of BAML's lowering ourselves and hope we made the same choices as the bytecode compiler.
+This diagram shows the inner workings of the BAML compiler and all of its intermediate representations. We chose to compile from MIR (mid-level intermediate representation), one level above bytecode. Any higher and we would have to redo all of BAML's lowering ourselves and hope we made the same choices as the bytecode compiler.
 
 ## Why Rust
 
 <!-- TODO honesty: we ruled LLVM IR, C and Cranelift out by argument; we didn't benchmark them. Say so. -->
 
-Most of the options we looked at end up at LLVM or something like it. The question that mattered to us was : "what sits between our MIR (mid-level intermediate representation) and the runtime? and how little of the runtime can we rebuild to get the maximum amount of optimization?" 
+Most of the options we looked at end up at LLVM or something like it. The question that mattered to us was: "What sits between our MIR and the runtime, and how little of the runtime can we rebuild to get the maximum amount of optimization?" 
 
-LLVM IR is a decent pick. It has a simliar system to GOTO which can be used to jump around blocks which means we dont need to rebuild structured loops from our MIR. Since our VM is written in Rust, the IR can only call it through the C ABI. This means all VM calls become a black box that the inliner cannot optimize through unless they are rewritten as IR operations. This is too much work.
+LLVM IR is a decent pick. It has a similar system to `goto`, which can be used to jump around blocks, so we don't need to rebuild structured loops from our MIR. Since our VM is written in Rust, the IR can only call it through the C ABI. This means all VM calls become a black box that the inliner cannot optimize through unless they are rewritten as IR operations. This is too much work.
 
-C also has GOTO ootb so MIR can compile to it 1:1. The ABI wall is hit with this as well since even + in BAML is a 63 bit checked add that lives in a VM helper which C cannot see nor optimize.
-Cranelift can only inline its own IR meaning our Rust runtime is again a black box.
+C also has `goto` ootb, so MIR can compile to it 1:1. The ABI wall is hit with this as well, since even `+` in BAML is a 63-bit checked add that lives in a VM helper, which C can neither see nor optimize.
+Cranelift can only inline its own IR, meaning our Rust runtime is again a black box.
 
-Since our VM runtime is written in rust, most of these problems disappear with this choice. Generated code calls Vm functions that already exist and can reuse the same types. WIth fat LTO, LLVM optimizes the gneerated code and the runtime as a single unit which means shared helpers also get inlined. This is great. WIth rustC tpechecking the output too, we find most field index errors at compile time.
+Since our VM runtime is written in Rust, most of these problems disappear with this choice. Generated code calls VM functions that already exist and can reuse the same types. With fat LTO, LLVM optimizes the generated code and the runtime as a single unit, which means shared helpers also get inlined. This is great. With rustc typechecking the output too, we find most field index errors at compile time.
 
 <!-- TODO handoff: the three things Rust doesn't give us: goto, a way to pause mid-stack, stack maps. Each is a section below. -->
 
@@ -203,17 +203,17 @@ The other big problem is task suspension. A function's locals live in its stack 
 We solve this with [stackful coroutines](https://github.com/Amanieu/corosensei). Each VM owns a separate stack (a `fiber`) and compiled code runs on it, so suspending is just a context switch between two stacks on the same thread.
 
 A function can call `vm.suspend` with something like `Await(future)`. `suspend` pushes the callee-saved registers onto the fiber and switches the stack pointer back to the thread's stack, returning control to the VM. 
-The VM handles the request same as it would for bytecode and schedules other tasks in the meantime.
+The VM handles the request the same way it would for bytecode and schedules other tasks in the meantime.
 
-To resume, the VM switches the stack pointer back to the fiber and restores the registers. `suspend` then returns the request's result like an ordinary function call in the compiled RUST.
+To resume, the VM switches the stack pointer back to the fiber and restores the registers. `suspend` then returns the request's result like an ordinary function call in the compiled Rust.
 
-![Three panels: sum runs on the fiber; suspend swaps the stack pointer back to the VM with Await(fut); resume swaps it back into suspend.](/diagrams/baml-rust/fiber-switch.svg)
+![Three panels: classify runs on the fiber; suspend swaps the stack pointer back to the VM with Await(fut); resume swaps it back into suspend.](/diagrams/baml-rust/fiber-switch.svg)
 
 <!-- SOURCES: corosensei (stackful coroutines), vm.suspend(Step) and Step::Await in bex_vm compiled_rt; 4 MiB lazy fiber stack (fiber.rs STACK_SIZE); 3.7 KB per parked task = 10k sleeping tasks 384 MB compiled vs 347 MB bytecode (PR #5318); state machines: 69% of functions at 1.3-1.8x slower than bytecode (pr5264-decisions). -->
 
-Functions that never suspend pay almost nothing in this approach. A suspended task occupies only ~3.7 KB in memory.
+Functions that never suspend pay almost nothing. A suspended task occupies only ~3.7 KB in memory.
 
-The alternative was stackless coroutines + compiling every function that may suspend into a state machine (simliar to Rust's `async`). 
+The alternative was stackless coroutines + compiling every function that may suspend into a state machine (similar to Rust's `async`). 
 Since suspension is transitive, this design spread to ~69% of compiled functions, making them ~1.3–1.8x slower than bytecode.
 
 ## Garbage collection
@@ -235,13 +235,20 @@ Since the GC never scans the fiber, a paused compiled function looks exactly lik
 
 ## Escape analysis
 
-BAML is multithreaded and has a `spawn` keyword like go ie. all tasks share a single heap. 
-Since any array or map could be accessed by two threads at once, every array and map access takes a spin lock and every field access is atomic. This also applies to operatoins that are provably local causing slowdown where it can be avoided.
+BAML is multithreaded and has a `spawn` keyword (like Go's `go`), so all tasks share a single heap. 
+Since any array or map could be accessed by two threads at once, every array and map access takes a spin lock and every field access is atomic. This also applies to operations that are provably local, causing slowdown where it can be avoided.
 
 At compile time we follow each object through the program (assignments, function calls and builtins) to see which tasks can reach it.
-If only the task that created it can access it (ie. it's a `local`) then both the compiled code and the interpreter can skip the spinlock.
+If only the task that created it can access it (it's `local`), then both the compiled code and the interpreter can skip the spin lock.
 This gave us another ~2-3x speedup on array and sort heavy code.
 
-## 
 
-<!-- TODO: runtime v2. One heap per event loop, typed object layouts, our own copying collector, closed-world dispatch. The spike beats Node on 7 of 12 workloads. -->
+## Runtime v2
+
+This was a great project and we ended up with a backend that is able to compile 100% of BAML into native Rust code. To keep the scope of this experiment small, we kept the VM's data model as-is.
+
+Compiled code still goes through the VM for every field read, allocation and container access, so data-heavy programs (like our agent loop) only got ~1.5x faster.
+
+Our goal is to be as fast as, if not faster than, Node.js and V8. We are working on a v2 runtime with typed object layouts. We'll share more soon.
+
+<!-- TODO (Hari): closing thoughts on the project. -->

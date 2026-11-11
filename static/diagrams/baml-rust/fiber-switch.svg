@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" role="img" aria-labelledby="title desc">
 <title id="title">A pause is a stack-pointer swap</title>
-<desc id="desc">Three panels. Running: the stack pointer is on the fiber, where sum runs. Suspend: registers are pushed onto the fiber and the stack pointer moves back to the thread, where the VM loop receives Await(fut). Resume: the stack pointer moves back to the fiber and suspend returns to sum.</desc>
+<desc id="desc">Three panels. Running: the stack pointer is on the fiber, where classify runs. Suspend: registers are pushed onto the fiber and the stack pointer moves back to the thread, where the VM loop receives Await(fut). Resume: the stack pointer moves back to the fiber and suspend returns to classify.</desc>
 <style>
   :root { color: #f3f3ee; --secondary: #aaa89f; --accent: #cf8078; }
   text { fill: currentColor; font-family: monospace; font-size: 15px; }
@@ -21,13 +21,13 @@
 </defs>
 
 <text class="center" x="118" y="34">1  running</text>
-<text class="small muted center" x="118" y="60">sum runs on the fiber</text>
+<text class="small muted center" x="118" y="60">classify runs on the fiber</text>
 <rect class="faint" x="10" y="110" width="100" height="184" rx="4" />
 <rect class="" x="18" y="256" width="84" height="30" rx="3" />
 <text class="small center" x="60" y="276">vm loop</text>
 <rect class="on" x="126" y="110" width="100" height="184" rx="4" />
 <rect class="" x="134" y="256" width="84" height="30" rx="3" />
-<text class="small center" x="176" y="276">sum</text>
+<text class="small center" x="176" y="276">classify</text>
 <text class="small action center" x="176" y="222">sp</text>
 <path class="flow" d="M176 228V252" marker-end="url(#arrow-a)" />
 <text class="small muted center" x="60" y="316">thread</text>
@@ -41,7 +41,7 @@
 <path class="flow" d="M322 228V252" marker-end="url(#arrow-a)" />
 <rect class="faint" x="388" y="110" width="100" height="184" rx="4" />
 <rect class="faint" x="396" y="256" width="84" height="30" rx="3" />
-<text class="small center muted" x="438" y="276">sum</text>
+<text class="small center muted" x="438" y="276">classify</text>
 <rect class="faint" x="396" y="222" width="84" height="30" rx="3" />
 <text class="small center muted" x="438" y="242">suspend</text>
 <rect class="faint" x="396" y="188" width="84" height="30" rx="3" />
@@ -49,13 +49,13 @@
 <text class="small muted center" x="322" y="316">thread</text>
 <text class="small muted center" x="438" y="316">fiber</text>
 <text class="center" x="642" y="34">3  resume</text>
-<text class="small muted center" x="642" y="60">suspend returns to sum</text>
+<text class="small muted center" x="642" y="60">suspend returns to classify</text>
 <rect class="faint" x="534" y="110" width="100" height="184" rx="4" />
 <rect class="" x="542" y="256" width="84" height="30" rx="3" />
 <text class="small center" x="584" y="276">vm loop</text>
 <rect class="on" x="650" y="110" width="100" height="184" rx="4" />
 <rect class="" x="658" y="256" width="84" height="30" rx="3" />
-<text class="small center" x="700" y="276">sum</text>
+<text class="small center" x="700" y="276">classify</text>
 <rect class="" x="658" y="222" width="84" height="30" rx="3" />
 <text class="small center" x="700" y="242">suspend</text>
 <text class="small action center" x="700" y="188">sp</text>

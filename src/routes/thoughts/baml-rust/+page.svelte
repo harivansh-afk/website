@@ -5,15 +5,17 @@
   let { data } = $props();
 </script>
 
-<!-- a draft: reachable by its address, unlisted in thoughts.js, kept out of search -->
-<Seo title={data.title} type="article" description="Compiling BAML to Rust." />
-<svelte:head><meta name="robots" content="noindex" /></svelte:head>
+<Seo
+  title={data.title}
+  type="article"
+  description="We wrote a new backend for the BAML compiler that lets us compile all BAML code into Rust."
+/>
 
 <main class="thought baml-rust">
   <article>
     <header>
       <h1>{data.title}</h1>
-      <p class="meta"><span>draft</span><Views /></p>
+      <p class="meta"><span>November 2026</span><span>~7 min read</span><Views /></p>
     </header>
     {@html data.body}
   </article>
