@@ -218,19 +218,13 @@ Since suspension is transitive, this design spread to ~69% of compiled functions
 
 ## Garbage collection
 
-<!-- TODO crux: `sum` holds `xs` across the await, and the GC moves objects. The obvious answer is stack maps, and Rust has none. The GC only runs when every VM is paused at a safe point. Before every pause, live heap values are written to the VM's frame slots and reloaded after. The collector never scans a fiber stack, so a VM paused in compiled code looks exactly like one paused in bytecode. -->
+BAML's GC is a [generational]{Objects are grouped by age. New objects start in a young generation that's collected often, and the few that survive move to older generations that are collected rarely.}, [stop-the-world]{Every VM pauses while the collector runs, so no code touches the heap mid-collection.} [copying]{Live objects are copied out to a new region instead of freeing dead ones one by one, so the old region can be reset all at once.} collector. When it runs, every VM is stopped and the live objects (anything still reachable) in the generation being collected are copied into an older one. The source generation is then wiped by the collector.
 
-<!-- NOTE: real output, the top of the same 'l1 loop in user_sum, trimmed the same way. Every 16 iterations it may yield; xs (l1) goes into frame slot 0 before the suspend and comes back after. -->
+Since every live object moves to a new address, every pointer to it has to be updated. The interpreter can do this since all of its pointers live in VM frame slots, but Rust doesn't expose the pointers a compiled function holds in its locals/registers.
 
-```rust user_sum.rs
-if iterations % 16 == 0 && vm.should_yield() {
-    vm.set_slot(fr, 0, l1);
-    vm.suspend(Step::Yield)?;
-    l1 = vm.slot(fr, 0);
-}
-```
+Our MIR types every local and tracks which ones are live at each point. So at compile time, the backend knows exactly which live locals hold heap values at every point where a collection can happen (a pause, or a VM call that may collect). It emits code to copy them into the VM's frame slots (already scanned by the GC) before that point, and the compiled code reads them back after.
 
-![A paused VM: the fiber stack holds saved registers and scalars, the frame slot holds xs, and the GC reads only frame slots.](/diagrams/baml-rust/paused-vm.svg "Before a pause, heap values move to frame slots. The GC never scans the fiber.")
+Since the GC never scans the fiber, a paused compiled function looks exactly like paused bytecode to the collector, so we didn't need to change the GC at all.
 
 <!-- TODO crux: bytecode is the oracle. 9,711 of 9,711 corpus programs byte-identical as bytecode and compiled, again under GC_STRESS=1.
 - the agent got the project, made the decisions, and produced a first draft that passed every test before I read any code
@@ -238,6 +232,16 @@ if iterations % 16 == 0 && vm.should_yield() {
 - what agents were good at: anything with a pass/fail check
 - what they were bad at: things without an oracle (drifting from the plan, misattributing perf, big calls on one report, checking their own work)
 -->
-## Runtime v2
+
+## Escape analysis
+
+BAML is multithreaded and has a `spawn` keyword like go ie. all tasks share a single heap. 
+Since any array or map could be accessed by two threads at once, every array and map access takes a spin lock and every field access is atomic. This also applies to operatoins that are provably local causing slowdown where it can be avoided.
+
+At compile time we follow each object through the program (assignments, function calls and builtins) to see which tasks can reach it.
+If only the task that created it can access it (ie. it's a `local`) then both the compiled code and the interpreter can skip the spinlock.
+This gave us another ~2-3x speedup on array and sort heavy code.
+
+## 
 
 <!-- TODO: runtime v2. One heap per event loop, typed object layouts, our own copying collector, closed-world dispatch. The spike beats Node on 7 of 12 workloads. -->
