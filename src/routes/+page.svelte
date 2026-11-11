@@ -21,9 +21,6 @@
       href: "https://apps.apple.com/us/app/mixbridge/id6755342141",
       repo: "https://github.com/harivansh-afk/mixbridge-ios",
     },
-    {
-      name: "wiive", href: "https://wiive.ai"
-    },
     { name: "dueflow", href: "https://dueflow.co" },
     { name: "uva.builders", href: "https://uva.builders" },
     {
