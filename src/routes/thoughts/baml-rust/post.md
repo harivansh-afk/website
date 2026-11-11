@@ -249,6 +249,6 @@ This was a great project and we ended up with a backend that is able to compile 
 
 Compiled code still goes through the VM for every field read, allocation and container access, so data-heavy programs (like our agent loop) only got ~1.5x faster.
 
-Our goal is to be as fast as, if not faster than, Node.js and V8. We are working on a v2 runtime with typed object layouts. We'll share more soon.
+Our goal is to be as fast as, if not faster than, Node.js and V8. We are working on a v2 runtime with typed object layouts for the heap. Excited to share more soon !
 
 <!-- TODO (Hari): closing thoughts on the project. -->
