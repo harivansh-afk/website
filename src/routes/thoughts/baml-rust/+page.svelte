@@ -30,7 +30,10 @@
   article :global(.draft) { white-space: pre-line; opacity: 0.75; }
 
   /* benchmark tables: mono figures, hairline rows, labels in the pixel face */
-  article :global(table) { width: 100%; margin-block: 1.75rem; border-collapse: collapse; font-size: 0.9em; }
+  /* like figures and code, a table keeps its shape and scrolls in its own box on narrow screens */
+  article :global(.table-scroll) { margin-block: 1.75rem; overflow-x: auto; }
+  article :global(.table-scroll:focus-visible) { outline: 1px solid var(--fg); outline-offset: 0.25rem; }
+  article :global(table) { width: 100%; min-width: 30rem; border-collapse: collapse; font-size: 0.9em; }
   article :global(th) {
     padding: 0 0 0.6rem; border-bottom: 1px solid var(--line);
     font-family: var(--pixel); font-size: var(--pixel-size); font-weight: normal;

@@ -140,6 +140,9 @@ export async function load() {
         `</div>`
       );
     })
-    .replace(/<!--\/?tab(:[^>]*)?-->/g, "");
+    .replace(/<!--\/?tab(:[^>]*)?-->/g, "")
+    // a table too wide for a phone scrolls in its own box, never the page
+    .replace(/<table>/g, `<div class="table-scroll" tabindex="0" role="region" aria-label="table">$&`)
+    .replace(/<\/table>/g, "$&</div>");
   return { title, body };
 }
