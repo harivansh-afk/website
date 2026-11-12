@@ -17,7 +17,7 @@
       repo: "https://github.com/BoundaryML/baml/pulls?q=is:pr+author:harivansh-afk",
     },
     {
-      name: "mixbridge (ios)",
+      name: "mixbridge [ios]",
       href: "https://apps.apple.com/us/app/mixbridge/id6755342141",
       repo: "https://github.com/harivansh-afk/mixbridge-ios",
     },
