@@ -8,7 +8,7 @@
 // columns; tools/grid.mjs edits them on the page), `drop` (rem from the row above), `x` (an optional sideways
 // nudge in rem, for less than a column), and the poster's `w` x `h`
 // (static/software/<name>.webp). `clip` plays static/previews/<name>.mp4 on
-// hover; `phone` gives a phone recording a narrower frame with an iphone's corners
+// hover; `sound` makes it a film in a plain player instead; `phone` gives a phone recording a narrower frame with an iphone's corners
 const GIT = "https://github.com/harivansh-afk";
 
 export const groups = {
@@ -35,8 +35,8 @@ export const software = [
     href: "https://touchtips.app",
     note: "remember when, where and who you met.",
     status: null,
-    canvas: { col: "8 / span 10", drop: 3.75, w: 1280, h: 720, clip: true },
-    alt: "touchtips open on a phone outdoors",
+    canvas: { col: "8 / span 10", drop: 3.75, w: 1280, h: 720, clip: true, sound: true },
+    alt: "the touchtips launch film: an imessage thread with instinct",
   },
   {
     name: "einstein",

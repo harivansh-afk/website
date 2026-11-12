@@ -22,11 +22,6 @@
       repo: "https://github.com/harivansh-afk/mixbridge-ios",
     },
     { name: "dueflow", href: "https://dueflow.co" },
-    {
-      name: "touchtips (ios)",
-      href: "https://touchtips.app/",
-      repo: "https://github.com/harivansh-afk/TouchTips"
-    },
     { name: "uva.builders", href: "https://uva.builders" },
     {
       name: "agent-computer",
