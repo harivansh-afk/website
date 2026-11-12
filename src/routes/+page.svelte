@@ -17,11 +17,16 @@
       repo: "https://github.com/BoundaryML/baml/pulls?q=is:pr+author:harivansh-afk",
     },
     {
-      name: "mixbridge",
+      name: "mixbridge (ios)",
       href: "https://apps.apple.com/us/app/mixbridge/id6755342141",
       repo: "https://github.com/harivansh-afk/mixbridge-ios",
     },
     { name: "dueflow", href: "https://dueflow.co" },
+    {
+      name: "touchtips (ios)",
+      href: "https://touchtips.app/",
+      repo: "https://github.com/harivansh-afk/TouchTips"
+    },
     { name: "uva.builders", href: "https://uva.builders" },
     {
       name: "agent-computer",
