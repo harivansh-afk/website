@@ -110,11 +110,19 @@
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fg) 12%, transparent);
     pointer-events: none;
   }
-  /* a phone recording is narrower and gets an iphone's corners: the screen's
-     radius as a share of its width and height */
+  /* a phone recording is narrower (--fw, the frame's share of the piece)
+     and gets an iphone's corners: the screen's radius as a share of its
+     width and height. its caption steps in past the curve, so it sits under
+     the screen's straight edge rather than its rounded corner */
+  .phone {
+    --fw: 62%;
+  }
   .phone .frame {
-    width: 62%;
+    width: var(--fw);
     border-radius: 14% / 6.45%;
+  }
+  .phone figcaption {
+    padding-left: calc(var(--fw) * 0.07);
   }
   /* a dark disc with a triangle cut from borders, on the poster's middle */
   .play {
@@ -185,8 +193,8 @@
     .piece.phone {
       grid-row: span 2;
     }
-    .phone .frame {
-      width: 70%;
+    .phone {
+      --fw: 70%;
     }
   }
   @media (min-width: 1152px) {
@@ -198,8 +206,8 @@
     .piece.phone {
       grid-row: auto;
     }
-    .phone .frame {
-      width: 100%;
+    .phone {
+      --fw: 100%;
     }
   }
 </style>

@@ -33,6 +33,11 @@
       href: "https://cas-playbook.vercel.app/",
       repo: "https://github.com/harivansh-afk/cas",
     },
+    {
+      name: "touchtips [ios]",
+      href: "https://touchtips.app/ios",
+      repo: "https://github.com/harivansh-afk/TouchTips",
+    },
   ];
 
   const ext = { target: "_blank", rel: "noopener noreferrer" };
