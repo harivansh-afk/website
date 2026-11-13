@@ -453,35 +453,8 @@ main.thought h2 a:is(:hover, :focus-visible)::before { opacity: 1 }
 html { scroll-behavior: smooth }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } }
 
-/* figures zoom to fill the window on click (thoughts/+layout.svelte): a
-   modal dialog over the whole window, the image flying from its place */
+/* figures zoom to fill the window on click (#lib/Zoom.svelte) */
 main.thought figure img { cursor: zoom-in }
-.zoom {
-  position: fixed;
-  inset: 0;
-  width: auto;
-  height: auto;
-  max-width: none;
-  max-height: none;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  overflow: hidden;
-  cursor: zoom-out;
-  background: color-mix(in srgb, var(--bg) 0%, transparent);
-  transition: background-color 0.3s var(--ease);
-}
-.zoom::backdrop { background: none }
-.zoom.on { background: color-mix(in srgb, var(--bg) 94%, transparent) }
-.zoom img {
-  position: fixed;
-  max-width: none;
-  transform-origin: 0 0;
-  transition: transform 0.35s var(--ease);
-}
-@media (prefers-reduced-motion: reduce) {
-  .zoom, .zoom img { transition: none }
-}
 main.thought article p { margin-block: 1em }
 @media (max-width: 1151px) { main.thought article > header p.meta { margin-block: 0.75rem 1.5rem } }
 @media (max-width: 640px) {

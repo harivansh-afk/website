@@ -6,7 +6,7 @@
   // also wires what the prerendered markup can't do alone: the copy buttons
   // on code blocks, and figures that zoom to fill the window when clicked
   import { afterNavigate } from "$app/navigation";
-  import { prefersReducedMotion } from "svelte/motion";
+  import Zoom from "#lib/Zoom.svelte";
 
   let { children } = $props();
 
@@ -32,7 +32,7 @@
   const schedule = () => (frame ||= requestAnimationFrame(() => ((frame = 0), spy())));
 
   afterNavigate(() => {
-    finish();
+    zoomer?.finish();
     headings = [...grid.querySelectorAll("article h2[id]")];
     toc = headings.map((h) => ({ id: h.id, text: h.textContent.trim() }));
     schedule();
@@ -50,56 +50,8 @@
     setTimeout(() => (button.textContent = "copy"), 1400);
   }
 
-  // the zoom, flip-style, in a modal dialog over the window (so it sits
-  // above everything, takes escape, and leaves the page inert; a scroll
-  // closes it rather than moving the page under it): a copy of
-  // the image is laid out where it ends up, starts transformed back onto
-  // the original, and is released. closing runs it back and then drops the
-  // dialog, by its transition's end or a timer, whichever comes first, so
-  // nothing can be left over the page
-  let shot = $state(null); // { src, alt, box, back, img }
-  let open = $state(false);
-  let settle = 0;
-
-  function zoom(img) {
-    if (shot) return close();
-    const r = img.getBoundingClientRect();
-    const pad = innerWidth < 640 ? 12 : 40;
-    const w = Math.min(innerWidth - 2 * pad, ((innerHeight - 2 * pad) * r.width) / r.height);
-    const h = (w * r.height) / r.width;
-    const x = (innerWidth - w) / 2;
-    const y = (innerHeight - h) / 2;
-    shot = {
-      src: img.currentSrc || img.src,
-      alt: img.alt,
-      box: { x, y, w, h },
-      back: `translate(${r.left - x}px, ${r.top - y}px) scale(${r.width / w})`,
-      img,
-    };
-    img.style.visibility = "hidden";
-  }
-
-  // mounts the dialog, then lets the image go on the frame after its start
-  // is painted
-  function show(dialog) {
-    dialog.showModal();
-    const raf = requestAnimationFrame(() => requestAnimationFrame(() => (open = true)));
-    return () => cancelAnimationFrame(raf);
-  }
-
-  function close() {
-    if (!shot || !open) return finish();
-    open = false;
-    clearTimeout(settle);
-    settle = setTimeout(finish, prefersReducedMotion.current ? 0 : 400);
-  }
-
-  function finish() {
-    clearTimeout(settle);
-    if (shot) shot.img.style.visibility = "";
-    shot = null;
-    open = false;
-  }
+  let zoomer;
+  const zoom = (img) => zoomer.zoom(img, { src: img.currentSrc || img.src, alt: img.alt });
 
   function onclick(e) {
     const button = e.target.closest("[data-copy]");
@@ -143,27 +95,4 @@
   {/if}
 </div>
 
-{#if shot}
-  <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
-  <dialog
-    class="zoom"
-    class:on={open}
-    aria-label={shot.alt}
-    {@attach show}
-    onclick={close}
-    oncancel={(e) => (e.preventDefault(), close())}
-    onwheel={(e) => (e.preventDefault(), close())}
-    ontouchmove={close}
-  >
-    <img
-      src={shot.src}
-      alt={shot.alt}
-      style:left="{shot.box.x}px"
-      style:top="{shot.box.y}px"
-      style:width="{shot.box.w}px"
-      style:height="{shot.box.h}px"
-      style:transform={open ? "none" : shot.back}
-      ontransitionend={(e) => e.propertyName === "transform" && !open && finish()}
-    />
-  </dialog>
-{/if}
+<Zoom bind:this={zoomer} />

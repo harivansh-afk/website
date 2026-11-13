@@ -1,10 +1,13 @@
 <script>
   import Seo from "#lib/Seo.svelte";
   import Piece from "#lib/Piece.svelte";
+  import Zoom from "#lib/Zoom.svelte";
   import { software } from "#lib/software.js";
 
   // the canvas: every catalog entry with a placement, in catalog order
   const pieces = software.filter((entry) => entry.canvas);
+
+  let zoomer;
 </script>
 
 <Seo title="software" description="creations of the past." />
@@ -17,9 +20,10 @@
 
   <section class="blk canvas" aria-label="software">
     {#each pieces as piece}
-      <Piece {piece} />
+      <Piece {piece} onzoom={(el, media) => zoomer.zoom(el, media)} />
     {/each}
   </section>
+  <Zoom bind:this={zoomer} solid />
 </main>
 
 <style>
