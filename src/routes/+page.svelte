@@ -29,8 +29,8 @@
       repo: "https://github.com/AgentComputerAI",
     },
     {
-      name: "content-addressable storage",
-      href: "https://cas-playbook.vercel.app/",
+      name: "cas [research]",
+      href: "https://github.com/harivansh-afk/cas/blob/main/docs/paper/paper.pdf",
       repo: "https://github.com/harivansh-afk/cas",
     },
     {
