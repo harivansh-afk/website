@@ -126,7 +126,7 @@
     <h2 id="runtime-v2"><a class="bare" href="#runtime-v2">Runtime v2</a></h2>
     <p>This was a great project and we ended up with a backend that is able to compile 100% of BAML into native Rust code. To keep the scope of this experiment small, we kept the VM's data model as-is.</p>
     <p>Compiled code still goes through the VM for every field read, allocation and container access, so data-heavy programs (like our agent loop) only got ~1.5x faster.</p>
-    <p>Our goal is to be as fast as, if not faster than, Node.js and V8. We are working on a v2 runtime with typed object layouts for the heap. Excited to share more soon !</p>
+    <p>Our goal is to be as fast as, if not faster than, Node.js and V8. We are working on a v2 runtime with typed object layouts for the heap.</p>
     <!-- hover definitions for the underlined terms (CodeDefs finds them by key) -->
     <template data-def-key="term:0"><div class="def-doc"><p>Two nested loops of 500 iterations each.</p>
     </div></template>
