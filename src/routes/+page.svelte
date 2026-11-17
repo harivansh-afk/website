@@ -4,24 +4,15 @@
 
   // index rows read `name ........ when`; projects carry no date
   const work = [
+    { name: "boundary", href: "https://boundaryml.com/", when: "2026"},
     { name: "indexable", href: "https://ix.dev", when: "2026" },
     { name: "phia", href: "https://www.phia.com", when: "2025" },
+    { name: "dueflow", href: "https://www.dueflow.co/", when: "2025"},
     { name: "unikove", href: "https://unikove.com/", when: "2023" },
     { name: "moglix", href: "https://www.moglix.com/", when: "2022" },
   ];
 
   const projects = [
-    {
-      name: "baml",
-      href: "https://boundaryml.com",
-      repo: "https://github.com/BoundaryML/baml/pulls?q=is:pr+author:harivansh-afk",
-    },
-    {
-      name: "mixbridge [ios]",
-      href: "https://apps.apple.com/us/app/mixbridge/id6755342141",
-      repo: "https://github.com/harivansh-afk/mixbridge-ios",
-    },
-    { name: "dueflow", href: "https://dueflow.co" },
     { name: "uva.builders", href: "https://uva.builders" },
     {
       name: "agent-computer",
@@ -37,6 +28,11 @@
       name: "touchtips [ios]",
       href: "https://touchtips.app/ios",
       repo: "https://github.com/harivansh-afk/TouchTips",
+    },
+    {
+      name: "mixbridge [ios]",
+      href: "https://apps.apple.com/us/app/mixbridge/id6755342141",
+      repo: "https://github.com/harivansh-afk/mixbridge-ios",
     },
   ];
 
