@@ -1,4 +1,4 @@
-// everything i've built, in one place. /software draws the entries that have
+// everything i've built, in one place. /s draws the entries that have
 // a `canvas` placement as the canvas, in this order; /developer lists every
 // entry under its `group`.
 //

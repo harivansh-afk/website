@@ -348,7 +348,7 @@ main.not-found .big {
 
 /* thoughts, after benja.dev's articles: the date, read time and views in the
    gutter (2/12), the prose at 7/12 beside it, "on this page" in the last 3/12
-   (thoughts/+layout.svelte). under 1152px the meta folds into one line under
+   (w/(post)/+layout.svelte). under 1152px the meta folds into one line under
    the title and the contents step aside */
 main.thought {
   padding-block: 5rem 4.5rem;

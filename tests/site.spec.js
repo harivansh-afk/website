@@ -26,7 +26,7 @@ test("the header answers every press, however fast", async ({ page }) => {
   for (let i = 0; i < 12; i++) {
     await nav("writing").click({ noWaitAfter: true });
     await nav("software").click();
-    await expect(page).toHaveURL(/\/software\/$/);
+    await expect(page).toHaveURL(/\/s\/$/);
     await page.locator(".top .who").click();
     await expect(page).toHaveURL(/127\.0\.0\.1:\d+\/$/);
     await headerAlive(page);
@@ -42,7 +42,7 @@ test("a hovered section gets its brackets right after a navigation", async ({ pa
 });
 
 test("the name swells at the letter under the cursor, and settles", async ({ page }) => {
-  await page.goto("/writing/");
+  await page.goto("/w/");
   const letters = page.locator(".who .l");
   for (const n of [0, 3]) {
     const box = await letters.nth(n).boundingBox();
@@ -59,8 +59,8 @@ test("the name swells at the letter under the cursor, and settles", async ({ pag
 });
 
 test("a zoomed figure always goes away", async ({ page }) => {
-  await page.goto("/writing/");
-  await page.locator('.rows a[href="/thoughts/the-autonomy-radius/"]').click();
+  await page.goto("/w/");
+  await page.locator('.rows a[href="/w/the-autonomy-radius/"]').click();
   const img = page.locator("article figure img").first();
   await img.scrollIntoViewIfNeeded();
   const b = await img.boundingBox();
@@ -76,7 +76,7 @@ test("a zoomed figure always goes away", async ({ page }) => {
   await expect(page.locator("dialog[open]")).toHaveCount(0);
   await page.mouse.click(...at);
   await page.goBack();
-  await expect(page).toHaveURL(/\/writing\/$/);
+  await expect(page).toHaveURL(/\/w\/$/);
   await expect(page.locator("dialog[open]")).toHaveCount(0);
   await headerAlive(page);
 });

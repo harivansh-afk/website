@@ -48,8 +48,8 @@
 
   const sections = [
     // each section's colour is its labels' marker colour (style.css)
-    { name: "writing", href: "/writing/", match: /^\/(writing|thoughts)\//, color: "var(--blue)" },
-    { name: "software", href: "/software/", match: /^\/software\//, color: "var(--amber)" },
+    { name: "writing", href: "/w/", match: /^\/w\//, color: "var(--blue)" },
+    { name: "software", href: "/s/", match: /^\/s\//, color: "var(--amber)" },
   ];
 
   // the developer screen is its own world (palette, chrome, domain), so the
@@ -87,7 +87,7 @@
             href={section.href}
             aria-current={section.match.test(page.url.pathname) ? "page" : undefined}
             style:--c={section.color}
-            ><Dots glyph="lb" />{#if section.name === "writing" && page.url.pathname.startsWith("/thoughts/")}<span
+            ><Dots glyph="lb" />{#if section.name === "writing" && page.url.pathname.startsWith("/w/") && page.url.pathname !== "/w/"}<span
                 class="back"><Dots glyph="back" label="back to" /></span
               >{/if}{section.name}<Dots glyph="rb" /></a
           >

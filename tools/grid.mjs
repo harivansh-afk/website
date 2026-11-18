@@ -1,4 +1,4 @@
-// a 1:1 editor for the /software canvas: the built page (its exact css and
+// a 1:1 editor for the /s canvas: the built page (its exact css and
 // markup, scripts stripped, fonts inlined so it renders the same from a
 // file) with its 24 columns drawn over it and every piece draggable. it
 // prints each piece's `canvas` placement for src/lib/software.js.
@@ -14,7 +14,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 
 const root = new URL("../", import.meta.url);
-const html = await readFile(new URL("dist/software/index.html", root), "utf8");
+const html = await readFile(new URL("dist/s/index.html", root), "utf8");
 
 const css = html.match(/<style>([\s\S]*?)<\/style>/)[1];
 const body = html.match(/<body[^>]*>([\s\S]*?)<\/body>/)[1].replace(/<script[\s\S]*?<\/script>/g, "");

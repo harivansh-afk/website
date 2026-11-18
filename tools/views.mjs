@@ -85,7 +85,9 @@ await Promise.all(
 
 const views = {};
 for (const t of thoughts) {
-  views[t.href] = (t.seed ?? 0) + (paths.get(t.href) ?? 0) + (x[t.x] ?? 0);
+  const legacy = t.href.replace(/^\/w\//, "/thoughts/");
+  const reads = (paths.get(t.href) ?? 0) + (legacy === t.href ? 0 : paths.get(legacy) ?? 0);
+  views[t.href] = (t.seed ?? 0) + reads + (x[t.x] ?? 0);
 }
 views["/counter/"] = total;
 
