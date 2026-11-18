@@ -347,7 +347,7 @@ main.not-found .big {
 }
 
 /* thoughts, after benja.dev's articles: the date, read time and views in the
-   gutter (2/12), the prose at 7/12 beside it, "on this page" in the last 3/12
+   gutter (2/12) with "contents" pinned below them, the prose at 7/12
    (w/(post)/+layout.svelte). under 1152px the meta folds into one line under
    the title and the contents step aside */
 main.thought {
@@ -385,7 +385,7 @@ main.thought article > :not(header, figure, pre, .code, .callout) { max-width: 6
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: 1.25rem;
   }
-  .thought-grid > main.thought { grid-column: 1 / span 9; min-width: 0 }
+  .thought-grid > main.thought { grid-column: 1 / span 9; grid-row: 1; min-width: 0 }
   main.thought { padding-top: 8.5rem }
   main.thought article {
     display: grid;
@@ -405,12 +405,10 @@ main.thought article > :not(header, figure, pre, .code, .callout) { max-width: 6
   }
   main.thought article > header h1 { grid-column: 3 / span 7; margin-bottom: 3rem }
 
-  /* the contents: level with the first paragraph, then pinned while the
+  /* the contents: in the gutter under the meta, then pinned while the
      article scrolls past */
-  .toc { display: block; grid-column: 10 / span 3; padding-top: 12.5rem }
-  /* indented so the air between prose and contents matches the air
-     between the date and the prose on the left */
-  .toc-in { position: sticky; top: 2.5rem; padding-left: 4rem }
+  .toc { display: block; grid-column: 1 / span 2; grid-row: 1; padding-top: 16rem }
+  .toc-in { position: sticky; top: 2.5rem; padding-right: 1rem }
   .toc-label {
     margin-bottom: 0.6rem;
     font-family: var(--pixel);

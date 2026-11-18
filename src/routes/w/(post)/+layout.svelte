@@ -1,7 +1,7 @@
 <script>
   // every thought sits in this grid, after benja.dev's articles: the page's
   // own <main> (date and views in its gutter, prose beside them) takes nine
-  // twelfths, and "on this page" takes the last three, sticky, with the
+  // twelfths, and "contents" sits in that gutter under the date, sticky, with the
   // section being read in full colour. it
   // also wires what the prerendered markup can't do alone: the copy buttons
   // on code blocks, and figures that zoom to fill the window when clicked
@@ -76,9 +76,9 @@
 <div class="thought-grid" bind:this={grid} {onclick} {onkeydown}>
   {@render children()}
   {#if toc.length}
-    <nav class="toc" aria-label="on this page">
+    <nav class="toc" aria-label="contents">
       <div class="toc-in">
-        <p class="toc-label">on this page</p>
+        <p class="toc-label">contents</p>
         <div>
           <ol>
             {#each toc as h (h.id)}
