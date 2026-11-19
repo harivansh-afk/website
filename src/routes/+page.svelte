@@ -20,17 +20,17 @@
       repo: "https://github.com/AgentComputerAI",
     },
     {
-      name: "cas [research]",
+      name: "cas", tag: "Research",
       href: "https://github.com/harivansh-afk/cas/blob/main/docs/paper/paper.pdf",
       repo: "https://github.com/harivansh-afk/cas",
     },
     {
-      name: "touchtips [ios]",
+      name: "touchtips", tag: "iOS",
       href: "https://touchtips.app/ios",
       repo: "https://github.com/harivansh-afk/TouchTips",
     },
     {
-      name: "mixbridge [ios]",
+      name: "mixbridge", tag: "iOS",
       href: "https://apps.apple.com/us/app/mixbridge/id6755342141",
       repo: "https://github.com/harivansh-afk/mixbridge-ios",
     },
@@ -108,8 +108,8 @@
                row and the repo's mark sits above it -->
           <div class="row split">
             <span class="name"
-              ><a class="bare site" href={item.href} {...ext}>{item.name}</a>{#if item.tag}<span class="tag">{item.tag}</span>{/if}</span
-            ><span class="end"><a
+              ><a class="bare site" href={item.href} {...ext}>{item.name}</a></span
+            ><span class="end">{#if item.tag}<span class="tag">{item.tag}</span>{/if}<a
                 class="bare gh"
                 href={item.repo}
                 aria-label="{item.name} on github"
@@ -125,7 +125,7 @@
           </div>
         {:else}
           <a class="row bare" href={item.href} {...ext}
-            ><span class="name">{item.name}{#if item.tag}<span class="tag">{item.tag}</span>{/if}</span>{#if item.when}<span class="fig">{item.when}</span>{/if}</a
+            ><span class="name">{item.name}</span>{#if item.tag}<span class="tag">{item.tag}</span>{/if}{#if item.when}<span class="fig">{item.when}</span>{/if}</a
           >
         {/if}
       </li>
@@ -221,10 +221,8 @@
 
   /* a small word after a row's name, in the label voice */
   .tag {
-    margin-left: 0.75rem;
     font-family: var(--pixel);
     font-size: var(--pixel-size);
-    text-transform: uppercase;
     letter-spacing: 0.03em;
     color: var(--faint);
   }
