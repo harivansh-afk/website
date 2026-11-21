@@ -84,7 +84,7 @@
        little off the grey paragraph beside it, which says the rest quietly -->
   <section class="blk last" style:--off="8.333%" style:--w="83.333%" style:--gap="8rem">
     <div class="dev-link">
-      <h2 class="label navy">dev stuff</h2>
+      <h2 class="label navy">dev stack</h2>
       <p class="say"><a class="crt" href="{DEV}/">harivan.sh</a></p>
     </div>
     <div class="quiet" aria-label="more about me">
